@@ -1,0 +1,12 @@
+---
+config:
+  class:
+    hideEmptyMembersBox: true
+---
+classDiagram
+    direction LR
+    Task --> "*" Context
+    Context --> "*" Step
+    Step --> "*" Action
+    
+    note for Context "CCSを分離する作業領域"

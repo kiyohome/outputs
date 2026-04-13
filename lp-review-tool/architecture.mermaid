@@ -1,0 +1,26 @@
+flowchart TB
+    Designer["🎨 デザイナー<br/>ブラウザのみ"]
+    CC["🤖 CC<br/>GitHub PRのみ"]
+
+    subgraph Workers["Cloudflare Workers"]
+        SPA["SolidJS SPA<br/>レビュー画面<br/>iframe + canvas + コメントUI"]
+        API["Hono API<br/>認証 / アクセス制御 /<br/>GitHub APIプロキシ"]
+        D1["D1<br/>users / projects / project_members"]
+        Static["静的配信<br/>PRブランチのHTML"]
+    end
+
+    subgraph External["外部サービス"]
+        Google["Google OAuth"]
+        GitHub["GitHub<br/>リポジトリ / PR / コメント"]
+    end
+
+    Designer -- "アクセス" --> SPA
+    SPA -- "認証・API呼び出し" --> API
+    API -- "OAuth認証" --> Google
+    API -- "アクセス権確認" --> D1
+    SPA -- "プレビュー読み込み" --> Static
+    Static -. "HTMLソース取得" .-> GitHub
+    SPA -- "コメント操作" --> API
+    API -- "PRコメント<br/>投稿 / 取得 / 承認" --> GitHub
+    CC -- "HTML push<br/>PR作成" --> GitHub
+    GitHub -. "PRコメント通知" .-> CC

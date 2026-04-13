@@ -1,0 +1,13 @@
+flowchart TB
+    Designer["🎨 デザイナー（オーナー）"]
+    CC["🤖 CC（実装エージェント）"]
+    Tool["📐 レビューツール<br/>ブラウザ上"]
+    PR["📋 GitHub PR"]
+
+    Designer -- "プロジェクト作成<br/>メンバー招待" --> Tool
+    Designer -- "プレビュー確認<br/>ピン配置 + コメント<br/>承認" --> Tool
+    Tool -- "フィードバック投稿<br/>（座標・リンク付き）" --> PR
+    PR -- "コメント通知<br/>修正依頼" --> CC
+    CC -- "HTML生成<br/>PR作成・修正push" --> PR
+    PR -- "コメント取得<br/>ピンとして表示" --> Tool
+    CC -. "レビューURL通知<br/>（Slack等）" .-> Designer
