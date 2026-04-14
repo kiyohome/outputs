@@ -195,3 +195,20 @@ claude-plugins-knowhow/
 - [x] ステップ 2: 既存インプットのマッピング + 整合性レビュー
 - [ ] ステップ 3: 実ファイル作成（リファクタ実行）
 - [ ] ステップ 3-後: 既存6ファイルの削除
+
+## 再開時の読み順
+1. `.claude/rules/*.md` を全件読む（特に interaction.md の Default to English）
+2. 本ファイルの「確定事項」と「未決 TODO」を確認
+3. 下記「次のアクション」から続行
+
+## 作業環境
+- ブランチ: `claude/busy-mccarthy-JFl8r`
+- PR: https://github.com/kiyohome/outputs/pull/2
+- 作業ディレクトリ: `claude-plugins-knowhow/`
+
+## 次のアクション
+- Step 3 の進め方が未決。ユーザーに以下を確認してから着手:
+  - (A) 各 docs ファイルを1つ書き終えるごとに提示 → 承認 → 次へ
+  - (B) 全ファイル作成 → 一括確認
+  - (C) まず `docs/concepts.md` だけ書いて感触を掴む
+- 決まったら `docs/concepts.md` から着手（knowhow.md §1, §2, §9, §18 を素材）
