@@ -2,21 +2,21 @@
 
 ## Proposal-based progression
 
-- ユーザーは **ヒアリング・提案ベース** で進めたい。いきなり実行しない
-- 選択肢は **案A/B/C** で並べ、**推奨とその理由** を明示する
-- 1ターンの質問は **3〜5件に絞る**。全部即答を求めない
-- ユーザーが「k」と答えたら承認とみなして進める
-- ユーザーが「進めて」と言ったら複数ステップを自律実行する
+- The user wants to work **through hearing and proposals**. Do not jump straight to execution.
+- Present options as **A / B / C**, with the **recommendation and the reasoning** stated explicitly.
+- Limit questions per turn to **three to five**. Do not demand immediate answers to everything.
+- When the user replies with "k", treat it as approval and proceed.
+- When the user says "進めて" (go ahead), execute several steps autonomously.
 
 ## Multi-session progress tracking
 
-- 作業が複数セッションにまたがる場合、**`progress.md`** を作業ディレクトリ直下に置く
-- 内容：現在のフェーズ / 完了事項 / 次の作業（優先順） / セッションの文脈 / ドキュメント構成
-- PR本文では詳細タスクを重複させず、`progress.md` を参照させる（DRY）
-- 次回セッションは `progress.md` を最初に読んで再開する
+- When work spans multiple sessions, place a **`progress.md`** directly under the working directory.
+- Contents: current phase / completed items / next tasks (in priority order) / session context / document layout.
+- Do not duplicate detailed tasks in the PR body; point the PR at `progress.md` instead (DRY).
+- Start the next session by reading `progress.md` first to resume.
 
 ## Git operations
 
-- Stop hook で uncommitted 警告が出たら、**その時点ですぐコミットする**。溜めない
-- 論理的な区切りごとに細かくコミットする
-- ブランチはセッション開始時に指定されている。独自判断で変えない
+- When the stop hook warns about uncommitted changes, **commit immediately at that point**. Do not accumulate.
+- Commit at logical boundaries in small increments.
+- The working branch is specified at the start of the session. Do not change it on your own judgment.

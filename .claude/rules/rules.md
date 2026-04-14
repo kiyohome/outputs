@@ -2,12 +2,12 @@
 
 ## Adding new rules
 
-- `.claude/rules/` 配下に追記する前に、**必ず追記先ファイルと内容をユーザーに確認する**。勝手に書き始めない。
-- ルールはカテゴリごとにファイルを分ける。1ファイルに混ぜない。
-- 既存ファイルへの追記か、新規ファイルかを明示する。
+- Before appending anything under `.claude/rules/`, **always confirm the target file and content with the user**. Do not start writing on your own.
+- Split rules into separate files by category. Do not mix categories in a single file.
+- Make it explicit whether a change is an append to an existing file or a new file.
 
 ## Rules as process improvements
 
-- ルールは **プロセス改善** なので、気づいた時にすぐに追加・更新する
-- スコープが合わないPRでも混ぜてよい。別PRに分ける必要はない
-- 「後でまとめて」ではなく、その場で書いてコミット
+- Rules are **process improvements**, so add or update them as soon as you notice something.
+- It is fine to include a rule change in a PR whose main scope is unrelated. There is no need to split it out.
+- Write and commit on the spot rather than batching "for later".

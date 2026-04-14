@@ -2,20 +2,20 @@
 
 ## Mermaid over ASCII
 
-- 図は **mermaid** を優先する。ASCII art は避ける
-- 例外: 擬似コード（Step の入出力を箇条書きで書くタイプ）は ASCII のままでOK
-- インフラ構成図・フロー図・関係図はすべて mermaid に
+- Prefer **mermaid** for diagrams. Avoid ASCII art.
+- Exception: pseudo-code (e.g., bullet-style "input / output of a Step") can stay as plain text.
+- Infrastructure diagrams, flow diagrams, and relationship diagrams should all be mermaid.
 
 ## Mermaid syntax safety
 
-スマホやシンプルなレンダラで壊れにくい書き方：
+Write mermaid in a way that survives smartphones and simple renderers:
 
-- `<br/>` は避ける。改行が必要なら `<br>` か、ノード分割
-- subgraph 内の nested `direction` は避ける
-- edge label に特殊文字（`→` など）を入れない。必要なら本文に出す
-- node label に括弧やパイプを含める時は `"..."` でクオート
+- Avoid `<br/>`. If you need a line break, use `<br>` or split the node.
+- Avoid nested `direction` inside subgraphs.
+- Do not put special characters (e.g., `→`) in edge labels. Put them in prose instead if needed.
+- When a node label contains parentheses or pipes, wrap it in `"..."`.
 
 ## User visibility
 
-- ユーザーがスマホで作業している可能性がある。mermaid はレンダリングされないこともある
-- 図を提案する時は、**構造的な意図を文章でも併記** する
+- The user may be working from a smartphone, where mermaid is not always rendered.
+- When proposing a diagram, **also describe its structural intent in prose**.

@@ -2,11 +2,11 @@
 
 ## Default
 
-- 出力はすべて **英語** をデフォルトとする
-- ドキュメント・コード・コード内コメント・コミットメッセージ・変数名・UIテキストすべて対象
-- ユーザーとの対話（Claude → ユーザー）は別。ユーザーの言語に合わせる
+- All output defaults to **English**.
+- This covers documentation, code, in-code comments, commit messages, variable names, and UI text.
+- Dialogue with the user (Claude → user) is separate: match the user's language.
 
 ## Exceptions
 
-- ユーザーが明示的に別言語を指定した場合
-- 既存コンテンツに合わせる必要がある場合（現存ファイルに日本語が混ざっているなど）は混乱を避けるため揃える。ただし `<!-- TODO(translation) -->` マーカーで追跡対象にする
+- When the user explicitly requests a different language.
+- When aligning with existing content (e.g., a surrounding file that is already in Japanese) to avoid inconsistency. In that case, add a `<!-- TODO(translation) -->` marker so it stays on the translation backlog.

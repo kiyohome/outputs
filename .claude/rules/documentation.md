@@ -2,20 +2,20 @@
 
 ## Structure
 
-- モノレポでは、構成要素を「コンポーネント」ではなく **「パッケージ」** と呼ぶ（OSS慣習）
-- 複数文書で同じ内容が重複していたら、**共通セクションを README や横串文書に集約** する
-- 大きなリファクタリングは **骨組み → 中身詰め** の2段階に分ける
+- In a monorepo, call the building blocks **"packages"**, not "components" (OSS convention).
+- If the same content is duplicated across multiple documents, **consolidate the shared section into the README or a cross-cutting document**.
+- Split a large refactor into two phases: **skeleton first, then fill in content**.
 
 ## Headings
 
-- 共通テンプレ（例: `Overview / Usage / Architecture`）を全文書に強制しない。**ファイルごとに内容最適化** する
-- 不要な `## Overview` ラッパーは廃止してフラット化する
-- 見出しは **OSS慣習に沿った英語** を使う。造語や直訳を避ける
-  - 避ける: `Development`（曖昧。コントリビューションか使い方か不明）
-  - 避ける: `Internals`（ランタイム/DB/コンパイラ系に偏る。dev tool には `Architecture` が主流）
-- 新しい見出し命名を決める前に、**実際のOSSプロジェクトの慣習を調査** する（Diátaxis, standard-readme, matklad の ARCHITECTURE.md など）
+- Do not force a shared template (e.g., `Overview / Usage / Architecture`) across every document. **Optimize headings per file** to fit its content.
+- Drop unnecessary `## Overview` wrappers and flatten.
+- Use **English headings that follow OSS conventions**. Avoid invented terms and literal translations.
+  - Avoid `Development` — ambiguous between "how to contribute" and "how to use".
+  - Avoid `Internals` — skews toward runtimes / databases / compilers; dev tools typically use `Architecture`.
+- Before deciding on a new heading name, **research what real OSS projects use** (Diátaxis, standard-readme, matklad's ARCHITECTURE.md convention, etc.).
 
 ## Bilingual docs
 
-- 最終英語化予定の日本語文書には、冒頭に `<!-- TODO(translation) -->` マーカーを置く
-- 見出しだけ先に英語化するのはOK。本文は一括で翻訳する流れで良い
+- When a Japanese document is expected to be translated to English eventually, put a `<!-- TODO(translation) -->` marker at the top of the file.
+- It is fine to translate only headings first. Translate the body in one pass later.
