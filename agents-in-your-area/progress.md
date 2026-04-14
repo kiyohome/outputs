@@ -1,110 +1,125 @@
 # Progress
 
-> 作業の意図・完了事項・次の作業を記録する。再開時はここから読む。
+> Record of work intent, completed items, and next steps. Start here when resuming.
 
-<!-- TODO(translation): 本文を英語化する。 -->
+## How to resume
 
-## 現在のフェーズ
+Read in this order at the start of a new session:
 
-**要件フェーズ**。要件 → UX → 設計 の順で進めている中の最初の段階。
+1. **`.claude/rules/`** — project-wide rules (read first, always)
+2. **This file** — current completion state and next tasks
+3. **PR #1**: https://github.com/kiyohome/outputs/pull/1
+4. The document being worked on (starting from the top-priority task below)
 
-特に AIYA の Traceability Chain と CCS の実現方法を詰めている。ドキュメントのリファクタリングが完了し、これから各文書の中身を埋めていく。
+## Current phase
 
-## 完了
+**Requirements phase**. First step of the requirements → UX → design sequence.
 
-### PR #1: モノレポ構造へのリファクタリング
+The focus is pinning down how AIYA's Traceability Chain and CCS should actually work. Documentation refactoring is done; from here, each document's content gets filled in.
 
-- [x] `agents-in-your-area/` をモノレポ構造に（`README.md` + `docs/`）
-- [x] 既存4文書（vision / acc-agent-architecture / aiya-pit / aiya-tape）のマッピング・分割・重複排除
-- [x] 文書タイプ分類（Concept 4本 / Package 3本）
-- [x] 見出し構造をファイルごとに最適化（共通テンプレは撤回、フラットな `##` 構造）
-- [x] ASCII 図を mermaid 化（`architecture.md` の2枚、`README.md` のシステム図）
-- [x] `traceability-chain.md` / `aiya-jam.md` の骨組み作成
-- [x] 各文書に `<!-- TODO(translation) -->` マーカー配置
+## Completed
 
-## 次の作業（優先順）
+### PR #1: monorepo refactor
 
-### 1. Traceability Chain の要件詰め ★最優先
+- [x] Reorganize `agents-in-your-area/` into a monorepo layout (`README.md` + `docs/`)
+- [x] Map, split, and deduplicate the four existing documents (vision / acc-agent-architecture / aiya-pit / aiya-tape)
+- [x] Classify documents into types (4 Concept + 3 Package)
+- [x] Optimize heading structure per file (common template dropped in favor of a flat `##` structure)
+- [x] Convert ASCII diagrams to mermaid (both diagrams in `architecture.md`, the system diagram in `README.md`)
+- [x] Create skeletons for `traceability-chain.md` and `aiya-jam.md`
+- [x] Add `<!-- TODO(translation) -->` markers to each document
 
-`docs/traceability-chain.md` の TODO を埋める。ヒアリングポイント：
+### `.claude/rules/` setup
 
-- Chain 6要素（Situation / Pain / Benefit / Acceptance Scenarios / Approach / Steps）それぞれのフォーマット定義
-- 物理配置（1ファイル統合 vs 要素分割 vs ハイブリッド）
-- 粒度（1 issue = 1 Chain でよいか）
-- Chain のバージョニング方式（変更履歴をどう残すか）
-- 執筆分担（エキスパートが書く / AIが下書きする要素）
+- [x] `rules.md` — meta rules (confirmation before writing, process improvement)
+- [x] `language.md` — English as the default output language
+- [x] `documentation.md` — structure, headings, OSS conventions, bilingual docs
+- [x] `workflow.md` — proposal-based progression, progress.md pattern, git operations
+- [x] `diagrams.md` — mermaid preferred, syntax safety, smartphone visibility
 
-### 2. Chain と CCS の接続方式
+## Next tasks (by priority)
 
-- (a) パス参照 `retrieved_artifacts: spec(chains/issue-123/benefit.md)`
-- (b) ID参照 `BNF-123-01` のようなIDで引く
-- (c) 展開コピー CCS生成時に Chain該当部分を `goal_orientation` / `constraints` に値渡し
+### 1. Nail down Traceability Chain requirements ★top priority
 
-どれにするか決定する。
+Fill in the TODOs in `docs/traceability-chain.md`. Hearing points:
 
-### 3. 三段階ゲートの具体化
+- Format for each of the 6 Chain elements (Situation / Pain / Benefit / Acceptance Scenarios / Approach / Steps)
+- Physical layout (single file vs per-element split vs hybrid)
+- Granularity (is 1 issue = 1 Chain the right unit?)
+- Chain versioning (how to keep change history)
+- Authoring split (which elements the expert writes vs which the AI drafts)
 
-[vision.md](docs/vision.md) に言及はあるが未定義：
+### 2. Chain-to-CCS linkage
 
-- 配置：Task開始時 / Context境界 / Step完了時 のどこに置くか
-- 各ゲートの判定者・判定基準・不合格時の戻り先
-- UI（CLI対話 / web UI / PR review）
+- (a) Path reference: `retrieved_artifacts: spec(chains/issue-123/benefit.md)`
+- (b) ID reference: something like `BNF-123-01`
+- (c) Value copy: inline Chain content into `goal_orientation` / `constraints` at CCS creation time
 
-### 4. 用語衝突の解消
+Pick one.
 
-Chain の "Steps"（Approach の次に来る作業手順）と ACC の "Step"（Context を構成する作業フロー）が同じ語で違う意味。リネームまたは明示的な区別が必要。
+### 3. Concretize the three-stage gates
 
-### 5. Chain ↔ Task/Context/Step/Action の対応
+[vision.md](docs/vision.md) mentions them but doesn't define them:
 
-[architecture.md § Chain ↔ Task mapping](docs/architecture.md) の未決事項。想定：
+- Placement: Task start / Context boundaries / Step completion
+- Judge, criteria, and fallback target for each gate
+- UI (CLI dialogue / web UI / PR review)
 
-- Situation / Pain / Benefit / Acceptance Scenarios → Task 全体の文脈
-- Approach → Context 分割の根拠
-- Steps → Implementation Context の Step 列
+### 4. Resolve the "Step" naming collision
 
-### 6. aiya-jam の実装形態
+Chain's "Steps" (the action list after Approach) and ACC's "Step" (the work unit inside a Context) use the same word for different things. Rename one or introduce an explicit distinction.
 
-[aiya-jam.md](docs/aiya-jam.md) の TODO：
+### 5. Chain ↔ Task/Context/Step/Action mapping
 
-- SKILL.md の粒度（Task単位 / Step種別単位 / Context単位）
-- ワークフロー定義言語（YAML / TypeScript / プレーンMarkdown）
-- Chain ストレージ（ファイル / DB / issue本体）
-- CCS ストレージ
-- Task Agent の実装形態（Claude Code のサブエージェント / 別コンテナ / 別セッション）
+Open item in [architecture.md § Chain ↔ Task mapping](docs/architecture.md). Working hypothesis:
 
-### 7. Quickstart の記述
+- Situation / Pain / Benefit / Acceptance Scenarios → Task-level context
+- Approach → basis for Context splitting
+- Steps → Step sequence inside the Implementation Context
 
-以下のすべてで Quickstart が TODO：
+### 6. aiya-jam implementation shape
+
+TODOs in [aiya-jam.md](docs/aiya-jam.md):
+
+- SKILL.md granularity (per Task / per Step kind / per Context)
+- Workflow definition language (YAML / TypeScript / plain Markdown)
+- Chain storage (file / DB / issue body)
+- CCS storage
+- Task Agent implementation (Claude Code subagent / separate container / separate session)
+
+### 7. Quickstart sections
+
+Quickstart is still TODO in all of:
 
 - `README.md`
 - `docs/aiya-pit.md`
 - `docs/aiya-tape.md`
 - `docs/aiya-jam.md`
 
-### 8. 本文の英語化
+### 8. Translate remaining body content to English
 
-全文書の見出しは英語化済み。本文は日本語のまま。各ファイル冒頭の `<!-- TODO(translation) -->` マーカーで追跡。
+All document headings are already in English. Body text is still Japanese. Tracked via `<!-- TODO(translation) -->` at the top of each file.
 
-## セッションの文脈（再開用）
+## Session context (for resuming)
 
-- ユーザーは **ヒアリング・提案ベース** で進めたい
-- **モノレポで開発する** 前提（パッケージ: aiya / aiya-pit / aiya-tape / aiya-jam）
-- **要件 → UX → 設計** の順
-- ドキュメントは最終的に **英語化** 予定（現時点では見出しのみ英語）
-- 作業ブランチ: `claude/traceability-chain-docs-VTFb8`
+- The user prefers **hearing-and-proposal-based** progression — don't just execute
+- **Monorepo** setup (packages: aiya / aiya-pit / aiya-tape / aiya-jam)
+- Order is **requirements → UX → design**
+- Final docs will be **English**; currently only headings are translated
+- Working branch: `claude/traceability-chain-docs-VTFb8`
 
-## ドキュメント構成（現状）
+## Documentation layout (current)
 
 ```
 agents-in-your-area/
-├── README.md                   # モノレポ総覧
-├── progress.md                 # このファイル
+├── README.md                   # Monorepo overview
+├── progress.md                 # This file
 └── docs/
-    ├── vision.md               # Why（既存から移設）
-    ├── traceability-chain.md   # Chain 仕様（骨組み、TODO多）
-    ├── ccs.md                  # CCS 仕様（既存から抽出）
-    ├── architecture.md         # 作業単位 + エージェント配置
-    ├── aiya-pit.md             # サンドボックス
-    ├── aiya-tape.md            # 監査プロキシ
-    └── aiya-jam.md             # タスク管理（骨組み、TODO多）
+    ├── vision.md               # Why (migrated from aiya-vision.md)
+    ├── traceability-chain.md   # Chain spec (skeleton, many TODOs)
+    ├── ccs.md                  # CCS spec (extracted from existing)
+    ├── architecture.md         # Work units + agent placement
+    ├── aiya-pit.md             # Sandbox
+    ├── aiya-tape.md            # Audit proxy
+    └── aiya-jam.md             # Task management (skeleton, many TODOs)
 ```
