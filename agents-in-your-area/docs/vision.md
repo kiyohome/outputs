@@ -1,6 +1,11 @@
-# AIYA Vision
+# Vision
 
-## エキスパートの判断力をスケールさせるフレームワーク
+> エキスパートの判断力をスケールさせるフレームワーク
+
+<!-- TODO(translation): 本文を英語化する。見出しは英語済み。 -->
+<!-- NOTE: この文書は "What & Why" 専用のため、Usage/Architectureセクションは省略。 -->
+
+## Overview
 
 ### ビジョン
 
@@ -51,6 +56,8 @@ Situation → Pain → Benefit → Acceptance Scenarios → Approach → Steps
 ```
 
 ゲートで切れる。AIが作業し、エキスパートがゲートで判断する。リンクが切れたらプロセスが止まる。ドリフトを構造的に検知する仕組み。
+
+詳細は [traceability-chain.md](traceability-chain.md) および [architecture.md](architecture.md) を参照。
 
 ### ポジショニング
 
