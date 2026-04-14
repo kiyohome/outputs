@@ -27,7 +27,7 @@ The focus is pinning down how AIYA's Traceability Chain and CCS should actually 
 - [x] Optimize heading structure per file (common template dropped in favor of a flat `##` structure)
 - [x] Convert ASCII diagrams to mermaid (both diagrams in `architecture.md`, the system diagram in `README.md`)
 - [x] Create skeletons for `traceability-chain.md` and `aiya-jam.md`
-- [x] Add `<!-- TODO(translation) -->` markers to each document
+- [x] Translate `README.md` and all `docs/*.md` body text to English (follow-up on language.md)
 
 ### `.claude/rules/` setup
 
@@ -36,6 +36,7 @@ The focus is pinning down how AIYA's Traceability Chain and CCS should actually 
 - [x] `documentation.md` — structure, headings, OSS conventions, bilingual docs
 - [x] `workflow.md` — proposal-based progression, progress.md pattern, git operations
 - [x] `diagrams.md` — mermaid preferred, syntax safety, smartphone visibility
+- [x] Translate all five rule files to English
 
 ## Next tasks (by priority)
 
@@ -96,16 +97,12 @@ Quickstart is still TODO in all of:
 - `docs/aiya-tape.md`
 - `docs/aiya-jam.md`
 
-### 8. Translate remaining body content to English
-
-All document headings are already in English. Body text is still Japanese. Tracked via `<!-- TODO(translation) -->` at the top of each file.
-
 ## Session context (for resuming)
 
 - The user prefers **hearing-and-proposal-based** progression — don't just execute
 - **Monorepo** setup (packages: aiya / aiya-pit / aiya-tape / aiya-jam)
 - Order is **requirements → UX → design**
-- Final docs will be **English**; currently only headings are translated
+- Documents are in **English** (full translation done in PR #1)
 - Working branch: `claude/traceability-chain-docs-VTFb8`
 
 ## Documentation layout (current)
