@@ -1,15 +1,14 @@
 # aiya-tape
 
-> テープ回してるぞ — 監査・可視化
+> The tape is rolling — auditing and visualization
 
-<!-- TODO(translation): 本文を英語化する。 -->
-<!-- NOTE: 全体アーキテクチャ図・セキュリティモデル・モノレポ構成表は ../README.md に集約した。 -->
+<!-- NOTE: The overall architecture diagram, security model, and monorepo layout are consolidated in ../README.md. -->
 
-AIエージェントの全通信を記録・可視化し、「何が起きたか」を事後に追跡可能にする。aiya-tape は2つのコンポーネントで成り立つ：**aiya-proxy**（Goプロキシによる通信の捕捉・制御・投入）と **OpenObserve**（蓄積・クエリ・ダッシュボード・MCP）。
+Records and visualizes all traffic from AI agents, so "what happened" is always retroactively auditable. aiya-tape consists of two components: **aiya-proxy** (a Go proxy that captures, controls, and ingests traffic) and **OpenObserve** (storage, querying, dashboards, and MCP).
 
 ## Quickstart
 
-<!-- TODO: docker compose up からダッシュボードまでの手順 -->
+<!-- TODO: Steps from `docker compose up` to the dashboard -->
 
 ```
 # TODO
@@ -22,43 +21,43 @@ claude mcp add o2 http://localhost:5080/api/default/mcp \
   -t http --header "Authorization: Basic <TOKEN>"
 ```
 
-OpenObserve内蔵MCPでストリーム検索、アラート管理等が可能。自前MCPサーバーは不要。
+OpenObserve's built-in MCP supports stream search, alert management, and more. No custom MCP server is needed.
 
 ## aiya-proxy
 
-**技術:** Go + goproxy
+**Technology:** Go + goproxy
 
-**責務:**
+**Responsibilities:**
 
-1. **APIゲートウェイ** — `ANTHROPIC_BASE_URL` 差し替え、Anthropic API通信の全量記録（リクエスト/レスポンス、トークン数、レイテンシ）
-2. **HTTPS MITM** — goproxyによる全HTTPS通信の中身記録
-3. **ドメイン許可/拒否** — 許可リスト外のドメインへの接続をブロック
-4. **OpenObserveへ投入** — 記録データをHTTP APIで送信
-5. **センシティブ情報マスキング** — Authorizationヘッダー、APIキー等を記録前にマスク
+1. **API gateway** — swap `ANTHROPIC_BASE_URL` and record the full Anthropic API traffic (request/response, token counts, latency)
+2. **HTTPS MITM** — use goproxy to record the payloads of all HTTPS traffic
+3. **Domain allow/deny** — block connections to domains outside the allowlist
+4. **Ingest to OpenObserve** — send records via its HTTP API
+5. **Sensitive data masking** — mask `Authorization` headers, API keys, and similar before recording
 
 ### HTTPS MITM
 
-CONNECTトンネルではドメインしか見えない。不審な外部通信で「何を送ったか分からない」は監査として致命的。
-→ 自前CA証明書でMITMし、全HTTPS通信の中身を記録する。
+With a plain CONNECT tunnel you only see the domain. "We don't know what it sent" is fatal for auditing suspicious outbound traffic.
+→ MITM with a self-hosted CA certificate and record the full payload of every HTTPS request.
 
-セキュリティ対策:
+Security measures:
 
-| リスク | 対策 |
+| Risk | Mitigation |
 |---|---|
-| CA秘密鍵漏洩 | コンテナ起動時に毎回生成、揮発 |
-| CCがCA秘密鍵にアクセス | 作業ディレクトリ外 + パーミッション制限 |
-| 認証情報がログに残る | Authorizationヘッダー等マスキング |
-| 証明書検証エラー | Dockerfile内で各ツールにCA証明書設定（aiya-pit側） |
+| CA private key leaks | Regenerated every container start, ephemeral |
+| CC reaches the CA private key | Placed outside the working directory, permission-restricted |
+| Credentials end up in logs | Masking for `Authorization` headers and similar |
+| Certificate validation errors | Certificates configured per tool in the Dockerfile (on the aiya-pit side) |
 
-倫理的妥当性: 自分が動かすAIエージェントの通信を自分で記録する。人間の通信は傍受しない。Docker Sandboxes、Vercel AI Gatewayも同様のプラクティス。
+Ethics: we record the traffic of AI agents *we ourselves run*. We do not intercept human traffic. Docker Sandboxes and Vercel AI Gateway follow the same practice.
 
 ### Recorded data
 
-| 種別 | 内容 |
+| Kind | Content |
 |---|---|
-| Anthropic API | リクエストbody、レスポンスbody、モデル名、トークン数、レイテンシ |
-| 一般HTTPS | メソッド、URL、ステータスコード、リクエスト/レスポンスサイズ |
-| ブロック | 拒否されたドメインとリクエスト内容 |
+| Anthropic API | request body, response body, model name, token counts, latency |
+| General HTTPS | method, URL, status code, request/response size |
+| Blocked | denied domain and the request content |
 
 ### docker-compose
 
@@ -75,18 +74,18 @@ aiya-proxy:
 
 ## OpenObserve
 
-**技術:** Rust製シングルバイナリ、AGPL-3.0（利用のみなら義務なし）
+**Technology:** Rust single binary, AGPL-3.0 (no obligations for mere use)
 
-**選定理由:**
-1. HTTP APIで投入・クエリが簡単
-2. ダッシュボード内蔵（Grafana不要）
-3. 公式MCPサーバー内蔵 → 自前MCP不要
-4. SQLでクエリ可能
-5. Dockerイメージ1つ
-6. 19種+カスタムチャート（ECharts）
-7. ローカルディスクストレージ対応
+**Why we picked it:**
+1. Simple HTTP API for ingestion and querying
+2. Built-in dashboards (no Grafana needed)
+3. Official MCP server bundled → no custom MCP required
+4. SQL-based querying
+5. Single Docker image
+6. 19+ chart types plus custom charts (ECharts)
+7. Local disk storage supported
 
-**想定データ量:** 1日数MB〜数百MB。OSS版の無制限で十分。
+**Expected data volume:** a few MB to a few hundred MB per day. Well within the OSS edition's unlimited tier.
 
 ### docker-compose
 
@@ -103,19 +102,19 @@ openobserve:
 
 ## Single use (without aiya-pit)
 
-aiya-tape はサンドボックスなしでも使える。その場合:
-- ホスト上で動くCCの `HTTP_PROXY` / `HTTPS_PROXY` をプロキシに向ける
-- `ANTHROPIC_BASE_URL` をプロキシに向ける
-- ファイルシステム隔離は無効、ネットワーク監査のみ有効
+aiya-tape can be used without the sandbox. In that mode:
+- Point the host-side CC's `HTTP_PROXY` / `HTTPS_PROXY` at the proxy
+- Point `ANTHROPIC_BASE_URL` at the proxy
+- Filesystem isolation is disabled; only network auditing is active
 
 ## Related documents
 
-- [aiya-pit.md](aiya-pit.md) — サンドボックス（aiya-tapeと組み合わせて使う）
-- [../README.md](../README.md) — 全体アーキテクチャ図とセキュリティモデル
+- [aiya-pit.md](aiya-pit.md) — sandbox (typically used alongside aiya-tape)
+- [../README.md](../README.md) — overall architecture diagram and security model
 
 ## Open questions
 
-- [ ] プロキシのドメイン許可/拒否リストの管理方法（設定ファイル or 環境変数 or API）
-- [ ] ダッシュボードのプリセット構成（初期テンプレートで何を表示するか）
-- [ ] ログのリテンション（保持期間の設定方法）
-- [ ] マスキングルールの管理方法（正規表現ベース or パターンマッチ）
+- [ ] How to manage the proxy's domain allow/deny list (config file / env vars / API)
+- [ ] Default dashboard presets (what the initial templates should show)
+- [ ] Log retention (how to configure it)
+- [ ] How to manage masking rules (regex-based / pattern match)

@@ -1,15 +1,14 @@
 # aiya-pit
 
-> ここで暴れろ — サンドボックス
+> Go wild in here — sandbox
 
-<!-- TODO(translation): 本文を英語化する。 -->
-<!-- NOTE: 全体アーキテクチャ図・セキュリティモデル・モノレポ構成表は ../README.md に集約した。 -->
+<!-- NOTE: The overall architecture diagram, security model, and monorepo layout are consolidated in ../README.md. -->
 
-AIエージェントがホスト環境に影響を与えずに全力で作業できる隔離環境を提供する。Dockerfile・ファイルシステム隔離・ネットワーク隔離・CA証明書管理の4つが主な構成要素。
+Provides an isolated environment where AI agents can work at full speed without affecting the host. The four main building blocks are the container image, filesystem isolation, network isolation, and CA certificate management.
 
 ## Quickstart
 
-<!-- TODO: docker compose up 一発で動く手順 -->
+<!-- TODO: "docker compose up" one-liner instructions -->
 
 ```
 # TODO
@@ -17,31 +16,31 @@ AIエージェントがホスト環境に影響を与えずに全力で作業で
 
 ## Container image
 
-- Claude Code実行に必要なツールチェーン一式（Node.js, Git, 各種ビルドツール）
-- `--dangerously-skip-permissions` での起動を前提とした環境
-- CA証明書の信頼設定（各ツール向け: npm, pip, curl, Node.js等）
+- Full toolchain needed to run Claude Code (Node.js, Git, various build tools)
+- Designed to be launched with `--dangerously-skip-permissions`
+- CA certificate trust configured for each tool (npm, pip, curl, Node.js, etc.)
 
 ## Filesystem isolation
 
-- bind mountで作業ディレクトリ（git worktree）のみ `/workspace` にマウント
-- ホストの `~/.ssh`, `~/.gitconfig` 等には一切アクセス不可
-- コンテナ内の変更はworktree内に閉じる
+- A bind mount exposes only the working directory (a git worktree) as `/workspace`
+- No access to host files such as `~/.ssh` or `~/.gitconfig`
+- All changes inside the container are confined to the worktree
 
 ## Network isolation
 
-- Docker networkの `internal: true` でCCコンテナの外部アクセスを物理的に遮断
-- internal networkにCCコンテナとaiya-proxyを配置
-- aiya-proxyだけが外部ネットワーク（bridge）にも接続し、外部通信を中継
-- CCコンテナから外部への直接TCP接続は不可能
-- `ANTHROPIC_BASE_URL` をaiya-proxyに向けてAPI通信も記録対象に
+- Docker's `internal: true` network setting physically cuts the CC container off from external access
+- The CC container and aiya-proxy sit on that internal network
+- Only aiya-proxy also attaches to the external (bridge) network and relays outbound traffic
+- Direct outbound TCP from the CC container is impossible
+- `ANTHROPIC_BASE_URL` points at aiya-proxy so that API traffic is recorded as well
 
 ## CA certificate management
 
-- HTTPS MITM用の自前CA証明書をコンテナ内に注入
-- CA秘密鍵はコンテナ起動時に毎回生成、揮発（永続化しない）
-- CA秘密鍵はCCの作業ディレクトリ外に配置 + パーミッション制限
-- 各ツールへの証明書設定:
-  - システム: `update-ca-certificates`
+- A self-hosted CA certificate for HTTPS MITM is injected into the container
+- The CA private key is generated fresh every time the container starts, and is ephemeral (never persisted)
+- The CA private key is placed outside CC's working directory with restricted permissions
+- Certificate setup per tool:
+  - System: `update-ca-certificates`
   - Node.js: `NODE_EXTRA_CA_CERTS`
   - npm: `cafile`
   - pip: `REQUESTS_CA_BUNDLE`
@@ -50,7 +49,7 @@ AIエージェントがホスト環境に影響を与えずに全力で作業で
 
 ## docker-compose
 
-`cc-template` サービスの定義例：
+Example `cc-template` service definition:
 
 ```yaml
 cc-template:
@@ -65,34 +64,34 @@ cc-template:
     - type: bind
       source: ${WORKTREE_PATH}
       target: /workspace
-  networks: [sandbox]       # internal networkのみ → 外部直接アクセス不可
+  networks: [sandbox]       # internal-only → no direct external access
   profiles: [cc]
 
-# aiya-proxyは両方のネットワークに接続（pitドキュメントでは参考情報）
+# aiya-proxy is attached to both networks (informational in the pit doc)
 # aiya-proxy:
 #   networks: [sandbox, external]
 
 networks:
   sandbox:
-    internal: true            # 外部アクセス遮断
+    internal: true            # external access blocked
   external:
-    driver: bridge            # aiya-proxyだけがこちらに接続
+    driver: bridge            # only aiya-proxy attaches here
 ```
 
 ## Single use (without aiya-tape)
 
-aiya-pit はプロキシなしでも使える。その場合:
-- ファイルシステム隔離のみ有効
-- ネットワーク制限・MITM・監査機能は無効
-- `HTTP_PROXY` / `HTTPS_PROXY` / `ANTHROPIC_BASE_URL` を設定しなければ直接通信
+aiya-pit can be used without the proxy. In that mode:
+- Only filesystem isolation is active
+- Network restrictions, MITM, and audit features are disabled
+- Unless `HTTP_PROXY` / `HTTPS_PROXY` / `ANTHROPIC_BASE_URL` are set, traffic goes directly to the internet
 
 ## Related documents
 
-- [aiya-tape.md](aiya-tape.md) — 監査プロキシ（aiya-pitと組み合わせて使う）
-- [../README.md](../README.md) — 全体アーキテクチャ図とセキュリティモデル
+- [aiya-tape.md](aiya-tape.md) — audit proxy (typically used alongside aiya-pit)
+- [../README.md](../README.md) — overall architecture diagram and security model
 
 ## Open questions
 
-- [ ] CA証明書の配布方法（共有ボリューム or init container or entrypoint script）
-- [ ] ベースイメージの選定（ubuntu:24.04 or node:lts or カスタム）
-- [ ] コンテナ内のユーザー権限（root vs non-root）
+- [ ] How to distribute the CA certificate (shared volume / init container / entrypoint script)
+- [ ] Base image selection (ubuntu:24.04 / node:lts / custom)
+- [ ] In-container user privileges (root vs non-root)

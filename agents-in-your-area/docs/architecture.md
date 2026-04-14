@@ -1,10 +1,8 @@
 # Architecture
 
-> AIYA 全体の作業単位とエージェント配置
+> AIYA's work-unit hierarchy and agent placement
 
-<!-- TODO(translation): 本文を英語化する。 -->
-
-Traceability Chain を駆動するための作業単位と、その上で動くエージェントの責務分担を定義する。CCS（[ccs.md](ccs.md)）はこの構造の中でStep間の引き継ぎを担う。
+This document defines the work units that drive a Traceability Chain and the responsibilities of the agents that run on top of them. CCS ([ccs.md](ccs.md)) is the Step-to-Step handoff within this structure.
 
 ## Work unit hierarchy
 
@@ -20,21 +18,21 @@ classDiagram
     Context --> "*" Step
     Step --> "*" Action
 
-    note for Context "CCSを分離する作業領域"
+    note for Context "Work area that isolates CCS"
 ```
 
-| Level | 用語 | 説明 |
+| Level | Term | Description |
 |---|---|---|
-| 1 | Task | 達成すべきゴール |
-| 2 | Context | CCSを分離する作業領域。例：Planning / Implementation |
-| 3 | Step | Contextを構成する作業フロー |
-| 4 | Action | Stepを構成する具体的な操作 |
+| 1 | Task | The goal to achieve |
+| 2 | Context | Work area that isolates CCS. Example: Planning / Implementation |
+| 3 | Step | Work flow that makes up a Context |
+| 4 | Action | Concrete operation that makes up a Step |
 
 ## Overall structure
 
 ```mermaid
 flowchart TB
-    TA["Task Agent（実作業禁止）"]
+    TA["Task Agent (no execution)"]
 
     subgraph Planning["Planning Context"]
         P1["Step 1: Step Agent"]
@@ -48,47 +46,47 @@ flowchart TB
         I1["Step 1: Step Agent"]
         Idots["..."]
         IN["Step N: Step Agent"]
-        IOut["完了判定・品質チェック"]
+        IOut["Completion and quality check"]
         I1 --> Idots --> IN --> IOut
     end
 
     TA --> P1
     TA --> I1
-    POut -.->|引き継ぎ| I1
+    POut -.->|handoff| I1
 ```
 
 ## Task Agent
 
-**重要：Task Agentは実作業を行わない**
+**Important: the Task Agent does not do the actual work.**
 
-この制約は、全体計画の品質を維持するために不可欠。実作業を許可すると、計画品質が劣化することが実践で確認されている。
+This constraint is essential for protecting plan quality. Allowing execution has been shown in practice to degrade planning.
 
-| 責務 | 説明 |
+| Responsibility | Description |
 |---|---|
-| Task全体の進行管理 | Planning ContextとImplementation Contextを制御する |
-| Stepの管理 | どのStepをどの順序で実行するかを決める |
-| Step Agentへの委譲 | 各Stepの実行を適切なStep Agentに委譲する |
-| 完了判定 | 各Stepおよび全体の完了を判定する |
-| CCSの妥当性チェック | 必要に応じてCCSの内容を検証する |
+| Overall Task progress | Controls the Planning Context and the Implementation Context |
+| Step management | Decides which Steps run in what order |
+| Delegation to Step Agents | Delegates each Step's execution to the appropriate Step Agent |
+| Completion judgment | Judges the completion of each Step and of the whole |
+| CCS validation | Validates CCS content when needed |
 
 ## Planning Context
 
 ```
-各Step:
+Each Step:
   Input:
     - CCS_P{N-1}
-    - Stepの作業指示
+    - Step instructions
 
   Step Agent:
-    - CCS_P{N-1}を読み込み（唯一の引き継ぎ情報）
-    - CCS_P{N-1}から必要な情報を参照
-    - Action実行
-    - CCS_PNを新規作成
+    - Load CCS_P{N-1} (the only handoff)
+    - Pull what it needs from CCS_P{N-1}
+    - Run Actions
+    - Create a fresh CCS_PN
 
   Output:
     - CCS_PN
 
-最終Output:
+Final Output:
   - Implementation Steps
   - CCS_I0
 ```
@@ -96,43 +94,43 @@ flowchart TB
 ## Implementation Context
 
 ```
-各Step:
+Each Step:
   Input:
     - CCS_I{N-1}
-    - Stepの作業指示（Implementation Stepsより）
+    - Step instructions (from Implementation Steps)
 
   Step Agent:
-    - CCS_I{N-1}を読み込み（唯一の引き継ぎ情報）
-    - CCS_I{N-1}から必要な情報・成果物を参照
-    - Action実行
-    - CCS_INを新規作成
-    - 成果物・情報をCCS_INに記録
+    - Load CCS_I{N-1} (the only handoff)
+    - Pull needed information and artifacts from CCS_I{N-1}
+    - Run Actions
+    - Create a fresh CCS_IN
+    - Record artifacts and information in CCS_IN
 
   Output:
     - CCS_IN
-    - 成果物（コード、テストなど）
+    - Artifacts (code, tests, etc.)
 ```
 
 ## Example: implementation task
 
-認証モジュール実装を例に Task/Context/Step の流れを示す。各Step内の具体的なActionは煩雑になるため図からは省略し、本文で補足する。
+Using "implement the auth module" as an example, here is the Task/Context/Step flow. Per-Step Actions are omitted from the diagram to keep it readable and are listed in prose below.
 
 ```mermaid
 flowchart LR
-    Task["Task: 認証モジュールの実装"]
+    Task["Task: implement auth module"]
 
     subgraph Planning["Planning Context"]
-        P1["P1. インプット収集・分析"]
-        P2["P2. Implementation Steps設計"]
+        P1["P1. Collect and analyze input"]
+        P2["P2. Design Implementation Steps"]
         P1 --> P2
     end
 
     subgraph Impl["Implementation Context"]
-        I1["I1. テストケース設計"]
-        I2["I2. テストコード生成"]
-        I3["I3. テストデータ生成"]
-        I4["I4. プロダクションコード生成"]
-        I5["I5. テスト実行・修正"]
+        I1["I1. Design test cases"]
+        I2["I2. Generate test code"]
+        I3["I3. Generate test data"]
+        I4["I4. Generate production code"]
+        I5["I5. Run tests and fix"]
         I1 --> I2 --> I3 --> I4 --> I5
     end
 
@@ -140,51 +138,51 @@ flowchart LR
     P2 --> I1
 ```
 
-**Step毎のActionとCCS遷移:**
+**Actions and CCS transitions per Step:**
 
-- **P1. インプット収集・分析** — 設計ドキュメント検索、開発ガイド検索、既存コード調査 / `CCS_P0 → CCS_P1`
-- **P2. Implementation Steps設計** — 実装対象の特定、Step分解、作業指示作成 / `CCS_P1 → CCS_P2`
-- **I1. テストケース設計** — 正常系・異常系の洗い出し、一覧作成 / `CCS_I0 → CCS_I1`
-- **I2. テストコード生成** — テストケースに基づく実装 / `CCS_I1 → CCS_I2`
-- **I3. テストデータ生成** — 必要なテストデータの作成 / `CCS_I2 → CCS_I3`
-- **I4. プロダクションコード生成** — テストが通る実装 / `CCS_I3 → CCS_I4`
-- **I5. テスト実行・修正** — テスト実行、失敗時は修正 / `CCS_I4 → CCS_I5`
+- **P1. Collect and analyze input** — search design docs, search developer guides, survey existing code / `CCS_P0 → CCS_P1`
+- **P2. Design Implementation Steps** — identify target, decompose into Steps, write Step instructions / `CCS_P1 → CCS_P2`
+- **I1. Design test cases** — enumerate happy-path and edge cases, produce the case list / `CCS_I0 → CCS_I1`
+- **I2. Generate test code** — implement tests from the case list / `CCS_I1 → CCS_I2`
+- **I3. Generate test data** — produce the test data each case needs / `CCS_I2 → CCS_I3`
+- **I4. Generate production code** — implement production code that passes the tests / `CCS_I3 → CCS_I4`
+- **I5. Run tests and fix** — execute tests, fix on failure / `CCS_I4 → CCS_I5`
 
 ## Gate placement
 
-<!-- TODO: 三段階ゲートを Task / Context / Step のどこに配置するか -->
+<!-- TODO: Where to place the three-stage gates across Task / Context / Step -->
 
-**未決**: [vision.md](vision.md) / [traceability-chain.md](traceability-chain.md) の「三段階ゲート」を、この作業単位階層のどこに配置するか未定義。
+**Open**: [vision.md](vision.md) / [traceability-chain.md](traceability-chain.md) refer to "three-stage gates", but their placement in this work-unit hierarchy is undefined.
 
-想定候補：
-- Context境界にゲートを置く（Planning→Implementation、Implementation→完了）
-- Task開始時にゲート1（Benefit確定）
-- Context境界でゲート2/3
+Candidates:
+- Put gates at Context boundaries (Planning → Implementation, Implementation → done)
+- Gate 1 at Task start (Benefit commit)
+- Gates 2/3 at Context boundaries
 
 ## Chain ↔ Task mapping
 
-<!-- TODO: Traceability Chain の6要素と Task/Context/Step/Action の対応関係を定義 -->
+<!-- TODO: Define how Traceability Chain's 6 elements correspond to Task/Context/Step/Action -->
 
-**未決**: Chain（`Situation → Pain → Benefit → Acceptance Scenarios → Approach → Steps`）と Task/Context/Step/Action の対応が未定義。
+**Open**: the correspondence between the Chain (`Situation → Pain → Benefit → Acceptance Scenarios → Approach → Steps`) and Task/Context/Step/Action is undefined.
 
-想定：
-- `Situation / Pain / Benefit / Acceptance Scenarios` → Task 全体の文脈
-- `Approach` → Context 分割の根拠
-- `Steps` → Implementation Context の Step 列（ただし Chain側の "Steps" と ACC側の "Step" で同じ語だが粒度が違う可能性）
+Working hypothesis:
+- `Situation / Pain / Benefit / Acceptance Scenarios` → Task-level context
+- `Approach` → basis for splitting into Contexts
+- `Steps` → the Step sequence inside the Implementation Context (although the Chain's "Steps" and ACC's "Step" share the same word at different granularities)
 
-**用語衝突注意**: Chain の "Steps" と ACC の "Step" は現状区別されていない。リネームまたは明示的な定義が必要。
+**Naming collision warning**: the Chain's "Steps" and ACC's "Step" are not yet disambiguated. A rename or an explicit definition is needed.
 
 ## Related documents
 
-- [vision.md](vision.md) — なぜこの構造が必要か
-- [traceability-chain.md](traceability-chain.md) — Chain側の仕様
-- [ccs.md](ccs.md) — Step間の引き継ぎ表現
-- [aiya-jam.md](aiya-jam.md) — この構造を実装するパッケージ
+- [vision.md](vision.md) — why this structure is necessary
+- [traceability-chain.md](traceability-chain.md) — the Chain side of the spec
+- [ccs.md](ccs.md) — Step-to-Step handoff representation
+- [aiya-jam.md](aiya-jam.md) — the package that implements this structure
 
 ## Open questions
 
-- [ ] 三段階ゲートの配置
-- [ ] Chain と Task/Context/Step/Action の正確な対応
-- [ ] "Step" 用語衝突の解消
-- [ ] Task Agent / Step Agent の実装形態（サブエージェント / 別セッション / 別コンテナ）
-- [ ] 並列 Step Agent の非同期レビュー方式
+- [ ] Placement of the three-stage gates
+- [ ] Exact correspondence between Chain and Task/Context/Step/Action
+- [ ] Resolve the "Step" naming collision
+- [ ] Implementation form of Task Agent / Step Agent (subagent / separate session / separate container)
+- [ ] Async review scheme for parallel Step Agents

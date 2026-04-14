@@ -1,41 +1,39 @@
 # CCS (Compressed Cognitive State)
 
-> Step間の引き継ぎを置換セマンティクスで管理する有界な状態表現
+> A bounded state representation that hands off Step-to-Step context with replacement semantics
 
-<!-- TODO(translation): 本文を英語化する。 -->
+CCS (Compressed Cognitive State) is a structured representation that AI agents use to hand off state between Steps. It adapts the Agent Cognitive Compressor (ACC) idea from the paper *AI Agents Need Memory Control Over More Context* (Bousetouane, 2026) to Claude Code agent skills.
 
-CCS（Compressed Cognitive State）は、AIエージェントがStep間で状態を引き継ぐための構造化された表現。論文「AI Agents Need Memory Control Over More Context」（Bousetouane, 2026）で提案されたAgent Cognitive Compressor（ACC）の考え方を、Claude Codeのエージェントスキルに適用したもの。
+Traditional context management suffers from two problems:
 
-従来のコンテキスト管理は2つの問題を抱えている。
-
-| アプローチ | 問題点 |
+| Approach | Problem |
 |---|---|
-| Transcript Replay | Contextが線形に増大し、初期のミスが繰り返し参照され、ドリフト・ハルシネーションが蓄積する |
-| Retrieval-based Memory | 意味的類似性で検索するため、Task制御に必要な情報と一致しない。古い・矛盾した情報が混入しやすい |
+| Transcript Replay | Context grows linearly; early mistakes are replayed, accumulating drift and hallucinations |
+| Retrieval-based Memory | Semantic-similarity search does not match what Task control actually needs; stale or contradictory information leaks in |
 
-CCSの解決策：
+CCS's answer:
 
-- **有界な状態管理** — 蓄積ではなく置換
-- **Schemaによる構造化** — 何を保持すべきか明確に定義
-- **Artifact参照とState Commitの分離** — 検索は候補提案のみで、実際の状態更新はSchemaに従って厳密に制御
+- **Bounded state management** — replace, do not accumulate
+- **Structure via schema** — state explicitly what must be kept
+- **Separate artifact references from state commits** — retrieval only proposes candidates; actual state updates are strictly schema-controlled
 
 ## The 9 components
 
-| Component | 役割 |
+| Component | Role |
 |---|---|
-| episodic_trace | 直前のStepで何が起きたか |
-| semantic_gist | 本質的に何をしているか |
-| focal_entities | 何を扱っているか |
-| relational_map | それらはどう関係するか |
-| goal_orientation | 最終ゴールは何か |
-| constraints | 何をしてはいけないか |
-| predictive_cue | 次に何をすべきか |
-| uncertainty_signal | 何がまだ不確かか |
-| retrieved_artifacts | どこから情報を得たか |
+| episodic_trace | What just happened in the previous Step |
+| semantic_gist | What we are fundamentally doing |
+| focal_entities | What we are working on |
+| relational_map | How they relate to each other |
+| goal_orientation | What the end goal is |
+| constraints | What must not be done |
+| predictive_cue | What to do next |
+| uncertainty_signal | What is still uncertain |
+| retrieved_artifacts | Where information came from |
 
 ## Format
 
-CCSは以下の形式で記述する。
+CCS is written in the form:
 
 ```
 component_name:
@@ -44,55 +42,55 @@ component_name:
   ...
 ```
 
-| 要素 | 説明 |
+| Part | Description |
 |---|---|
-| component_name | CCSを構成する9つの要素 |
-| type | Component毎に定義された述語や型 |
-| contents | 具体的な値や内容（自由記述） |
+| component_name | One of the nine CCS components |
+| type | A predicate or type defined per Component |
+| contents | The concrete value or content (free-form) |
 
-この形式は論文で「TOON style token-oriented representation」と呼ばれる。JSONやYAMLより軽量で、トークン効率を重視している。
+The paper calls this a "TOON style token-oriented representation". It is lighter than JSON or YAML and optimized for token efficiency.
 
 ## Type vocabulary
 
-typeはComponent毎に「何を表すか」を定義する。
+`type` defines "what this represents" per Component.
 
-| ポイント | 説明 |
+| Principle | Description |
 |---|---|
-| typeを限定する | 記述が安定し、エージェントが迷わず書ける |
-| 読み手も予測しやすい | typeが決まっていれば解釈が一貫する |
-| contentsは自由記述 | 具体的な内容はサンプルで示す |
-| 語彙は固定ではない | 実際に使いながら調整する |
+| Constrain types | Writing stays stable; the agent never hesitates |
+| Predictable for readers | Fixed types yield consistent interpretation |
+| Contents are free-form | Show the concrete shape via samples |
+| Vocabulary is not frozen | Adjust as it gets used in practice |
 
-| Component | typeの定義 | typeサンプル（論文＋拡張） |
+| Component | What `type` means | Sample types (paper + extensions) |
 |---|---|---|
-| episodic_trace | 動作の種類 | observed, executed, received, completed, failed, logged, constraint |
-| semantic_gist | 作業の目的 | implement, fix, investigate, refactor, migrate, diagnose, mitigate |
-| focal_entities | 対象物の種類 | file, function, class, interface, service, api, table, host, feature, signal |
-| relational_map | 関係の種類 | depends, calls, implements, extends, before, after, timing, possible |
-| goal_orientation | 達成の種類 | achieve, ensure, complete, deliver, verify, reduce, preserve |
-| constraints | 制約の種類 | must, must_not, prefer, avoid, follow, no_restart, reload_allowed, safe_change |
-| predictive_cue | 次の行動の種類 | next, verify, generate, check, test, review, validate |
-| uncertainty_signal | 不確実性の種類 | level, gap, assumption, pending, unverified |
-| retrieved_artifacts | 参照物の種類 | doc, code, log, config, spec, guide, snippet |
+| episodic_trace | Kind of action | observed, executed, received, completed, failed, logged, constraint |
+| semantic_gist | Purpose of the work | implement, fix, investigate, refactor, migrate, diagnose, mitigate |
+| focal_entities | Kind of target | file, function, class, interface, service, api, table, host, feature, signal |
+| relational_map | Kind of relationship | depends, calls, implements, extends, before, after, timing, possible |
+| goal_orientation | Kind of outcome | achieve, ensure, complete, deliver, verify, reduce, preserve |
+| constraints | Kind of constraint | must, must_not, prefer, avoid, follow, no_restart, reload_allowed, safe_change |
+| predictive_cue | Kind of next action | next, verify, generate, check, test, review, validate |
+| uncertainty_signal | Kind of uncertainty | level, gap, assumption, pending, unverified |
+| retrieved_artifacts | Kind of reference | doc, code, log, config, spec, guide, snippet |
 
 ## Management principles
 
-| 原則 | 説明 |
+| Principle | Description |
 |---|---|
-| 1ファイル1Task | TaskごとにCCSファイルを1つ作成する |
-| Step毎に新規作成 | 蓄積ではなく、最新状態を新規作成する（置換セマンティクス） |
-| コンテキスト非共有 | Task AgentとStep Agentはコンテキストを共有しない |
-| CCSが唯一の橋渡し | Step間の引き継ぎはCCSのみ |
+| One file per Task | Create exactly one CCS file per Task |
+| New file per Step | Do not accumulate; always create the latest state fresh (replacement semantics) |
+| No shared context | Task Agent and Step Agent do not share conversation context |
+| CCS is the only bridge | The only handoff between Steps is the CCS |
 
 ## Size health
 
-CCSが肥大化する場合は、Step設計を見直す。CCSのサイズは「Step設計の健全性指標」になる。
+When a CCS starts to bloat, revisit Step design. CCS size is a **health indicator for Step design**.
 
-| 症状 | 原因 | 対処 |
+| Symptom | Cause | Remedy |
 |---|---|---|
-| focal_entitiesが多すぎる | Stepの責務が広すぎる | Stepを分割する |
-| relational_mapが複雑 | 一度に扱う関係が多すぎる | スコープを絞る |
-| uncertainty_signalが多い | 未確定のまま進みすぎている | 確定させるStepを挟む |
+| Too many focal_entities | The Step's scope is too broad | Split the Step |
+| relational_map is tangled | Too many relationships in one pass | Narrow the scope |
+| Lots of uncertainty_signal | Too much was left unresolved | Insert a Step whose job is to resolve it |
 
 ## Examples
 
@@ -192,42 +190,42 @@ retrieved_artifacts:
 
 ## Paper evaluation
 
-ACC論文では、50ターンのマルチターン評価で以下の結果が得られている。
+The ACC paper reports the following results over a 50-turn multi-turn evaluation.
 
-**メモリ使用量**
+**Memory usage**
 
-- Baseline（Transcript Replay）：ターン数に比例して線形増加
-- Retrieval（Retrieval-based）：一定だが、検索エラーによるドリフトあり
-- ACC：一定かつドリフトなし
+- Baseline (Transcript Replay): grows linearly with turn count
+- Retrieval (Retrieval-based): stays flat, but drifts due to search errors
+- ACC: stays flat and does not drift
 
-**Task品質**
+**Task quality**
 
-| 指標 | Baseline | Retrieval | ACC |
+| Metric | Baseline | Retrieval | ACC |
 |---|---|---|---|
-| Relevance | 中 | 中 | 高 |
-| Answer Quality | 中 | 中 | 高 |
-| Instruction Following | 低 | 中 | 高 |
-| Coherence | 低 | 中 | 高 |
+| Relevance | Med | Med | High |
+| Answer Quality | Med | Med | High |
+| Instruction Following | Low | Med | High |
+| Coherence | Low | Med | High |
 
-**ハルシネーション率・ドリフト率**
+**Hallucination / drift rate**
 
-- Baseline：ターン数増加とともに上昇
-- Retrieval：変動が大きい
-- ACC：ほぼゼロで安定
+- Baseline: rises with turn count
+- Retrieval: highly variable
+- ACC: near zero and stable
 
 ## Related documents
 
-- [architecture.md](architecture.md) — CCS を生成・消費する Task/Context/Step/Action の構造
-- [traceability-chain.md](traceability-chain.md) — `goal_orientation` / `constraints` / `retrieved_artifacts` にChain要素をどう接続するか
-- [aiya-jam.md](aiya-jam.md) — CCS ファイルの保管・受け渡しを担うパッケージ
+- [architecture.md](architecture.md) — the Task/Context/Step/Action structure that produces and consumes CCS
+- [traceability-chain.md](traceability-chain.md) — how to connect Chain elements into `goal_orientation` / `constraints` / `retrieved_artifacts`
+- [aiya-jam.md](aiya-jam.md) — the package that stores and hands off CCS files
 
 ## Open questions
 
-- [ ] Chain要素とCCSのリンク方式（参照 vs 展開コピー）
-- [ ] CCSファイルの物理保管場所
-- [ ] CCSのバージョニング（置換前の履歴を残すか）
-- [ ] type語彙の拡張ルール
+- [ ] Linkage between Chain elements and CCS (reference vs value copy)
+- [ ] Physical location of CCS files
+- [ ] CCS versioning (whether to keep the state before replacement)
+- [ ] Extension policy for the type vocabulary
 
 ## References
 
-- Bousetouane, F. (2026). AI Agents Need Memory Control Over More Context. arXiv:2601.11653v1
+- Bousetouane, F. (2026). *AI Agents Need Memory Control Over More Context*. arXiv:2601.11653v1

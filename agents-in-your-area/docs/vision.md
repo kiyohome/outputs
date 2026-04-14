@@ -1,123 +1,119 @@
 # Vision
 
-> エキスパートの判断力をスケールさせるフレームワーク
+> A framework that scales an expert's judgment
 
-<!-- TODO(translation): 本文を英語化する。見出しは英語済み。 -->
+Change by an order of magnitude the value a single expert can produce.
 
-一人のエキスパートが生み出せる価値を桁で変える。
-
-AIエージェントは「使える」ようになった。でも「任せられる」ようにはなっていない。AIYAは、エキスパートの「ブレない判断力」をAIとの協働プロセスに構造的に組み込み、子守りからの解放と、成功の再現を実現するフレームワーク。
+AI agents have become "usable", but not yet "delegable". AIYA is a framework that structurally embeds an expert's unwavering judgment into their collaboration with AI, freeing them from babysitting and making success reproducible.
 
 ## Who is this for
 
-技量のある開発者。
+Skilled developers.
 
-AIエージェントを使い込んでいて、仕様駆動開発、Plan Mode、スキル活用、並列実行といったプラクティスを個別に試している。それでもなお壁にぶつかっている人。
+People who already use AI agents heavily — who have tried spec-driven development, Plan Mode, skills, and parallel execution piece by piece — and who still hit a wall.
 
-ジュニアを引き上げるツールではなく、すでに「正しい判断ができる人」のスケールを解放するもの。
+This is not a tool to level up juniors. It is a tool that unlocks scaling for people who can already make the right call.
 
 ## The problem
 
-核のペイン：**エキスパートの「ブレなさ」がAIとの協働で活かされていない。**
+Core pain: **an expert's unwavering judgment is not being put to use in AI collaboration.**
 
-エキスパートがエキスパートたる所以は、ブレないこと。目的を見失わない、判断軸がある、技術の流行に振り回されない。でもAIとの協働では、そのブレなさを発揮する仕組みがない。
+What makes an expert an expert is not wavering: not losing sight of the goal, having a stable decision axis, not being blown around by tech trends. But in AI collaboration, there is no mechanism to put that steadiness to work.
 
 ### Babysitting never ends
 
-2026年現在、仕様駆動開発は広まり始めている。仕様を先に書く、計画を立ててから実装する。エキスパートなら試している。
+As of 2026, spec-driven development is starting to spread. Write the spec first, plan before implementation. Experts are trying it.
 
-それでもAIは実装中にドリフトする。仕様と成果物の距離が開いていくのを検知する仕組みがないから、エキスパートは結局「大丈夫かな」と気にし続ける。ツールや手法は増えたのに、子守りの形が変わっただけで解放されていない。
+AI still drifts mid-implementation. There is no mechanism to detect the widening distance between the spec and the output, so the expert ends up constantly asking "is this still okay?" More tools, more methods — and yet babysitting has only changed shape, not disappeared.
 
 ### Success isn't reproducible
 
-仕様駆動、計画先行、スキル活用——個々のプラクティスはある。うまくいく日は劇的な成果が出る。でもなぜうまくいったか分からないから、次の日に同じ結果を出せない。成功と失敗の差を説明できる一貫したプロセスがない。
+Spec-driven, planning first, skills — each practice exists. On good days, the results are dramatic. But you cannot tell why it worked, so the next day you cannot reproduce it. There is no consistent process that explains the gap between success and failure.
 
 ## What you get
 
-エキスパートのブレない判断力が、AIの作業プロセスに構造的に組み込まれる。
+An expert's unwavering judgment becomes structurally part of the AI's work process.
 
-**No babysitting** — 子守りではなく、正しいタイミングでの判断に集中できる。トレーサビリティチェーンがドリフトを検知し、ゲートがエキスパートの判断を正しいタイミングに配置する。成功が属人的な勘ではなく、再現可能なプロセスになる。
+**No babysitting** — instead of babysitting, you can focus on making the right call at the right moment. The Traceability Chain detects drift, and gates place expert judgment exactly when it is needed. Success stops being a personal hunch and becomes a reproducible process.
 
-**Scale as one** — 一人のエキスパートが生み出せる価値が桁で変わる。AIが作業を担い、エキスパートは「何を作るか」「目的に近づけたか」の判断に集中する。フェーズが明確だから、複数のワーカーを非同期でレビューできる。
+**Scale as one** — the value one expert can produce changes by an order of magnitude. AI does the work; the expert focuses on "what to build" and "did we get closer to the goal". Because the phases are clearly demarcated, multiple workers can be reviewed asynchronously.
 
 ## Core: Traceability Chain × Gates
 
-AIYAの仮説は、コンテキスト肥大化とドリフトが品質の最大の敵であること。これはAIに限らず、人がやった場合も同じ。
+AIYA's hypothesis is that context bloat and drift are the biggest enemies of quality. This holds for humans, not just AI.
 
-シンプルに「これ何のためにやってるんだっけ？」のトレーサビリティを確保しつつ、ゲートで「目的に近づけたか？」の評価と軌道修正を行う。これがAIYAのコア。
+Simply put: keep traceability so the question "what was this for, again?" has an answer, and use gates to evaluate "did we get closer?" and course-correct. That is AIYA's core.
 
 ```
 Situation → Pain → Benefit → Acceptance Scenarios → Approach → Steps
 ```
 
-ゲートで切れる。AIが作業し、エキスパートがゲートで判断する。リンクが切れたらプロセスが止まる。ドリフトを構造的に検知する仕組み。
-
-詳細は [traceability-chain.md](traceability-chain.md) および [architecture.md](architecture.md) を参照。
+The gates slice through this chain. The AI works; the expert judges at the gates. When a link breaks, the process stops. Drift is detected structurally.
 
 ## Prior art
 
 ### Market landscape
 
-AI開発支援ツールは爆発的に増えている。120以上のツールが11カテゴリに分かれ、定番と呼べるものはまだない。
+AI development tooling is exploding. 120+ tools across 11 categories; no clear default yet.
 
-主要な動向：
+Major trends:
 
-- **Spec-Driven Development（SDD）が主流化** — GitHub Spec Kit、BMAD-METHOD、OpenSpec、Kiroなど。仕様を先に書いてからAIに実装させるアプローチ。ただし30以上のフレームワークが乱立し、決定打はない。
-- **並列エージェント実行が実用段階に** — Claude Code Agent Teams、Zergなど。技術的には可能だが、オーケストレーションの課題が残る。
-- **ワークフローオーケストレーションの登場** — TAKTなど。YAMLでワークフローを宣言的に定義し、AIエージェントをステップごとに役割分担させるアプローチ。
-- **Claude Codeが急成長** — 8ヶ月でAIコーディングツール利用率1位に。GitHubパブリックコミットの4%を占め、年末には20%超の予測。
+- **Spec-driven development (SDD) is going mainstream** — GitHub Spec Kit, BMAD-METHOD, OpenSpec, Kiro, and more. Write the spec first, then have the AI implement it. But 30+ frameworks coexist and none has won.
+- **Parallel agent execution is becoming practical** — Claude Code Agent Teams, Zerg, etc. Technically possible, but orchestration problems remain.
+- **Workflow orchestration is appearing** — e.g. TAKT. Define a workflow declaratively in YAML and divide roles among AI agents per step.
+- **Claude Code is growing fast** — in eight months it became the #1 AI coding tool by usage. Around 4% of public GitHub commits, projected to exceed 20% by year end.
 
 ### How AIYA differs
 
-既存ツールは全て「AIをもっとうまく使う方法」を提供している。主語がAI。
+Every existing tool offers a way to "use AI better". The subject is the AI.
 
-- SDDツール群は「仕様を先に書く」ことでドリフトを防ごうとしている
-- マルチエージェントツールは「並列実行」で速度を出そうとしている
-- オーケストレーションツールは「AIの役割分担と遷移」を最適化しようとしている
-- 品質ゲートは「テストが通るか」で判定しようとしている
+- SDD tools try to prevent drift by "writing the spec first"
+- Multi-agent tools try to gain speed through "parallel execution"
+- Orchestration tools try to optimize "role assignment and transitions between AI personas"
+- Quality gates try to judge "whether tests pass"
 
-AIYAの主語はエキスパート。「ツールや手法は増えたのに、エキスパートはAIの子守りから解放されていない」という課題を解く。
+AIYA's subject is the expert. It tackles "more tools, more methods, yet experts are still not free from babysitting AI".
 
-具体的に、「Situation → Pain → Benefit → Acceptance Scenariosのトレーサビリティチェーンを維持しながら、フェーズごとにエキスパートの判断を介在させる」——この組み合わせをAIエージェント開発に適用しているツールは、調査した限り見当たらなかった。
+Concretely: "maintain the Situation → Pain → Benefit → Acceptance Scenarios traceability chain, and insert expert judgment between phases" — as far as we can tell, no tool combines these into AI agent development.
 
-個別ツールとの違いはFAQを参照。
+See the FAQ for comparisons with individual tools.
 
 ### Supporting evidence
 
-「Claude Code Productivity Paradox」（2026年3月）は、AIでPR数は増えたがレビューがボトルネックに移動しただけ、実装コストが下がった結果「作るべきでないものまで作ってしまう」問題を指摘している。これはトレーサビリティの欠如が引き起こしている問題であり、AIYAが直接解こうとしている課題。
+"Claude Code Productivity Paradox" (March 2026) points out that AI has increased PR volume but moved the bottleneck onto review, and that as implementation cost drops, "we build things that shouldn't be built". This is a symptom of missing traceability — exactly the problem AIYA directly targets.
 
 ## Scope
 
-思想・プロセス・コードの三層で構成される。
+Three layers: philosophy, process, and code.
 
-- **思想** — エキスパートの判断力をスケールさせる
-- **プロセス** — Traceability Chain × 三段階ゲートによる委譲と品質保証
-- **コード** — そのプロセスを誰でもすぐに実践できるようにするリファレンス実装
+- **Philosophy** — scale an expert's judgment
+- **Process** — delegation and quality assurance via the Traceability Chain × three-stage gates
+- **Code** — a reference implementation so others can adopt the process immediately
 
-他のエキスパートも使える公開フレームワーク。環境依存を少なくし、利用者のハードルを下げるのは当然の前提。
+A framework that is publicly usable by other experts. Minimizing environmental dependencies and lowering the adoption bar is a baseline requirement.
 
-現在のaiya-devは、この思想を検証するためのプロトタイプ。
+The current aiya-dev is a prototype for validating this thinking.
 
-まずはissueレベルで。productレベルは別の機会に。
+Issue-level first. Product-level is a separate occasion.
 
 ## Why it matters
 
-あらゆる領域でエキスパート人材は不足している。AIYAはまず開発領域で「一人のエキスパートが生み出せる価値を桁で変える」型を証明する。
+Expert talent is scarce in every domain. AIYA aims to prove a template — "change the value a single expert produces by an order of magnitude" — in software first.
 
 ## FAQ
 
-**Q: Agent Harness（Claude Codeなど）と同じ？**
+**Q: Is AIYA the same as an Agent Harness (Claude Code, etc.)?**
 
-違う。Agent Harnessは「モデルを包むインフラ」——コンテキスト管理、ツール呼び出し、サブエージェント管理など、AIが長時間安定して動作するための実行基盤。AIYAはその上のレイヤー。Agent Harnessが「AIが安定して動く仕組み」なら、AIYAは「AIが正しい方向に向かっているかをエキスパートが判断する仕組み」。AIYAはどのAgent Harness（Claude Code、Codex、Cursorなど）の上でも動くことを目指す。
+No. An Agent Harness is "infrastructure that wraps the model" — context management, tool calls, subagent management, and so on, keeping the AI stable over long runs. AIYA is the layer above. If an Agent Harness is "how the AI stays stable", AIYA is "how the expert judges whether the AI is heading the right way". AIYA aims to run on top of any Agent Harness (Claude Code, Codex, Cursor, …).
 
-**Q: Spec-Driven Development（GitHub Spec Kit、Kiroなど）と同じ？**
+**Q: Is AIYA the same as Spec-Driven Development (GitHub Spec Kit, Kiro, etc.)?**
 
-重なる部分はある。仕様を先に書いてから実装するアプローチは共通。ただしSDDツールは「仕様を書く→実装する」の流れを構造化するもの。AIYAは「なぜこれを作るのか」からのトレーサビリティを構造化する。Situation → Pain → Benefit → Acceptance Scenariosの連鎖がAIYAのコアであり、仕様はその一部。
+They overlap. Writing the spec before implementing is common ground. But SDD tools structure the flow "write spec → implement". AIYA structures the traceability from "why we are building this". The Situation → Pain → Benefit → Acceptance Scenarios chain is AIYA's core; the spec is just one part of it.
 
-**Q: TAKT / BMADのようなワークフローオーケストレーションと同じ？**
+**Q: Is AIYA the same as workflow orchestration such as TAKT / BMAD?**
 
-似ているが、ゲートの判断者が違う。TAKT / BMADはAIペルソナ（coder、architect、supervisorなど）がレビューし、ワークフローを回す。AIYAのゲートで判断するのはエキスパート（人間）。そして判定基準が違う。オーケストレーションツールはステップ間の遷移を最適化する。AIYAはトレーサビリティチェーンに沿って「目的に近づけたか」を問う。
+Similar, but the judge at the gates is different. TAKT / BMAD use AI personas (coder, architect, supervisor, …) to review and drive the workflow. AIYA's gates are judged by the expert (a human). The criteria also differ: orchestration tools optimize transitions between steps, while AIYA asks "did we get closer to the goal" along the Traceability Chain.
 
-**Q: 並列エージェントツール（Zerg、Agent Teamsなど）と同じ？**
+**Q: Is AIYA the same as parallel agent tools (Zerg, Agent Teams, etc.)?**
 
-並列実行はAIYAの要素の一つだが、本質ではない。並列ツールは「AIを同時に複数動かす」ことに注力する。AIYAが解きたいのは「複数動かしたとき、エキスパートが何を判断すればいいか分からない」問題。フェーズとゲートが明確だから、非同期でレビューできる。
+Parallel execution is one ingredient of AIYA, but not its essence. Parallel tools focus on "running multiple AIs at once". AIYA tackles "when we run multiple, the expert doesn't know what to judge". Because phases and gates are well defined, asynchronous review becomes feasible.
