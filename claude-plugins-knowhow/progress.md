@@ -1,214 +1,148 @@
-# plugin-smith 設計ドキュメント作業記録
+# plugin-smith Design Progress Log
 
-> claude-plugins-knowhow と skill-smith を素材に、「プラグインを作る・改善するためのメタプラグイン」plugin-smith の設計ドキュメントを作成する作業のログ。
+> Decision log and resumption guide for building plugin-smith, a meta-plugin for creating and improving Claude Code plugins.
 
-## 作業スコープ
+## Scope
 
-- `claude-plugins-knowhow/` 直下に `README.md` と `docs/` を整備
-- 既存6ファイルを素材として再構成（リファクタ）
-- 段階的ユーザー確認付きで進行
+- Design documentation for plugin-smith lives in `claude-plugins-knowhow/`
+- README.md is the entry point; `docs/` holds concept and reference documentation
+- All file content is written in English (per `.claude/rules/interaction.md`)
 
-## 素材
+## Sources
 
-### このリポジトリ内
-- `claude-plugins-knowhow.md`（1106行、20章）公式プラグイン群の設計パターン集
-- `cc-best-practices-report.md` 調査レポート
-- `checklist-prompt.md` プロンプト品質チェックリスト
-- `checklist-skills.md` スキル品質チェックリスト
-- `checklist-hooks.md` フック品質チェックリスト
-- `checklist-claude-md.md` CLAUDE.md 品質チェックリスト
+### Internal (migrated — originals deleted)
+- `claude-plugins-knowhow.md` (1106 lines, 20 sections) → split into `docs/{concepts,components,patterns,case-studies}.md`
+- `cc-best-practices-report.md` → absorbed into `README.md > Overview`
+- `checklist-{prompt,skills,hooks,claude-md}.md` (4 files) → merged into `docs/checklists.md`
 
-### 外部
+### External
 - skill-smith: https://github.com/lovaizu/aiya-dev/tree/main/.claude/skills/skill-smith
-  - 構造: SKILL.md + references/{create,improve,evaluate,profile}-workflow.md + checklist.md + patterns.md + writing-guide.md + scripts/{validate,profile_stats}.sh
-  - モード駆動 (Create/Improve/Evaluate/Profile)、references 外出し、スクリプトによる決定論的 validate/profile
+  - Architecture: SKILL.md + references/{create,improve,evaluate,profile}-workflow.md + checklist.md + patterns.md + writing-guide.md + scripts/{validate,profile_stats}.sh
+  - Mode-driven (Create/Improve/Evaluate/Profile), references externalized, deterministic validate/profile via scripts
 
-## 確定事項
+## Confirmed Decisions
 
-### 1. プラグイン名
-- 仮: `plugin-smith`（skill-smith を踏襲）
+### 1. Plugin name
+- Tentative: `plugin-smith` (mirrors skill-smith)
 
-### 2. ディレクトリ構成
+### 2. Directory layout
 
 ```
 claude-plugins-knowhow/
-├── README.md
-├── progress.md           # このファイル（作業記録）
+├── README.md              # Overview / Usage / Architecture
+├── progress.md            # This file
 └── docs/
-    ├── concepts.md        # 基本概念・設計原則
-    ├── components.md      # commands/agents/skills/hooks 設計
-    ├── patterns.md        # 品質・状態管理・セキュリティ・応用
-    ├── case-studies.md    # 公式プラグイン7本の分析（出元トレース用）
-    └── checklists.md      # 品質自己チェック7カテゴリ
+    ├── concepts.md        # Foundational concepts and design principles
+    ├── components.md      # Command / agent / skill / hook design patterns
+    ├── patterns.md        # Quality control, state management, security, advanced
+    ├── case-studies.md    # Seven official plugin analyses (origin tracing)
+    └── checklists.md      # Seven-category quality self-checks
 ```
 
-### 3. README.md 3セクション構成
+### 3. Section ordering principle
+- Each document follows: **overview-level → user-facing → developer-facing**
+- Exact headings are optimized per document (no forced uniform template)
 
-```
-# plugin-smith
+### 4. Two-mode design (final)
 
-## Overview
-## Usage
-## Architecture
-```
-
-### 4. 各ドキュメントの記載順原則
-
-共通: **全体向け → 利用者向け → 開発者向け** のセクション順。
-ただし個別の見出し名はドキュメントごとに最適化する。
-
-### 5. 各 docs ファイルの見出し構成
-
-#### `docs/concepts.md`
-- What is a Plugin
-- Plugin Taxonomy
-- Core Design Patterns
-- Design Principles
-- TODO
-
-対応素材: knowhow §1, §2, §9, §18
-
-#### `docs/components.md`
-- Commands
-- Agents
-- Skills
-- Hooks
-- TODO
-
-対応素材: knowhow §3, §4, §6, §7
-
-#### `docs/patterns.md`
-- Quality Control
-- State Management
-- Security
-- Advanced Patterns
-- TODO
-
-対応素材: knowhow §5, §8, §10, §19
-
-#### `docs/case-studies.md`
-- feature-dev
-- code-review
-- pr-review-toolkit
-- hookify
-- claude-md-management
-- ralph-loop
-- claude-code-setup
-- TODO
-
-対応素材: knowhow §11-17（全7本を残す、出元トレース用途）
-
-#### `docs/checklists.md`
-- How to Use
-- Prompt
-- Skill
-- Hook
-- CLAUDE.md
-- Command（新規）
-- Agent（新規）
-- Plugin (overall)（新規）
-
-対応素材: 既存 checklist 4本 + knowhow §20 + 新規3カテゴリ
-
-### 6. plugin-smith のモード構成（最終）
-
-**2モードに集約**（Create / Improve）。Evaluate は Improve の `--report-only` フラグとして吸収。
-
-| モード | 入力 | 目的 |
+| Mode | Input | Purpose |
 |---|---|---|
-| **Create** | 自然言語の要求 | 新規プラグイン生成 |
-| **Improve** | パス（+ 任意で問題記述） | 既存プラグインの改善 |
+| **Create** | Natural language request | Generate a new plugin |
+| **Improve** | Path (+ optional problem description) | Improve an existing plugin |
 
-#### Create の挙動（提案駆動）
-1. 意図を受け取り、即座に構成提案（インタビュー最小化）
-2. concepts.md の3設計型から分類し、components.md のパターンで具体案を構築
-3. 2–3案を並列提示（knowhow §4.4 の並列投入パターン流用）
-4. ユーザー承認（Proceed / Adjust / Reject）
-5. スキャフォールド生成 → 自己バリデーション
+- Evaluate was absorbed as `Improve --report-only`
+- Both modes are **proposal-driven**: plugin-smith leads with concrete recommendations, asks questions only for decisive ambiguities
+- Default is **dry-run**: disk writes require user approval
+- User approval points are limited to meaningful forks (structure proposal in Create, patch application in Improve)
 
-#### Improve の挙動
-| 引数 | 動作 |
+#### Create flow
+1. Receive intent → immediately propose structure (no interview)
+2. Classify into archetype A/B/C per `docs/concepts.md`
+3. Compose from `docs/components.md` patterns
+4. Present 2–3 candidates in parallel with rationale
+5. User approval (proceed / adjust / reject)
+6. Scaffold → self-validate against `docs/checklists.md`
+
+#### Improve flow
+| Argument | Behavior |
 |---|---|
-| パスのみ | 全体スキャン → 優先度順に改善提案 → 承認 → 適用 |
-| パス + 問題記述 | 問題箇所を深掘り → 根本原因の仮説 → パッチ → 承認 → 適用 |
-| `--report-only` 付き | ミューテーションせずスコアカード出力 |
+| Path only | Full scan → prioritized improvement proposals → approval → apply |
+| Path + problem description | Focused diagnosis → root-cause hypothesis → patch → approval → apply |
+| `--report-only` | No mutations; scorecard output only |
 
-#### 共通原則（提案駆動モデル）
-- **提案ファースト**: ユーザー質問は曖昧点の最小限のみ
-- **plugin-smith 側がスキルを持つ前提**: ユーザーから情報を引き出すのではなく、plugin-smith が見立てを提示
-- **承認ポイントは絞る**: 重要な分岐にのみ設置
-- **デフォルト dry-run**: 書き込みは承認後
+### 5. Decision log
 
-### 7. 判断ポイントの決定記録
-
-| 論点 | 決定 | 根拠 |
+| Topic | Decision | Rationale |
 |---|---|---|
-| 作業ディレクトリ | `claude-plugins-knowhow/` を拡張 | プラグインを作るための設計ドキュメントとして |
-| README 配置 | リポジトリ（ディレクトリ）直下 | 入口の明確化 |
-| docs ファイル数 | 5本 | 網羅性確認済み |
-| case-studies の扱い | 全7本掲載 | 出元トレース用途 |
-| モード数 | 2（Create / Improve） | 診断エンジン共通、UX 簡素化 |
-| Evaluate の扱い | Improve の `--report-only` として吸収 | 同上 |
-| Improve の dry-run | デフォルト ON | 安全側 |
-| 問題記述付き Improve | 専用モードではなく引数で吸収 | モード増殖回避 |
-| 中断・再開 | TODO（初版ステートレス） | 最小実装優先 |
+| Working directory | Extend `claude-plugins-knowhow/` | Design docs for the plugin to be built |
+| README placement | Directory root | Clear entry point |
+| docs file count | 5 | Coverage verified; all source material mapped |
+| case-studies scope | All 7 plugins | Origin tracing |
+| Mode count | 2 (Create / Improve) | Shared diagnostic engine, simpler UX |
+| Evaluate handling | Absorbed as `--report-only` flag | Same diagnostic engine, output differs |
+| Improve dry-run | Default ON | Safety-first |
+| Problem-targeted Improve | Argument, not separate mode | Avoid mode proliferation |
+| Interruption / resume | TODO (stateless for v1) | Minimum viable first |
 
-## 既存ファイルの処遇（最終マッピング）
+## File Migration Map (completed)
 
-| 既存ファイル | 行き先 | 削除予定 |
+| Original | Destination | Status |
 |---|---|---|
-| `claude-plugins-knowhow.md` §1, §2, §9, §18 | `docs/concepts.md` | 全章移設後に削除 |
-| `claude-plugins-knowhow.md` §3, §4, §6, §7 | `docs/components.md` | 同上 |
-| `claude-plugins-knowhow.md` §5, §8, §10, §19 | `docs/patterns.md` | 同上 |
-| `claude-plugins-knowhow.md` §11-17 | `docs/case-studies.md` | 同上 |
-| `claude-plugins-knowhow.md` §20 | `docs/checklists.md` に統合 | 同上 |
-| `checklist-prompt.md` | `docs/checklists.md` > Prompt | 移設後に削除 |
-| `checklist-skills.md` | `docs/checklists.md` > Skill | 同上 |
-| `checklist-hooks.md` | `docs/checklists.md` > Hook | 同上 |
-| `checklist-claude-md.md` | `docs/checklists.md` > CLAUDE.md | 同上 |
-| `cc-best-practices-report.md` | `README.md` > Overview に吸収 | 吸収後に削除 |
+| `claude-plugins-knowhow.md` §1, §2, §9, §18 | `docs/concepts.md` | ✅ Done |
+| `claude-plugins-knowhow.md` §3, §4, §6, §7 | `docs/components.md` | ✅ Done |
+| `claude-plugins-knowhow.md` §5, §8, §10, §19 | `docs/patterns.md` | ✅ Done |
+| `claude-plugins-knowhow.md` §11–17 | `docs/case-studies.md` | ✅ Done |
+| `claude-plugins-knowhow.md` §20 | `docs/checklists.md` (merged) | ✅ Done |
+| `checklist-prompt.md` | `docs/checklists.md` > Prompt | ✅ Done |
+| `checklist-skills.md` | `docs/checklists.md` > Skill | ✅ Done |
+| `checklist-hooks.md` | `docs/checklists.md` > Hook | ✅ Done |
+| `checklist-claude-md.md` | `docs/checklists.md` > CLAUDE.md | ✅ Done |
+| `cc-best-practices-report.md` | `README.md` > Overview | ✅ Done |
 
-## 未決 TODO
+All originals deleted after migration.
 
-- [ ] Architecture 図（mermaid or テキスト）
-- [ ] 中断・再開の状態管理設計
-- [ ] `docs/checklists.md` の新規3カテゴリ（Command / Agent / Plugin 全体）の詳細化
-- [ ] Improve の問題記述モード時の深掘りアルゴリズム
-- [ ] スコアカード出力フォーマット
-- [ ] 指摘者/評価者の分離を Improve にどう実装するか
-- [ ] プラグイン名の最終確定（`plugin-smith` 以外の候補検討）
-- [ ] `docs/checklists.md` 執筆時に knowhow §20 と既存 checklist 4本の重複を突き合わせて排除
+## Open TODO
 
-## 整合性の懸念と対応
+- [ ] Architecture diagram (mermaid or text) for README.md
+- [ ] Interruption / resume state management design
+- [ ] Improve mode: algorithm for problem-description-focused diagnosis
+- [ ] Scorecard output format for `--report-only`
+- [ ] Reporter / evaluator separation: how to implement in Improve mode
+- [ ] Plugin name finalization (`plugin-smith` is a placeholder)
+- [ ] Content review of all docs/*.md and README.md by the user (committed but not yet reviewed)
 
-| 懸念 | 対応方針 |
+## Consistency Notes
+
+| Concern | Resolution |
 |---|---|
-| `checklists.md` で knowhow §20 と既存4本が重複する可能性 | 新規3カテゴリ作成時に突き合わせて排除 |
-| README.Usage の提案駆動方針と case-studies の feature-dev インタビュー型が矛盾 | case-studies は歴史的観測として残す。plugin-smith 自体の方針は README で別途記述 |
-| プラグイン名 `plugin-smith` が仮確定 | README 冒頭と全 docs で統一。確定変更時は grep で一括置換 |
+| checklists.md §20 vs existing 4 checklists overlap | Merged during writing; new 3 categories (Command/Agent/Plugin) derived fresh |
+| README.Usage proposal-driven vs case-studies feature-dev interview-style | case-studies records historical observation; plugin-smith's own UX is defined in README |
+| Plugin name `plugin-smith` is tentative | Used consistently across README and all docs; `grep -r plugin-smith` for bulk rename |
 
-## 進行状況
+## Progress
 
-- [x] ステップ 1-a: ディレクトリ構成の確定
-- [x] ステップ 1-b: 各ドキュメントの見出しフォーマット確定
-- [x] ステップ 1-c: README 各セクションの内容方針確定（Usage 提案駆動モデル）
-- [x] ステップ 2: 既存インプットのマッピング + 整合性レビュー
-- [x] ステップ 3: 実ファイル作成（リファクタ実行）
-- [x] ステップ 3-後: 既存6ファイルの削除
+- [x] Step 1-a: Directory layout confirmed
+- [x] Step 1-b: Per-document heading formats confirmed
+- [x] Step 1-c: README content strategy confirmed (proposal-driven Usage)
+- [x] Step 2: Input mapping + consistency review
+- [x] Step 3: File creation (refactor execution)
+- [x] Step 3-post: Legacy file deletion
+- [ ] Step 4: User content review of all new files
+- [ ] Step 5: Begin plugin implementation (SKILL.md, commands/, agents/, etc.)
 
-## 再開時の読み順
-1. `.claude/rules/*.md` を全件読む（特に interaction.md の Default to English）
-2. 本ファイルの「確定事項」と「未決 TODO」を確認
-3. 下記「次のアクション」から続行
+## How to Resume
 
-## 作業環境
-- ブランチ: `claude/busy-mccarthy-JFl8r`
+1. Read `.claude/rules/*.md` (especially `interaction.md` for Default to English)
+2. Read this file — focus on "Confirmed Decisions" and "Open TODO"
+3. Continue from "Next Action" below
+
+## Environment
+
+- Branch: `claude/busy-mccarthy-JFl8r`
 - PR: https://github.com/kiyohome/outputs/pull/2
-- 作業ディレクトリ: `claude-plugins-knowhow/`
+- Working directory: `claude-plugins-knowhow/`
 
-## 次のアクション
-- Step 3 の進め方が未決。ユーザーに以下を確認してから着手:
-  - (A) 各 docs ファイルを1つ書き終えるごとに提示 → 承認 → 次へ
-  - (B) 全ファイル作成 → 一括確認
-  - (C) まず `docs/concepts.md` だけ書いて感触を掴む
-- 決まったら `docs/concepts.md` から着手（knowhow.md §1, §2, §9, §18 を素材）
+## Next Action
+
+- **Step 4**: User reviews the content of all new files (README.md + docs/*.md). These were committed in bulk without individual review.
+- After review, proceed to **Step 5**: begin plugin implementation — create the actual SKILL.md, commands/, agents/ structure that constitutes plugin-smith as a working plugin.
