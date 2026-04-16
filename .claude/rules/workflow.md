@@ -11,7 +11,9 @@
 ## Multi-session progress tracking
 
 - When work spans multiple sessions, place a **`progress.md`** directly under the working directory.
-- Contents: current phase / completed items / next tasks (in priority order) / session context / document layout.
+- Contents: **original intent (verbatim quote from the user's first message)** / current phase / completed items / next tasks (in priority order) / session context / document layout.
+- Preserve the original intent verbatim — in the user's language, even when the rest of the file is English — so the goal cannot drift while the surrounding work refactors itself.
+- When completing work, cross-check against the original intent before claiming "done". Groundwork is not the goal.
 - Do not duplicate detailed tasks in the PR body; point the PR at `progress.md` instead (DRY).
 - Start the next session by reading `progress.md` first to resume.
 

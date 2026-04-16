@@ -11,6 +11,17 @@ Read in this order at the start of a new session:
 3. **PR #1**: https://github.com/kiyohome/outputs/pull/1
 4. The document being worked on (starting from the top-priority task below)
 
+## Original intent
+
+From the first message of the session (preserved verbatim so the intent is not lost):
+
+> aiyaのトレーサビリティチェイン、ccsの実現方法を考えたい
+> トレーサビリティチェインによりいくつかドキュメントが必要かと。ドキュメントの種類、フォーマット、管理方法が必要では？
+> 要件、UX、設計を順に考えましょう
+> 私にヒアリングしながら提案ベースで進めて
+
+**Honest status**: PR #1 delivered the groundwork (monorepo layout, doc skeletons, rules, progress tracking). The original design question — how Chain documents should be *typed / formatted / managed*, and how Chain and CCS actually hook together — is still **open**. "Next tasks" below is the real entry point.
+
 ## Current phase
 
 **Requirements phase**. First step of the requirements → UX → design sequence.
