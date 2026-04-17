@@ -30,6 +30,18 @@ The focus is pinning down how AIYA's Traceability Chain and CCS should actually 
 
 ## Completed
 
+### PR #2: sync latest vision (8-element / 3-phase Chain)
+
+- [x] Replace `vision.md` with the latest 8-element chain: `Situation → Pain → Benefit → Success Scenarios → Testing → Technology → Design → Steps`, organized into Goal / Approach / Delivery phases
+- [x] Document the rationale for ordering within Approach (Testing first, to prevent drift into tech/design without a confirmation plan)
+- [x] Add Scope statement: AIYA focuses on the process layer; UI layer uses existing chat infrastructure (Slack, Claude Code Channels)
+- [x] Rename `Acceptance Scenarios` → `Success Scenarios` across all docs
+- [x] Update `README.md` Core concepts table with the 8-element chain
+- [x] Rewrite `traceability-chain.md` to an 8-element / 3-phase structure with Approach ordering rationale
+- [x] Update `architecture.md` Chain ↔ Task mapping and Gate placement to reflect 3 phases
+- [x] Fix factual error in `ccs.md` (CCS is a paper term, not AIYA's renaming of ACC)
+- [x] Update `aiya-jam.md` gate-surface expectation to existing chat infra (no dedicated UI)
+
 ### PR #1: monorepo refactor
 
 - [x] Reorganize `agents-in-your-area/` into a monorepo layout (`README.md` + `docs/`)
@@ -55,11 +67,11 @@ The focus is pinning down how AIYA's Traceability Chain and CCS should actually 
 
 Fill in the TODOs in `docs/traceability-chain.md`. Hearing points:
 
-- Format for each of the 6 Chain elements (Situation / Pain / Benefit / Acceptance Scenarios / Approach / Steps)
-- Physical layout (single file vs per-element split vs hybrid)
+- Format for each of the 8 Chain elements (Situation / Pain / Benefit / Success Scenarios / Testing / Technology / Design / Steps)
+- Physical layout (single file vs per-element split vs hybrid — the hybrid option aligns naturally with the 3 phases)
 - Granularity (is 1 issue = 1 Chain the right unit?)
 - Chain versioning (how to keep change history)
-- Authoring split (which elements the expert writes vs which the AI drafts)
+- Authoring split per element: working hypothesis is expert → Goal, AI drafts Approach (expert reviews at G2), AI generates Delivery (expert reviews at G3)
 
 ### 2. Chain-to-CCS linkage
 
@@ -69,13 +81,18 @@ Fill in the TODOs in `docs/traceability-chain.md`. Hearing points:
 
 Pick one.
 
-### 3. Concretize the three-stage gates
+### 3. Concretize the three gates (G1 / G2 / G3)
 
-[vision.md](docs/vision.md) mentions them but doesn't define them:
+[vision.md](docs/vision.md) places the gates between phases. Working hypothesis now in `traceability-chain.md` and `architecture.md`:
 
-- Placement: Task start / Context boundaries / Step completion
-- Judge, criteria, and fallback target for each gate
-- UI (CLI dialogue / web UI / PR review)
+- G1 (Goal gate) — before Planning starts. Commits Situation / Pain / Benefit / Success Scenarios.
+- G2 (Approach gate) — at Planning → Implementation boundary. Commits Testing / Technology / Design.
+- G3 (Delivery gate) — at Implementation completion. Judges whether Success Scenarios are met.
+
+Still to define:
+- Concrete criteria per gate
+- Rejection fallback targets
+- Gate surface (which chat platform, how prompts and responses are modeled — per the UI-less scope in `vision.md`)
 
 ### 4. Resolve the "Step" naming collision
 
@@ -83,11 +100,11 @@ Chain's "Steps" (the action list after Approach) and ACC's "Step" (the work unit
 
 ### 5. Chain ↔ Task/Context/Step/Action mapping
 
-Open item in [architecture.md § Chain ↔ Task mapping](docs/architecture.md). Working hypothesis:
+Open item in [architecture.md § Chain ↔ Task mapping](docs/architecture.md). Working hypothesis now aligned with the 3-phase Chain:
 
-- Situation / Pain / Benefit / Acceptance Scenarios → Task-level context
-- Approach → basis for Context splitting
-- Steps → Step sequence inside the Implementation Context
+- Goal (Situation / Pain / Benefit / Success Scenarios) → Task-level input
+- Approach (Testing / Technology / Design) → Planning Context output
+- Delivery (Steps) → Implementation Context's Step sequence
 
 ### 6. aiya-jam implementation shape
 
@@ -114,7 +131,8 @@ Quickstart is still TODO in all of:
 - **Monorepo** setup (packages: aiya / aiya-pit / aiya-tape / aiya-jam)
 - Order is **requirements → UX → design**
 - Documents are in **English** (full translation done in PR #1)
-- Working branch: `claude/traceability-chain-docs-VTFb8`
+- **Fact-check external claims before asserting** — the ACC paper (Bousetouane 2026, arXiv:2601.11653) defines ACC, CCS, Turn, CCM, Schema, State replacement, but does NOT define the Task/Context/Step/Action hierarchy (that is AIYA-original)
+- Working branch: `claude/aiya-documentation-polish-LLxbp`
 
 ## Documentation layout (current)
 

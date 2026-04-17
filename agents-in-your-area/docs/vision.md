@@ -40,15 +40,31 @@ An expert's unwavering judgment becomes structurally part of the AI's work proce
 
 ## Core: Traceability Chain × Gates
 
-AIYA's hypothesis is that context bloat and drift are the biggest enemies of quality. This holds for humans, not just AI.
+As work proceeds, "what is this for, again?" gets blurry. This holds for humans too, not only AI.
 
-Simply put: keep traceability so the question "what was this for, again?" has an answer, and use gates to evaluate "did we get closer?" and course-correct. That is AIYA's core.
+AIYA connects everything from the user's situation to the implementation into a single chain, with gates (judgment points) placed along it. If any link in the chain breaks, work stops. The expert judges at the gates whether "we got closer to the goal" and course-corrects.
 
 ```
-Situation → Pain → Benefit → Acceptance Scenarios → Approach → Steps
+Situation → Pain → Benefit → Success Scenarios → Testing → Technology → Design → Steps
 ```
 
-The gates slice through this chain. The AI works; the expert judges at the gates. When a link breaks, the process stops. Drift is detected structurally.
+The chain has three phases, with gates between phases.
+
+**Goal** — what to achieve
+- Situation — what situation is the user in?
+- Pain — what is the user struggling with in that situation?
+- Benefit — how does it change when the user's problem is resolved?
+- Success Scenarios — what state of the user counts as "resolved"?
+
+**Approach** — how to achieve it
+- Testing — how do we confirm it was solved?
+- Technology — what do we use to solve it?
+- Design — how do we implement it?
+
+**Delivery** — get it to the user
+- Steps — in what order do we proceed?
+
+The order within Approach is intentional. Placing Testing first prevents the drift of entering technology selection or design without first deciding "how we will confirm". Approach is inherently the most drift-prone phase, and splitting it into three increases the number of drift-detection points.
 
 ## Prior art
 
@@ -74,7 +90,7 @@ Every existing tool offers a way to "use AI better". The subject is the AI.
 
 AIYA's subject is the expert. It tackles "more tools, more methods, yet experts are still not free from babysitting AI".
 
-Concretely: "maintain the Situation → Pain → Benefit → Acceptance Scenarios traceability chain, and insert expert judgment between phases" — as far as we can tell, no tool combines these into AI agent development.
+Concretely: "maintain the Situation → Pain → Benefit → Success Scenarios traceability chain, and insert expert judgment between phases" — as far as we can tell, no tool combines these into AI agent development.
 
 See the FAQ for comparisons with individual tools.
 
@@ -89,6 +105,8 @@ Three layers: philosophy, process, and code.
 - **Philosophy** — scale an expert's judgment
 - **Process** — delegation and quality assurance via the Traceability Chain × three-stage gates
 - **Code** — a reference implementation so others can adopt the process immediately
+
+AIYA focuses on the process layer. It does not build a UI layer. The CLI is the engine; existing chat infrastructure (Slack, Claude Code Channels, and similar) serves as both dashboard and remote control. The industry is already investing in UI layers, so AIYA sits on top as the process layer.
 
 A framework that is publicly usable by other experts. Minimizing environmental dependencies and lowering the adoption bar is a baseline requirement.
 
@@ -108,7 +126,7 @@ No. An Agent Harness is "infrastructure that wraps the model" — context manage
 
 **Q: Is AIYA the same as Spec-Driven Development (GitHub Spec Kit, Kiro, etc.)?**
 
-They overlap. Writing the spec before implementing is common ground. But SDD tools structure the flow "write spec → implement". AIYA structures the traceability from "why we are building this". The Situation → Pain → Benefit → Acceptance Scenarios chain is AIYA's core; the spec is just one part of it.
+They overlap. Writing the spec before implementing is common ground. But SDD tools structure the flow "write spec → implement". AIYA structures the traceability from "why we are building this". The Situation → Pain → Benefit → Success Scenarios chain is AIYA's core; the spec is just one part of it.
 
 **Q: Is AIYA the same as workflow orchestration such as TAKT / BMAD?**
 

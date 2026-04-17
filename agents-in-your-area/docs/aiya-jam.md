@@ -12,11 +12,12 @@ The task-management package that puts Traceability Chain and CCS into practice. 
 
 Expected:
 
-- **Traceability Chain creation and update** — templates for Situation through Steps, plus gates
+- **Traceability Chain creation and update** — templates for the 8 elements across Goal / Approach / Delivery, plus gates between phases
 - **CCS handoff management** — store and reference CCS files between Steps
 - **Step execution direction** — the delegation interface for Step Agents
 - **SKILL.md** — skill definitions that Claude Code reads
 - **Workflow definitions** — declarative expression of the Planning → Implementation flow
+- **Gate surface** — present gates through existing chat infrastructure (Slack, Claude Code Channels); AIYA does not build a dedicated UI (see [vision.md](vision.md) Scope)
 
 ## Quickstart
 
@@ -66,5 +67,5 @@ TODO
 - [ ] SKILL.md granularity (per Task / per Step kind / per Context)
 - [ ] Choice of workflow definition language
 - [ ] Task Agent implementation (Claude Code subagent / separate container / separate session)
-- [ ] Three-stage gate UI (CLI dialogue / web UI / PR review)
+- [ ] Gate surface concretization (which chat platform, how the gate prompt/response is modeled)
 - [ ] Handling of parallel Steps

@@ -10,9 +10,9 @@ Skilled developers have tried spec-driven development, Plan Mode, skills, and pa
 
 | Concept | One-liner | Details |
 |---|---|---|
-| **Traceability Chain** | Chains `Situation → Pain → Benefit → Acceptance Scenarios → Approach → Steps` so that drift is detectable | [docs/traceability-chain.md](docs/traceability-chain.md) |
+| **Traceability Chain** | Chains `Situation → Pain → Benefit → Success Scenarios → Testing → Technology → Design → Steps` across three phases (Goal / Approach / Delivery) so that drift is detectable | [docs/traceability-chain.md](docs/traceability-chain.md) |
 | **CCS (Compressed Cognitive State)** | A bounded state representation that hands off between Steps with replacement semantics | [docs/ccs.md](docs/ccs.md) |
-| **Gates** | Three-stage gates that insert expert judgment at each phase boundary | [docs/traceability-chain.md](docs/traceability-chain.md) / [docs/architecture.md](docs/architecture.md) |
+| **Gates** | Expert judgment points placed between phases of the Traceability Chain | [docs/traceability-chain.md](docs/traceability-chain.md) / [docs/architecture.md](docs/architecture.md) |
 
 ## Quickstart
 

@@ -1,31 +1,52 @@
 # Traceability Chain
 
-> A 6-element chain from intent to execution that makes drift structurally detectable
+> An 8-element chain from user situation to executable steps, organized into three phases, so that drift is structurally detectable
 
-<!-- NOTE: This document is a skeleton. The content will be filled in in the next iteration. -->
-
-The Traceability Chain is a 6-element chain that keeps "why are we doing this again?" structurally traceable.
+The Traceability Chain keeps "what is this for, again?" answerable at every point between intent and execution. It is a single chain with eight elements, grouped into three phases, with gates (expert judgment points) placed between phases.
 
 ```
-Situation → Pain → Benefit → Acceptance Scenarios → Approach → Steps
+Situation → Pain → Benefit → Success Scenarios │ Testing → Technology → Design │ Steps
+|______________ Goal ______________|           |______ Approach ______|       | Delivery |
 ```
 
-Each element is linked to the next; when a link breaks, the process stops. That is why the chain is managed as explicit documentation.
+Each element is linked to the next; when a link breaks, the process stops. That is why the chain is managed as explicit documentation. See [vision.md](vision.md) for the full motivation.
 
-Context bloat and drift are the biggest enemies of quality. Spec-driven development aligns with intent at the moment the spec is written, but "why we are building this" fades as implementation proceeds. The Chain keeps the distance between intent and execution measurable at any time. See [vision.md](vision.md) for the fuller motivation.
+## The three phases
 
-## The 6 elements
+| Phase | Elements | What the phase answers |
+|---|---|---|
+| **Goal** | Situation, Pain, Benefit, Success Scenarios | What are we trying to achieve, and how do we know when we've achieved it? |
+| **Approach** | Testing, Technology, Design | How will we achieve it? |
+| **Delivery** | Steps | In what order do we execute? |
 
-<!-- TODO: Nail down the definition of each element. Today they only have one-liner descriptions inherited from vision.md. -->
+The order within Approach is intentional: Testing first, then Technology, then Design. Placing Testing first prevents the drift of entering technology selection or design before deciding how success will be confirmed. Approach is inherently the most drift-prone phase, so it is split into three to increase drift-detection points.
+
+## The 8 elements
+
+<!-- TODO: Fill in the writing format (schema) for each element. For now, only the question each element answers is defined. -->
+
+### Goal phase
 
 | Element | Question | What to write (TODO) |
 |---|---|---|
-| **Situation** | What is the current state? | TODO |
-| **Pain** | What hurts? | TODO |
-| **Benefit** | What do we gain when it's solved? | TODO |
-| **Acceptance Scenarios** | How do we know it's solved? | TODO |
-| **Approach** | How will we solve it (strategy)? | TODO |
-| **Steps** | Concrete actions | TODO |
+| **Situation** | What situation is the user in? | TODO |
+| **Pain** | What is the user struggling with in that situation? | TODO |
+| **Benefit** | How does it change when the user's problem is resolved? | TODO |
+| **Success Scenarios** | What state of the user counts as "resolved"? | TODO |
+
+### Approach phase
+
+| Element | Question | What to write (TODO) |
+|---|---|---|
+| **Testing** | How do we confirm it was solved? | TODO |
+| **Technology** | What do we use to solve it? | TODO |
+| **Design** | How do we implement it? | TODO |
+
+### Delivery phase
+
+| Element | Question | What to write (TODO) |
+|---|---|---|
+| **Steps** | In what order do we proceed? | TODO |
 
 ## Format
 
@@ -34,7 +55,7 @@ Context bloat and drift are the biggest enemies of quality. Spec-driven developm
 **Open**: which format to use. Candidates:
 - (a) A single file with sections per element
 - (b) One file per element
-- (c) Hybrid (the "why" side consolidated, the "how" side split)
+- (c) Hybrid (Goal consolidated, Approach split per element, Delivery consolidated)
 
 ## Physical layout
 
@@ -50,7 +71,7 @@ Context bloat and drift are the biggest enemies of quality. Spec-driven developm
 <!-- TODO: Creation → update → archival -->
 
 - **Creation** — when and by whom a Chain is stood up (at issue filing / at planning / ...)
-- **Authoring split** — which elements the expert writes and which the AI drafts
+- **Authoring split** — which elements the expert writes and which the AI drafts. Working hypothesis: the expert owns the Goal phase; the Approach phase is AI-drafted and expert-reviewed at the gate; the Delivery phase is AI-generated from the approved Approach.
 - **Update** — how to handle a Chain that changes mid-implementation
 - **Archival** — how completed Chains are preserved
 
@@ -58,29 +79,27 @@ TODO
 
 ## Gates
 
-<!-- TODO: Placement and criteria for the three-stage gates -->
+<!-- TODO: Placement and criteria for the gates -->
 
-**Open**: vision.md mentions "three-stage gates" but the placement and criteria are undefined.
+Gates sit at phase boundaries. Working hypothesis:
 
-Working hypothesis:
-- Gate 1: commit to Situation → Pain → Benefit (approval of "what we are building this for")
-- Gate 2: commit to Acceptance Scenarios → Approach (approval of "how we will build it")
-- Gate 3: acceptance at the completion of Steps (judgment of "did we get closer to the goal")
+- **G1 — Goal gate** (after Success Scenarios): commit to "what we are building, and what counts as success"
+- **G2 — Approach gate** (after Design): commit to "how we will build it, including how we will confirm"
+- **G3 — Delivery gate** (after Steps / on completion): judge "did we get closer to the goal"
 
 For each gate:
-- Who judges
-- What is judged
-- Where to fall back on rejection
-
-All TODO.
+- Who judges — the expert (see [vision.md](vision.md))
+- UI — existing chat infrastructure (Slack, Claude Code Channels), not a dedicated UI
+- What is judged — TODO
+- Where to fall back on rejection — TODO
 
 ## Link to CCS
 
 <!-- TODO: How to connect Chain and CCS -->
 
 **Open**: how CCS should reference Chain elements. Candidates:
-- (a) Path reference: `retrieved_artifacts: spec(chains/issue-123/benefit.md)`
-- (b) ID reference: something like `BNF-123-01`
+- (a) Path reference: `retrieved_artifacts: spec(chains/issue-123/success-scenarios.md)`
+- (b) ID reference: something like `SCN-123-01`
 - (c) Value copy: at CCS creation time, inline the relevant Chain content into `goal_orientation` / `constraints`
 
 See [ccs.md](ccs.md) for the CCS spec.
@@ -108,10 +127,11 @@ TODO
 
 ## Open questions
 
-- [ ] Format definition for each element
+- [ ] Format definition for each of the 8 elements
 - [ ] Physical layout (split files vs consolidated)
 - [ ] CCS linkage method
-- [ ] Concretize the three-stage gates
+- [ ] Gate criteria and rejection fallbacks
 - [ ] Mapping between Chain and the ACC hierarchy (Task/Context/Step/Action)
 - [ ] Chain versioning (how to keep change history)
 - [ ] Granularity (is 1 issue = 1 Chain the right unit?)
+- [ ] Authoring split between expert and AI, per element

@@ -150,27 +150,27 @@ flowchart LR
 
 ## Gate placement
 
-<!-- TODO: Where to place the three-stage gates across Task / Context / Step -->
+<!-- TODO: Placement of Chain gates within the Task / Context / Step hierarchy -->
 
-**Open**: [vision.md](vision.md) / [traceability-chain.md](traceability-chain.md) refer to "three-stage gates", but their placement in this work-unit hierarchy is undefined.
+[vision.md](vision.md) / [traceability-chain.md](traceability-chain.md) place gates between the Chain's three phases (Goal / Approach / Delivery). Mapping those onto the work-unit hierarchy:
 
-Candidates:
-- Put gates at Context boundaries (Planning → Implementation, Implementation → done)
-- Gate 1 at Task start (Benefit commit)
-- Gates 2/3 at Context boundaries
+- **G1 — Goal gate**: before the Task starts executing. Commits the Goal phase (Situation / Pain / Benefit / Success Scenarios).
+- **G2 — Approach gate**: at the Planning Context boundary. Commits the Approach phase (Testing / Technology / Design) produced by Planning.
+- **G3 — Delivery gate**: at the Implementation Context boundary (on completion). Judges whether the Success Scenarios were met.
 
 ## Chain ↔ Task mapping
 
-<!-- TODO: Define how Traceability Chain's 6 elements correspond to Task/Context/Step/Action -->
+<!-- TODO: Define how the Chain's 8 elements / 3 phases correspond to Task/Context/Step/Action -->
 
-**Open**: the correspondence between the Chain (`Situation → Pain → Benefit → Acceptance Scenarios → Approach → Steps`) and Task/Context/Step/Action is undefined.
+Working hypothesis based on the 3-phase Chain:
 
-Working hypothesis:
-- `Situation / Pain / Benefit / Acceptance Scenarios` → Task-level context
-- `Approach` → basis for splitting into Contexts
-- `Steps` → the Step sequence inside the Implementation Context (although the Chain's "Steps" and ACC's "Step" share the same word at different granularities)
+| Chain phase | Chain elements | Work-unit mapping |
+|---|---|---|
+| **Goal** | Situation / Pain / Benefit / Success Scenarios | Task-level input (expert-authored, G1 commits) |
+| **Approach** | Testing / Technology / Design | Planning Context output (AI-drafted, G2 commits) |
+| **Delivery** | Steps | Implementation Context's Step sequence (AI-executed, G3 commits on completion) |
 
-**Naming collision warning**: the Chain's "Steps" and ACC's "Step" are not yet disambiguated. A rename or an explicit definition is needed.
+**Naming note**: the Chain element "Steps" and the work-unit level "Step" share the same word at different granularities. The Chain's Steps is the ordered plan (the Delivery content); a work-unit Step is one handoff of CCS inside the Implementation Context. This is listed as an open question below.
 
 ## Related documents
 
@@ -181,8 +181,8 @@ Working hypothesis:
 
 ## Open questions
 
-- [ ] Placement of the three-stage gates
-- [ ] Exact correspondence between Chain and Task/Context/Step/Action
-- [ ] Resolve the "Step" naming collision
+- [ ] Exact correspondence between Chain (8 elements / 3 phases) and Task/Context/Step/Action
+- [ ] Resolve the "Step" naming collision between Chain element and work-unit level
+- [ ] Gate criteria (what the expert checks at G1/G2/G3) and rejection fallbacks
 - [ ] Implementation form of Task Agent / Step Agent (subagent / separate session / separate container)
 - [ ] Async review scheme for parallel Step Agents

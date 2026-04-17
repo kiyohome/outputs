@@ -2,7 +2,7 @@
 
 > A bounded state representation that hands off Step-to-Step context with replacement semantics
 
-CCS (Compressed Cognitive State) is a structured representation that AI agents use to hand off state between Steps. It adapts the Agent Cognitive Compressor (ACC) idea from the paper *AI Agents Need Memory Control Over More Context* (Bousetouane, 2026) to Claude Code agent skills.
+CCS (Compressed Cognitive State) is a structured representation that AI agents use to hand off state between Steps. Both ACC (Agent Cognitive Compressor, the mechanism) and CCS (the bounded internal state it maintains) are terms defined in the paper *AI Agents Need Memory Control Over More Context* (Bousetouane, 2026). AIYA adopts CCS directly as the Step-to-Step handoff representation for Claude Code agent skills.
 
 Traditional context management suffers from two problems:
 
@@ -216,7 +216,7 @@ The ACC paper reports the following results over a 50-turn multi-turn evaluation
 ## Related documents
 
 - [architecture.md](architecture.md) — the Task/Context/Step/Action structure that produces and consumes CCS
-- [traceability-chain.md](traceability-chain.md) — how to connect Chain elements into `goal_orientation` / `constraints` / `retrieved_artifacts`
+- [traceability-chain.md](traceability-chain.md) — how to connect Chain elements (Goal / Approach / Delivery) into `goal_orientation` / `constraints` / `retrieved_artifacts`
 - [aiya-jam.md](aiya-jam.md) — the package that stores and hands off CCS files
 
 ## Open questions
