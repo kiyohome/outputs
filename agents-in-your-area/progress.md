@@ -8,8 +8,9 @@ Read in this order at the start of a new session:
 
 1. **`.claude/rules/`** — project-wide rules (read first, always)
 2. **This file** — current completion state and next tasks
-3. **PR #1**: https://github.com/kiyohome/outputs/pull/1
-4. The document being worked on (starting from the top-priority task below)
+3. **PR #1** (merged): https://github.com/kiyohome/outputs/pull/1
+4. Latest sync branch: `claude/aiya-documentation-polish-LLxbp` (8-element / 3-phase chain, not yet PR'd)
+5. The document being worked on (starting from the top-priority task below)
 
 ## Original intent
 
@@ -30,7 +31,7 @@ The focus is pinning down how AIYA's Traceability Chain and CCS should actually 
 
 ## Completed
 
-### PR #2: sync latest vision (8-element / 3-phase Chain)
+### Latest sync: 8-element / 3-phase Chain (branch pushed, no PR yet)
 
 - [x] Replace `vision.md` with the latest 8-element chain: `Situation → Pain → Benefit → Success Scenarios → Testing → Technology → Design → Steps`, organized into Goal / Approach / Delivery phases
 - [x] Document the rationale for ordering within Approach (Testing first, to prevent drift into tech/design without a confirmation plan)
@@ -96,7 +97,7 @@ Still to define:
 
 ### 4. Resolve the "Step" naming collision
 
-Chain's "Steps" (the action list after Approach) and ACC's "Step" (the work unit inside a Context) use the same word for different things. Rename one or introduce an explicit distinction.
+Chain's "Steps" (the Delivery-phase action list) and the work-unit "Step" (one handoff of CCS inside a Context, AIYA-original) use the same word at different granularities. Rename one or introduce an explicit distinction.
 
 ### 5. Chain ↔ Task/Context/Step/Action mapping
 
