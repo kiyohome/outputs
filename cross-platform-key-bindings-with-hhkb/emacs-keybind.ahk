@@ -182,3 +182,59 @@ ResetMark() {
     Send "^x"
     ResetMark()
 }
+
+; --- undo / redo ---
+
+; Ctrl+/ → Ctrl+Z（undo / C-/）
+^/:: {
+    if IsExcluded()
+        return
+    Send "^z"
+    ResetMark()
+}
+
+; Ctrl+Shift+/ → Ctrl+Shift+Z（redo / C-?）
+^+/:: {
+    if IsExcluded()
+        return
+    Send "^+z"
+    ResetMark()
+}
+
+; --- 単語単位の移動（M-f / M-b） ---
+
+; Alt+F → Ctrl+Right（forward-word）
+!f:: {
+    if IsExcluded()
+        return
+    if markActive
+        Send "^+{Right}"
+    else
+        Send "^{Right}"
+}
+
+; Alt+B → Ctrl+Left（backward-word）
+!b:: {
+    if IsExcluded()
+        return
+    if markActive
+        Send "^+{Left}"
+    else
+        Send "^{Left}"
+}
+
+; --- 単語単位の削除 ---
+
+; Alt+D → Ctrl+Delete（kill-word）
+!d:: {
+    if IsExcluded()
+        return
+    Send "^{Delete}"
+}
+
+; Alt+Backspace → Ctrl+Backspace（backward-kill-word / M-DEL）
+!Backspace:: {
+    if IsExcluded()
+        return
+    Send "^{Backspace}"
+}
