@@ -18,7 +18,7 @@
 
 A single 10-step pipeline. Step order is fixed. Exceptions are listed at the end of this section.
 
-1. **Identify target** — use the specified scope if given; otherwise hear it (max 2 rounds; exit on failure).
+1. **Identify target** — invocation is `/smith [<scope>]` where `<scope>` is an optional positional hint (file path, directory path, or capability phrase). If given, use it; otherwise hear it (max 2 rounds; exit on failure).
 2. **Enumerate constituent files** — find the files composing the target and their call relationships (command→agent, hook→tool, skill reference, etc.).
 3. **Inspect** — run `[auto]` pre-pass (deterministic mechanical checks) + 3-lens parallel inspection. Each finding recorded as `OK` / `NG` / `OOS` plus a comment.
 4. **Draft improvements** — for each `NG` only, produce proposal + rationale + expected effect + patch content.
@@ -33,7 +33,7 @@ A single 10-step pipeline. Step order is fixed. Exceptions are listed at the end
 
 - **Target unidentifiable** (hearing fails after 2 rounds) → report and exit. Never fabricate a target.
 - **All proposals rejected** → persist records and exit.
-- **Self-inspection** (target == smith itself) → extra confirmation before Apply; iteration cap drops from 3 to 1 to prevent prompt-mutation mid-loop.
+- **Self-inspection** (target == smith itself — detected when any target file resolves under `agents-in-your-area/.claude/plugins/smith/`) → extra confirmation before Apply; iteration cap drops from 3 to 1 to prevent prompt-mutation mid-loop.
 - **Write error mid-apply** → halt, report partial state, point the user at `git status`.
 - **Loop cap hit** (3 iterations) → report residual findings and exit. Do not emit a completion claim while NG remain.
 
@@ -61,6 +61,24 @@ Hybrid plugin (Archetype C) at `agents-in-your-area/.claude/plugins/smith/`.
 - **Architecture lens is singleton per Feature, not per-file parallel**: its job is to see the whole — dependencies, responsibilities, wiring. Splitting it by file would break its function. Per-file parallelism only helps where judgments are meaningfully independent.
 - **`/smith` model = inherit**: inspectors emit full `patch_content`, so `/smith` only does orchestration — dialogue, approval gates, dependency sorting, Write/Edit, persistence. Respecting the user's model default (`inherit`) follows the knowhow recommendation for non-judgment work. Note: assumes Sonnet-or-better caller; under Haiku, pre-image verification quality may degrade.
 - **No auto-rollback on write failure**: silent reversal would hide the failure and violate the "ban false promises" principle. git owns revert; smith halts and reports.
+
+### `smith-knowhow` layout
+
+```
+smith-knowhow/
+├── SKILL.md                    # taxonomy + common false-positive list + index + load heuristic
+└── references/
+    ├── prompt.md
+    ├── command.md
+    ├── agent.md
+    ├── skill.md
+    ├── hook.md
+    ├── claude-md.md
+    ├── plugin.md
+    └── patterns.md             # anti-pattern excerpts used across components
+```
+
+One file per component type, mirroring the sections of `docs/checklists.md`. `patterns.md` holds anti-pattern excerpts that apply across components. `references/` stays one level deep (per Skill checklist).
 
 ## Interfaces
 
@@ -123,6 +141,13 @@ Inspectors return Edit-tool-compatible pairs per file:
 
 For whole-file creation or replacement, `old_string` is the empty string (create) or the full current content (replace); `/smith` uses the Write tool in those cases.
 
+### Agent/script data transport
+
+- Each inspector agent returns its findings as a JSON array inside a single fenced ` ```json ` block as the final message of its invocation.
+- `/smith` concatenates inspector outputs (plus the `[auto]` pre-pass script's output) into one JSON array and pipes it to `scripts/smith-evaluate.sh` on stdin.
+- `scripts/smith-evaluate.sh` emits ranked findings as a JSON array on stdout.
+- All inter-process runtime data flows as JSON; no shared files are used for transient data.
+
 ### Convergence score formula
 
 After merging by `finding_type` exact match:
@@ -173,6 +198,8 @@ reconcile_history_ref: "#iteration-0"
 ```
 
 Front-matter is parsed by `scripts/smith-state.sh` using the sed/awk pattern from the knowhow (`patterns.md §Reading front matter from shell`). File is gitignored by convention.
+
+State is held in-memory during a single `/smith` run and written to the file at step 10; the file is not re-read within a run. Reconcile state for iterations 1–2 uses in-memory history carried by `/smith`.
 
 ### `allowed-tools`
 
