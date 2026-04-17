@@ -150,8 +150,6 @@ flowchart LR
 
 ## Gate placement
 
-<!-- TODO: Placement of Chain gates within the Task / Context / Step hierarchy -->
-
 [vision.md](vision.md) / [traceability-chain.md](traceability-chain.md) place gates between the Chain's three phases (Goal / Approach / Delivery). Mapping those onto the work-unit hierarchy:
 
 - **G1 — Goal gate**: before the Task starts executing. Commits the Goal phase (Situation / Pain / Benefit / Success Scenarios).
@@ -160,9 +158,7 @@ flowchart LR
 
 ## Chain ↔ Task mapping
 
-<!-- TODO: Define how the Chain's 8 elements / 3 phases correspond to Task/Context/Step/Action -->
-
-Working hypothesis based on the 3-phase Chain:
+Working hypothesis based on the 3-phase Chain (to be confirmed after Tier 1 decisions land):
 
 | Chain phase | Chain elements | Work-unit mapping |
 |---|---|---|

@@ -64,67 +64,116 @@ The focus is pinning down how AIYA's Traceability Chain and CCS should actually 
 
 ## Next tasks (by priority)
 
-### 1. Nail down Traceability Chain requirements ★top priority
+Grouped by implementation-readiness tier. Within each tier, items are roughly ordered by dependency.
 
-Fill in the TODOs in `docs/traceability-chain.md`. Hearing points:
+### Tier 1 — Implementation-blocking decisions
 
-- Format for each of the 8 Chain elements (Situation / Pain / Benefit / Success Scenarios / Testing / Technology / Design / Steps)
-- Physical layout (single file vs per-element split vs hybrid — the hybrid option aligns naturally with the 3 phases)
-- Granularity (is 1 issue = 1 Chain the right unit?)
-- Chain versioning (how to keep change history)
-- Authoring split per element: working hypothesis is expert → Goal, AI drafts Approach (expert reviews at G2), AI generates Delivery (expert reviews at G3)
+Each item picks a concrete option (ADR-sized). Together they define enough for aiya-jam to begin.
 
-### 2. Chain-to-CCS linkage
+#### 1. Resolve the "Step" naming collision
 
-- (a) Path reference: `retrieved_artifacts: spec(chains/issue-123/benefit.md)`
-- (b) ID reference: something like `BNF-123-01`
-- (c) Value copy: inline Chain content into `goal_orientation` / `constraints` at CCS creation time
+Chain's **Steps** (Delivery phase, an ordered action list) and the work-unit **Step** (one CCS handoff inside a Context, AIYA-original) share the same word. Deciding schema keys, filesystem paths, and APIs without resolving this first risks a global rename later. Rename one side or introduce an explicit prefix (e.g., `PlanStep` / `RunStep`).
 
-Pick one.
+#### 2. Chain storage & format
 
-### 3. Concretize the three gates (G1 / G2 / G3)
+- Schema for each of the 8 elements (Situation / Pain / Benefit / Success Scenarios / Testing / Technology / Design / Steps)
+- Physical layout: (a) single file / (b) per-element split / (c) hybrid per-phase
+- Storage location: under `aiya-jam/chains/<issue-id>/` / inside the issue repository / elsewhere
 
-[vision.md](docs/vision.md) places the gates between phases. Working hypothesis now in `traceability-chain.md` and `architecture.md`:
+#### 3. Chain ↔ CCS linkage + CCS storage
 
-- G1 (Goal gate) — before Planning starts. Commits Situation / Pain / Benefit / Success Scenarios.
-- G2 (Approach gate) — at Planning → Implementation boundary. Commits Testing / Technology / Design.
-- G3 (Delivery gate) — at Implementation completion. Judges whether Success Scenarios are met.
+- Linkage strategy: (a) Path reference `retrieved_artifacts: spec(chains/issue-123/success-scenarios.md)` / (b) ID reference `SCN-123-01` / (c) Value copy into `goal_orientation` / `constraints` at CCS creation
+- CCS file physical location
+- CCS versioning (keep pre-replacement state vs replace-only)
 
-Still to define:
-- Concrete criteria per gate
-- Rejection fallback targets
-- Gate surface (which chat platform, how prompts and responses are modeled — per the UI-less scope in `vision.md`)
+#### 4. Gate surface & criteria
 
-### 4. Resolve the "Step" naming collision
+- Chat platform: Slack / Claude Code Channels / other (per UI-less scope in `vision.md`)
+- Prompt / response modeling (how gate questions and expert answers are structured)
+- G1 / G2 / G3 concrete pass criteria
+- Rejection fallback targets (which Chain elements to revisit)
+- Expert identity / authentication at the gate
 
-Chain's "Steps" (the Delivery-phase action list) and the work-unit "Step" (one handoff of CCS inside a Context, AIYA-original) use the same word at different granularities. Rename one or introduce an explicit distinction.
+#### 5. Workflow & Agent shape
 
-### 5. Chain ↔ Task/Context/Step/Action mapping
+- Workflow definition language: YAML / TypeScript / plain Markdown
+- SKILL.md **granularity** (per Task / per Step kind / per Context) *and* **placement / loading**
+- Task Agent / Step Agent implementation form: Claude Code subagent / separate session / separate container
 
-Open item in [architecture.md § Chain ↔ Task mapping](docs/architecture.md). Working hypothesis now aligned with the 3-phase Chain:
+#### 6. aiya-jam integration boundaries
 
-- Goal (Situation / Pain / Benefit / Success Scenarios) → Task-level input
-- Approach (Testing / Technology / Design) → Planning Context output
-- Delivery (Steps) → Implementation Context's Step sequence
+- Does the Task Agent live inside aiya-pit or outside?
+- Should CCS creation events be recorded by aiya-tape?
 
-### 6. aiya-jam implementation shape
+#### 7. Parallel Step Agent async review scheme
 
-TODOs in [aiya-jam.md](docs/aiya-jam.md):
+Split out of the Chain ↔ work-unit mapping item — the mapping hypothesis is mostly resolved (see Tier 2), but parallel-execution review is an open design question that drives the Task Agent's state machine.
 
-- SKILL.md granularity (per Task / per Step kind / per Context)
-- Workflow definition language (YAML / TypeScript / plain Markdown)
-- Chain storage (file / DB / issue body)
-- CCS storage
-- Task Agent implementation (Claude Code subagent / separate container / separate session)
+#### 8. Exception semantics
 
-### 7. Quickstart sections
+- Step Agent failure mid-Context: does CCS roll back, or does the next Step see a `failed` episodic_trace and continue?
+- Can a G2-committed Approach be reopened from within Implementation?
 
-Quickstart is still TODO in all of:
+### Tier 2 — Process / lifecycle
+
+#### 9. Chain ↔ Task/Context/Step/Action mapping (confirm hypothesis)
+
+[architecture.md § Chain ↔ Task mapping](docs/architecture.md) already states a working hypothesis aligned with the 3-phase Chain:
+
+- Goal → Task-level input (expert-authored, G1 commits)
+- Approach → Planning Context output (AI-drafted, G2 commits)
+- Delivery → Implementation Context's Step sequence (AI-executed, G3 judges on completion)
+
+Confirm or adjust once Tier 1 decisions land.
+
+#### 10. Chain lifecycle
+
+- Creation trigger (at issue filing / at planning / other)
+- Update handling (how to handle a Chain that changes mid-implementation)
+- Archival of completed Chains
+- Chain versioning (change history)
+- Granularity — is 1 issue = 1 Chain the right unit?
+- Authoring split per element: working hypothesis is expert → Goal, AI drafts Approach (reviewed at G2), AI generates Delivery (reviewed at G3)
+
+#### 11. CCS type vocabulary extension policy
+
+Low priority — `ccs.md` already states "vocabulary is not frozen". Formalize only when contention appears in practice.
+
+### Tier 3 — Content / docs
+
+#### 12. Chain worked example
+
+TODO in `docs/traceability-chain.md` § Example — one end-to-end issue walked through all 8 elements.
+
+#### 13. Common pitfalls
+
+TODO in `docs/traceability-chain.md` § Common pitfalls.
+
+#### 14. Quickstart sections
+
+Still TODO in:
 
 - `README.md`
 - `docs/aiya-pit.md`
 - `docs/aiya-tape.md`
 - `docs/aiya-jam.md`
+
+#### 15. Contributing guide
+
+`README.md` § Contributing is TODO — branch strategy, commit conventions.
+
+#### 16. aiya-pit open questions
+
+- CA certificate distribution (shared volume / init container / entrypoint script)
+- Base image (ubuntu:24.04 / node:lts / custom)
+- In-container user privileges (root vs non-root)
+
+#### 17. aiya-tape open questions
+
+- Proxy allow/deny list management (config file / env vars / API)
+- Default dashboard presets (what initial templates show)
+- Log retention configuration
+- Masking rule management (regex / pattern match)
 
 ## Session context (for resuming)
 

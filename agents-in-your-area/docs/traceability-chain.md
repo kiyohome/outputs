@@ -131,7 +131,7 @@ TODO
 - [ ] Physical layout (split files vs consolidated)
 - [ ] CCS linkage method
 - [ ] Gate criteria and rejection fallbacks
-- [ ] Mapping between Chain and the ACC hierarchy (Task/Context/Step/Action)
+- [ ] Mapping between Chain and the work-unit hierarchy (Task/Context/Step/Action, AIYA-original)
 - [ ] Chain versioning (how to keep change history)
 - [ ] Granularity (is 1 issue = 1 Chain the right unit?)
 - [ ] Authoring split between expert and AI, per element
