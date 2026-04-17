@@ -1,148 +1,117 @@
-# plugin-smith Design Progress Log
+# smith Design Progress Log
 
-> Decision log and resumption guide for building plugin-smith, a meta-plugin for creating and improving Claude Code plugins.
+> Decision log and resumption guide for designing smith — a craftsperson (職人) tool that evaluates and improves Claude Code setups.
 
-## Scope
+## Original intent
 
-- Design documentation for plugin-smith lives in `claude-plugins-knowhow/`
-- README.md is the entry point; `docs/` holds concept and reference documentation
-- All file content is written in English (per `.claude/rules/interaction.md`)
+First message (verbatim, Japanese):
 
-## Sources
+> plugin-smith
+> aiya-jam
+> の順に作成を進めたい。
+> すべてaiyaのモノレポで開発、ただしこの2つはモノレポのパッケージ開発でも使いながら改善するので、モノレポの.claudeに配置します。
+> イメージできますか？
+> smith作って、smith使ってjamを作る
 
-### Internal (migrated — originals deleted)
-- `claude-plugins-knowhow.md` (1106 lines, 20 sections) → split into `docs/{concepts,components,patterns,case-studies}.md`
-- `cc-best-practices-report.md` → absorbed into `README.md > Overview`
-- `checklist-{prompt,skills,hooks,claude-md}.md` (4 files) → merged into `docs/checklists.md`
+### Pivots
 
-### External
-- skill-smith: https://github.com/lovaizu/aiya-dev/tree/main/.claude/skills/skill-smith
-  - Architecture: SKILL.md + references/{create,improve,evaluate,profile}-workflow.md + checklist.md + patterns.md + writing-guide.md + scripts/{validate,profile_stats}.sh
-  - Mode-driven (Create/Improve/Evaluate/Profile), references externalized, deterministic validate/profile via scripts
+- **jam removed from smith's scope; Create mode dropped.**
+  > jamはsmith無くても作れる気がしてきました。そもそもスクリプトベースなので。
+  > smithで予定していたノウハウをチェックできればよい？... cc機能活用のコンサル？みたいになればよい？評価して改善提案、改善する、みたいなイメージ。
 
-## Confirmed Decisions
+- **"コンサル" → "職人":** Apply を自分でやるのでコンサルではなく craft 職人が正しい。
 
-### 1. Plugin name
-- Tentative: `plugin-smith` (mirrors skill-smith)
+## Identity (fixed)
 
-### 2. Directory layout
+- smith = **craftsperson (職人)** for Claude Code setups — applies changes itself, not an advisor
+- Three-phase loop: **Evaluate → Propose → Apply** (one pipeline)
+- Two layers: **Feature** (entry, user-visible capability) → **Component** (inspection unit: Prompt / Command / Agent / Skill / Hook / CLAUDE.md / Plugin)
+- Scope: inside `.claude/` of aiya monorepo (plugins AND project-level)
+- Out of scope: MCP / statusline / output-style
+- Dogfooded on the aiya monorepo itself
+
+## Current phase
+
+γ (knowhow embedding) — 4 sub-decisions proposed, final expert review pending.
+
+## Completed
+
+### Flow (β, 10 steps)
+
+1. 対象を決める (specified or hearing, max 2 rounds)
+2. 構成ファイルを洗い出す
+3. 点検 (whole + per-file; OK / NG / 対象外 + comment)
+4. 改善案 (NG only; proposal + rationale + expected effect)
+5. 期待効果でランク (expected effect only)
+6. 採用を決めてもらう (all / subset / reject-all)
+7. プレビュー (diff + final confirm)
+8. 適用 (dependency order, pre-image check, halt-on-failure, no auto-rollback)
+9. 再点検 (touched files; reconcile predicted vs actual; loop to 4, max 3)
+10. 記録 (`.claude/.smith.local.md`)
+
+### Implementation form (α)
+
+Hybrid plugin (Archetype C) at `agents-in-your-area/.claude/plugins/smith/`.
+
+| Part | Model | Role |
+|---|---|---|
+| `/smith` command | inherit | Orchestrator (10-step scripted prompt) |
+| 3 inspector agents | Opus | conventions / patterns / architecture (parallel) |
+| smith-knowhow skill | — | SKILL.md + references/ per component type |
+| `scripts/smith-autocheck.sh` | — | `[auto]` pre-pass |
+| `scripts/smith-evaluate.sh` | — | merge + confidence + threshold 80 + rank + reconcile (replaces evaluator agent) |
+| `scripts/smith-state.sh` | — | `.smith.local.md` front-matter I/O |
+
+### Key design choices
+
+- **Inspector = Opus**: smith's output is production-affecting (writes files in aiya's `.claude/`); precedent = pr-review-toolkit's code-reviewer.
+- **Inspector inline drafts improvement + patch content**: same-material collapse; `/smith` becomes pure orchestrator → justifies `inherit`.
+- **3 lenses in parallel**: conventions + patterns + architecture. Convergence across lenses → confidence signal.
+- **Scoring / rank / reconcile scripted**: deterministic after numeric expected-effect and tag-based merge; evaluator agent eliminated.
+- **Confidence threshold 80**: drops noise before ranking (precedent: code-review, feature-dev).
+- **OK gets no improvement proposals; NG only**.
+- **Priority = expected effect alone** (severity internalized, effort ignored).
+- **No auto-rollback**: halt-on-failure, user reverts via git.
+- **3-iteration cap** on verify loop.
+
+## Open in γ (pending final confirmation)
+
+1. `SKILL.md` holds: role / taxonomy / common false-positive list / index / load heuristic.
+2. `references/` holds: per-component checklists (prompt / command / agent / skill / hook / claude-md / plugin) + relevant patterns excerpts.
+3. Common false-positive list lives in `SKILL.md` (inspectors get it via skill, not `/smith`).
+4. `[auto]` pre-pass scope = only items tagged `[auto]` in checklists.md (kebab-case names, front-matter required fields, forbidden absolute paths, `${CLAUDE_PLUGIN_ROOT}` usage, line-count limits).
+
+## Next tasks (priority order)
+
+1. Close γ (confirm the 4 sub-decisions above).
+2. Final expert review of the integrated design (α + β + γ).
+3. Implement smith at `agents-in-your-area/.claude/plugins/smith/`.
+4. Dogfood smith against aiya's own `.claude/` and iterate.
+
+## Session context
+
+- Proposal-based progression: always recommend, don't interview (`.claude/rules/interaction.md`, `workflow.md`).
+- `k` = approve; `進めて` = proceed autonomously for multiple steps.
+- Desktop Claude Code; plain-language rationale required (the user does not memorize knowhow citations).
+- Flat structure preferred: minimize nested bullets, sparing bold, tables only when comparing.
+- Knowhow source: `claude-plugins-knowhow/docs/` (concepts / components / patterns / case-studies / checklists).
+- outputs/ is the 叩き台 (scratch area); not maintained once implementation moves to aiya monorepo.
+
+## Document layout
 
 ```
-claude-plugins-knowhow/
-├── README.md              # Overview / Usage / Architecture
-├── progress.md            # This file
-└── docs/
-    ├── concepts.md        # Foundational concepts and design principles
-    ├── components.md      # Command / agent / skill / hook design patterns
-    ├── patterns.md        # Quality control, state management, security, advanced
-    ├── case-studies.md    # Seven official plugin analyses (origin tracing)
-    └── checklists.md      # Seven-category quality self-checks
+outputs/
+├── .claude/rules/                 # Project rules
+├── claude-plugins-knowhow/        # Knowhow source
+│   ├── docs/{concepts,components,patterns,case-studies,checklists}.md
+│   ├── README.md
+│   └── progress.md                # <-- this file
+└── agents-in-your-area/           # aiya monorepo
+    └── .claude/plugins/smith/     # smith implementation target
 ```
 
-### 3. Section ordering principle
-- Each document follows: **overview-level → user-facing → developer-facing**
-- Exact headings are optimized per document (no forced uniform template)
+## How to resume
 
-### 4. Two-mode design (final)
-
-| Mode | Input | Purpose |
-|---|---|---|
-| **Create** | Natural language request | Generate a new plugin |
-| **Improve** | Path (+ optional problem description) | Improve an existing plugin |
-
-- Evaluate was absorbed as `Improve --report-only`
-- Both modes are **proposal-driven**: plugin-smith leads with concrete recommendations, asks questions only for decisive ambiguities
-- Default is **dry-run**: disk writes require user approval
-- User approval points are limited to meaningful forks (structure proposal in Create, patch application in Improve)
-
-#### Create flow
-1. Receive intent → immediately propose structure (no interview)
-2. Classify into archetype A/B/C per `docs/concepts.md`
-3. Compose from `docs/components.md` patterns
-4. Present 2–3 candidates in parallel with rationale
-5. User approval (proceed / adjust / reject)
-6. Scaffold → self-validate against `docs/checklists.md`
-
-#### Improve flow
-| Argument | Behavior |
-|---|---|
-| Path only | Full scan → prioritized improvement proposals → approval → apply |
-| Path + problem description | Focused diagnosis → root-cause hypothesis → patch → approval → apply |
-| `--report-only` | No mutations; scorecard output only |
-
-### 5. Decision log
-
-| Topic | Decision | Rationale |
-|---|---|---|
-| Working directory | Extend `claude-plugins-knowhow/` | Design docs for the plugin to be built |
-| README placement | Directory root | Clear entry point |
-| docs file count | 5 | Coverage verified; all source material mapped |
-| case-studies scope | All 7 plugins | Origin tracing |
-| Mode count | 2 (Create / Improve) | Shared diagnostic engine, simpler UX |
-| Evaluate handling | Absorbed as `--report-only` flag | Same diagnostic engine, output differs |
-| Improve dry-run | Default ON | Safety-first |
-| Problem-targeted Improve | Argument, not separate mode | Avoid mode proliferation |
-| Interruption / resume | TODO (stateless for v1) | Minimum viable first |
-
-## File Migration Map (completed)
-
-| Original | Destination | Status |
-|---|---|---|
-| `claude-plugins-knowhow.md` §1, §2, §9, §18 | `docs/concepts.md` | ✅ Done |
-| `claude-plugins-knowhow.md` §3, §4, §6, §7 | `docs/components.md` | ✅ Done |
-| `claude-plugins-knowhow.md` §5, §8, §10, §19 | `docs/patterns.md` | ✅ Done |
-| `claude-plugins-knowhow.md` §11–17 | `docs/case-studies.md` | ✅ Done |
-| `claude-plugins-knowhow.md` §20 | `docs/checklists.md` (merged) | ✅ Done |
-| `checklist-prompt.md` | `docs/checklists.md` > Prompt | ✅ Done |
-| `checklist-skills.md` | `docs/checklists.md` > Skill | ✅ Done |
-| `checklist-hooks.md` | `docs/checklists.md` > Hook | ✅ Done |
-| `checklist-claude-md.md` | `docs/checklists.md` > CLAUDE.md | ✅ Done |
-| `cc-best-practices-report.md` | `README.md` > Overview | ✅ Done |
-
-All originals deleted after migration.
-
-## Open TODO
-
-- [ ] Architecture diagram (mermaid or text) for README.md
-- [ ] Interruption / resume state management design
-- [ ] Improve mode: algorithm for problem-description-focused diagnosis
-- [ ] Scorecard output format for `--report-only`
-- [ ] Reporter / evaluator separation: how to implement in Improve mode
-- [ ] Plugin name finalization (`plugin-smith` is a placeholder)
-- [ ] Content review of all docs/*.md and README.md by the user (committed but not yet reviewed)
-
-## Consistency Notes
-
-| Concern | Resolution |
-|---|---|
-| checklists.md §20 vs existing 4 checklists overlap | Merged during writing; new 3 categories (Command/Agent/Plugin) derived fresh |
-| README.Usage proposal-driven vs case-studies feature-dev interview-style | case-studies records historical observation; plugin-smith's own UX is defined in README |
-| Plugin name `plugin-smith` is tentative | Used consistently across README and all docs; `grep -r plugin-smith` for bulk rename |
-
-## Progress
-
-- [x] Step 1-a: Directory layout confirmed
-- [x] Step 1-b: Per-document heading formats confirmed
-- [x] Step 1-c: README content strategy confirmed (proposal-driven Usage)
-- [x] Step 2: Input mapping + consistency review
-- [x] Step 3: File creation (refactor execution)
-- [x] Step 3-post: Legacy file deletion
-- [ ] Step 4: User content review of all new files
-- [ ] Step 5: Begin plugin implementation (SKILL.md, commands/, agents/, etc.)
-
-## How to Resume
-
-1. Read `.claude/rules/*.md` (especially `interaction.md` for Default to English)
-2. Read this file — focus on "Confirmed Decisions" and "Open TODO"
-3. Continue from "Next Action" below
-
-## Environment
-
-- Branch: `claude/busy-mccarthy-JFl8r`
-- PR: https://github.com/kiyohome/outputs/pull/2
-- Working directory: `claude-plugins-knowhow/`
-
-## Next Action
-
-- **Step 4**: User reviews the content of all new files (README.md + docs/*.md). These were committed in bulk without individual review.
-- After review, proceed to **Step 5**: begin plugin implementation — create the actual SKILL.md, commands/, agents/ structure that constitutes plugin-smith as a working plugin.
+1. Read `.claude/rules/*.md` at `outputs/.claude/rules/` — especially `interaction.md`, `workflow.md`, `language.md`, `design-process.md`.
+2. Read this file — focus on Identity, Completed, Open in γ, Session context.
+3. Continue from Next tasks.
