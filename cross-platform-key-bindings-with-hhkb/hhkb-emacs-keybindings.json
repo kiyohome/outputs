@@ -895,6 +895,336 @@
                     ]
                 }
             ]
+        },
+        {
+            "description": "Emacs: Ctrl+/ → Cmd+Z undo（HHKB接続時、Emacs対応アプリ除外）",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "slash",
+                        "modifiers": {
+                            "mandatory": [
+                                "control"
+                            ]
+                        }
+                    },
+                    "to": [
+                        {
+                            "key_code": "z",
+                            "modifiers": [
+                                "command"
+                            ]
+                        },
+                        {
+                            "set_variable": {
+                                "name": "emacs_mark_active",
+                                "value": 0
+                            }
+                        }
+                    ],
+                    "conditions": [
+                        {
+                            "type": "device_if",
+                            "identifiers": [
+                                {
+                                    "description": "HHKB Studio",
+                                    "vendor_id": 1278,
+                                    "product_id": 22
+                                }
+                            ]
+                        },
+                        {
+                            "type": "frontmost_application_unless",
+                            "bundle_identifiers": [
+                                "^com\\.microsoft\\.VSCode$",
+                                "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.apple\\.Terminal$",
+                                "^com\\.microsoft\\.windows-terminal$"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "description": "Emacs: Ctrl+Shift+/ → Cmd+Shift+Z redo（HHKB接続時、Emacs対応アプリ除外）",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "slash",
+                        "modifiers": {
+                            "mandatory": [
+                                "control",
+                                "shift"
+                            ]
+                        }
+                    },
+                    "to": [
+                        {
+                            "key_code": "z",
+                            "modifiers": [
+                                "command",
+                                "shift"
+                            ]
+                        },
+                        {
+                            "set_variable": {
+                                "name": "emacs_mark_active",
+                                "value": 0
+                            }
+                        }
+                    ],
+                    "conditions": [
+                        {
+                            "type": "device_if",
+                            "identifiers": [
+                                {
+                                    "description": "HHKB Studio",
+                                    "vendor_id": 1278,
+                                    "product_id": 22
+                                }
+                            ]
+                        },
+                        {
+                            "type": "frontmost_application_unless",
+                            "bundle_identifiers": [
+                                "^com\\.microsoft\\.VSCode$",
+                                "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.apple\\.Terminal$",
+                                "^com\\.microsoft\\.windows-terminal$"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "description": "Emacs: Opt+F / Opt+B → 単語単位の移動 M-f / M-b（マーク中はShift付加、HHKB接続時、Emacs対応アプリ除外）",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "f",
+                        "modifiers": {
+                            "mandatory": [
+                                "option"
+                            ]
+                        }
+                    },
+                    "to": [
+                        {
+                            "key_code": "right_arrow",
+                            "modifiers": [
+                                "option",
+                                "shift"
+                            ]
+                        }
+                    ],
+                    "conditions": [
+                        {
+                            "type": "device_if",
+                            "identifiers": [
+                                {
+                                    "description": "HHKB Studio",
+                                    "vendor_id": 1278,
+                                    "product_id": 22
+                                }
+                            ]
+                        },
+                        {
+                            "type": "frontmost_application_unless",
+                            "bundle_identifiers": [
+                                "^com\\.microsoft\\.VSCode$",
+                                "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.apple\\.Terminal$",
+                                "^com\\.microsoft\\.windows-terminal$"
+                            ]
+                        },
+                        {
+                            "type": "variable_if",
+                            "name": "emacs_mark_active",
+                            "value": 1
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "f",
+                        "modifiers": {
+                            "mandatory": [
+                                "option"
+                            ]
+                        }
+                    },
+                    "to": [
+                        {
+                            "key_code": "right_arrow",
+                            "modifiers": [
+                                "option"
+                            ]
+                        }
+                    ],
+                    "conditions": [
+                        {
+                            "type": "device_if",
+                            "identifiers": [
+                                {
+                                    "description": "HHKB Studio",
+                                    "vendor_id": 1278,
+                                    "product_id": 22
+                                }
+                            ]
+                        },
+                        {
+                            "type": "frontmost_application_unless",
+                            "bundle_identifiers": [
+                                "^com\\.microsoft\\.VSCode$",
+                                "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.apple\\.Terminal$",
+                                "^com\\.microsoft\\.windows-terminal$"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "b",
+                        "modifiers": {
+                            "mandatory": [
+                                "option"
+                            ]
+                        }
+                    },
+                    "to": [
+                        {
+                            "key_code": "left_arrow",
+                            "modifiers": [
+                                "option",
+                                "shift"
+                            ]
+                        }
+                    ],
+                    "conditions": [
+                        {
+                            "type": "device_if",
+                            "identifiers": [
+                                {
+                                    "description": "HHKB Studio",
+                                    "vendor_id": 1278,
+                                    "product_id": 22
+                                }
+                            ]
+                        },
+                        {
+                            "type": "frontmost_application_unless",
+                            "bundle_identifiers": [
+                                "^com\\.microsoft\\.VSCode$",
+                                "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.apple\\.Terminal$",
+                                "^com\\.microsoft\\.windows-terminal$"
+                            ]
+                        },
+                        {
+                            "type": "variable_if",
+                            "name": "emacs_mark_active",
+                            "value": 1
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "b",
+                        "modifiers": {
+                            "mandatory": [
+                                "option"
+                            ]
+                        }
+                    },
+                    "to": [
+                        {
+                            "key_code": "left_arrow",
+                            "modifiers": [
+                                "option"
+                            ]
+                        }
+                    ],
+                    "conditions": [
+                        {
+                            "type": "device_if",
+                            "identifiers": [
+                                {
+                                    "description": "HHKB Studio",
+                                    "vendor_id": 1278,
+                                    "product_id": 22
+                                }
+                            ]
+                        },
+                        {
+                            "type": "frontmost_application_unless",
+                            "bundle_identifiers": [
+                                "^com\\.microsoft\\.VSCode$",
+                                "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.apple\\.Terminal$",
+                                "^com\\.microsoft\\.windows-terminal$"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "description": "Emacs: Opt+D → 単語をforward選択して削除 kill-word（HHKB接続時、Emacs対応アプリ除外）",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "d",
+                        "modifiers": {
+                            "mandatory": [
+                                "option"
+                            ]
+                        }
+                    },
+                    "to": [
+                        {
+                            "key_code": "right_arrow",
+                            "modifiers": [
+                                "option",
+                                "shift"
+                            ]
+                        },
+                        {
+                            "key_code": "delete_or_backspace"
+                        }
+                    ],
+                    "conditions": [
+                        {
+                            "type": "device_if",
+                            "identifiers": [
+                                {
+                                    "description": "HHKB Studio",
+                                    "vendor_id": 1278,
+                                    "product_id": 22
+                                }
+                            ]
+                        },
+                        {
+                            "type": "frontmost_application_unless",
+                            "bundle_identifiers": [
+                                "^com\\.microsoft\\.VSCode$",
+                                "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.apple\\.Terminal$",
+                                "^com\\.microsoft\\.windows-terminal$"
+                            ]
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
