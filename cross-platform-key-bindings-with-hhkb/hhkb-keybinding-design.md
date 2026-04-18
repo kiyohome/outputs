@@ -406,14 +406,7 @@ New-ItemProperty -Path $kbLayout -Name "Scancode Map" -PropertyType Binary -Valu
 
 ### 4.3 Mac セットアップ
 
-#### 4.3.1 CapsLock → Ctrl（PC本体キーボード用）
-
-1. システム設定 → キーボード → キーボードショートカット → 修飾キー
-2. 「Apple Internal Keyboard」を選択（HHKB接続中は間違えないよう注意）
-3. Caps Lockキーの動作を「⌃ Control」に変更
-4. 「完了」をクリック
-
-#### 4.3.2 Karabiner-Elements のインストール
+#### 4.3.1 Karabiner-Elements のインストール
 
 1. https://karabiner-elements.pqrs.org/ からdmgをダウンロード
    - または `brew install --cask karabiner-elements` でインストール
@@ -426,6 +419,19 @@ New-ItemProperty -Path $kbLayout -Name "Scancode Map" -PropertyType Binary -Valu
      - 「Karabiner-Core-Service」をONにする
      - 「Karabiner-EventViewer」をONにする
 4. キーボードレイアウトの選択で「ANSI」を選択（英語配列）
+
+#### 4.3.2 CapsLock → Ctrl（PC本体キーボード用）
+
+OS側の修飾キー設定ではなく、**Karabiner-ElementsのSimple Modifications**で設定する。Karabinerを使う場合、OSの修飾キーリマップと競合するためKarabiner側に寄せるのが推奨（Karabinerも警告を出す）。
+
+1. システム設定 → キーボード → キーボードショートカット → 修飾キー：「Apple Internal Keyboard」のCaps Lockが「Caps Lock」のまま（デフォルト）であることを確認する。以前Controlに変更していた場合はCaps Lockに戻す。
+2. Karabiner-Elements Settingsを開く
+3. 「Simple Modifications」タブを開く
+4. 「Target Device」のプルダウンで「**Apple Internal Keyboard / Trackpad**」を選択
+5. 「Add item」をクリック
+6. From key: `caps_lock` 、To key: `left_control` を選択
+
+※ HHKB Studioはファームウェアレベルで既にCapsLock位置がControlのため、本設定はHHKBには影響しない（Target DeviceをApple Internalに限定しているため）。
 
 #### 4.3.3 Karabiner-Elements の設定
 
