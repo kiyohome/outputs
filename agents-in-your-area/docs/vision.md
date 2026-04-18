@@ -1,70 +1,8 @@
 # Vision
 
-> A framework that scales an expert's judgment
+> Strategic context: prior art, scope, and FAQ
 
-Change by an order of magnitude the value a single expert can produce.
-
-AI agents have become "usable", but not yet "delegable". AIYA is a framework that structurally embeds an expert's unwavering judgment into their collaboration with AI, freeing them from babysitting and making success reproducible.
-
-## Who is this for
-
-Skilled developers.
-
-People who already use AI agents heavily — who have tried spec-driven development, Plan Mode, skills, and parallel execution piece by piece — and who still hit a wall.
-
-This is not a tool to level up juniors. It is a tool that unlocks scaling for people who can already make the right call.
-
-## The problem
-
-Core pain: **an expert's unwavering judgment is not being put to use in AI collaboration.**
-
-What makes an expert an expert is not wavering: not losing sight of the goal, having a stable decision axis, not being blown around by tech trends. But in AI collaboration, there is no mechanism to put that steadiness to work.
-
-### Babysitting never ends
-
-As of 2026, spec-driven development is starting to spread. Write the spec first, plan before implementation. Experts are trying it.
-
-AI still drifts mid-implementation. There is no mechanism to detect the widening distance between the spec and the output, so the expert ends up constantly asking "is this still okay?" More tools, more methods — and yet babysitting has only changed shape, not disappeared.
-
-### Success isn't reproducible
-
-Spec-driven, planning first, skills — each practice exists. On good days, the results are dramatic. But you cannot tell why it worked, so the next day you cannot reproduce it. There is no consistent process that explains the gap between success and failure.
-
-## What you get
-
-An expert's unwavering judgment becomes structurally part of the AI's work process.
-
-**No babysitting** — instead of babysitting, you can focus on making the right call at the right moment. The Traceability Chain detects drift, and gates place expert judgment exactly when it is needed. Success stops being a personal hunch and becomes a reproducible process.
-
-**Scale as one** — the value one expert can produce changes by an order of magnitude. AI does the work; the expert focuses on "what to build" and "did we get closer to the goal". Because the phases are clearly demarcated, multiple workers can be reviewed asynchronously.
-
-## Core: Traceability Chain × Gates
-
-As work proceeds, "what is this for, again?" gets blurry. This holds for humans too, not only AI.
-
-AIYA connects everything from the user's situation to the implementation into a single chain, with gates (judgment points) placed along it. If any link in the chain breaks, work stops. The expert judges at the gates whether "we got closer to the goal" and course-corrects.
-
-```
-Situation → Pain → Benefit → Success Scenarios → Testing → Technology → Design → Steps
-```
-
-The chain has three phases, with gates between phases.
-
-**Goal** — what to achieve
-- Situation — what situation is the user in?
-- Pain — what is the user struggling with in that situation?
-- Benefit — how does it change when the user's problem is resolved?
-- Success Scenarios — what state of the user counts as "resolved"?
-
-**Approach** — how to achieve it
-- Testing — how do we confirm it was solved?
-- Technology — what do we use to solve it?
-- Design — how do we implement it?
-
-**Delivery** — get it to the user
-- Steps — in what order do we proceed?
-
-The order within Approach is intentional. Placing Testing first prevents the drift of entering technology selection or design without first deciding "how we will confirm". Approach is inherently the most drift-prone phase, and splitting it into three increases the number of drift-detection points.
+This document is the strategic backdrop for AIYA. The everyday "why / who / what you get" framing lives at the top of the [README](../README.md) so that it stays visible at the entry point. This file focuses on how AIYA sits in the wider landscape and what it does (and does not) try to be.
 
 ## Prior art
 
@@ -92,7 +30,7 @@ AIYA's subject is the expert. It tackles "more tools, more methods, yet experts 
 
 Concretely: "maintain the Situation → Pain → Benefit → Success Scenarios traceability chain, and insert expert judgment between phases" — as far as we can tell, no tool combines these into AI agent development.
 
-See the FAQ for comparisons with individual tools.
+See the FAQ below for comparisons with individual tools.
 
 ### Supporting evidence
 
@@ -135,3 +73,9 @@ Similar, but the judge at the gates is different. TAKT / BMAD use AI personas (c
 **Q: Is AIYA the same as parallel agent tools (Zerg, Agent Teams, etc.)?**
 
 Parallel execution is one ingredient of AIYA, but not its essence. Parallel tools focus on "running multiple AIs at once". AIYA tackles "when we run multiple, the expert doesn't know what to judge". Because phases and gates are well defined, asynchronous review becomes feasible.
+
+## Related documents
+
+- [README](../README.md) — entry point and the always-conscious framing (who / problem / what you get)
+- [Traceability Chain × Gates](tc-x-gates.md) — the chain and gates referenced above
+- [ACC](acc.md) — the runtime that executes Delivery Steps
