@@ -42,12 +42,15 @@ For deeper background — prior art, scope, comparisons with existing tools, and
 
 ## Concepts
 
-AIYA stands on two orthogonal mechanisms.
+AIYA stands on two orthogonal mechanisms. One guards **purpose**; the other guards **context**.
 
-| Concept | What it guards | One-liner | Details |
-|---|---|---|---|
-| **Traceability Chain × Gates** | Purpose | An 8-element chain from user situation to execution, with expert-judged gates between phases — drift becomes structurally detectable | [Traceability Chain × Gates](docs/tc-x-gates.md) |
-| **ACC (Agent Cognitive Compressor)** | Context | A generic runtime that suppresses context bloat and drift by handing a bounded state (CCS) between Turns — replacement semantics, not accumulation | [ACC](docs/acc.md) |
+### Traceability Chain × Gates — guards purpose
+
+An 8-element chain from user situation to execution, with expert-judged gates between phases. Drift becomes structurally detectable. See [Traceability Chain × Gates](docs/tc-x-gates.md).
+
+### ACC (Agent Cognitive Compressor) — guards context
+
+A generic runtime that suppresses context bloat and drift by handing a bounded state (CCS) between Turns — replacement semantics, not accumulation. See [ACC](docs/acc.md).
 
 ## Quickstart
 
@@ -59,12 +62,10 @@ AIYA stands on two orthogonal mechanisms.
 
 ## Packages
 
-| Package | Idea | Contents | Docs |
-|---|---|---|---|
-| **aiya** | Full AIYA experience (integration) | CLI + docker-compose | — |
-| **aiya-pit** | Go wild in here (sandbox) | Dockerfile, CA certificate, network restrictions | [aiya-pit](docs/aiya-pit.md) |
-| **aiya-tape** | The tape is rolling (audit) | Go proxy, OpenObserve setup | [aiya-tape](docs/aiya-tape.md) |
-| **aiya-jam** | Let's jam (task management) | SKILL.md, workflow definitions | [aiya-jam](docs/aiya-jam.md) |
+- [**aiya-pit**](docs/aiya-pit.md) — sandbox (Dockerfile, CA cert, network restrictions)
+- [**aiya-tape**](docs/aiya-tape.md) — audit proxy (Go + OpenObserve)
+- [**aiya-jam**](docs/aiya-jam.md) — task management (SKILL.md, workflow definitions)
+- **aiya** — full AIYA experience (CLI + docker-compose, integrates the three above)
 
 pit (mosh pit), tape (recording tape), jam (jam session). All one-syllable, all music.
 
