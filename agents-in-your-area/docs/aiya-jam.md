@@ -1,10 +1,10 @@
 # aiya-jam
 
-> Let's jam — task management
+> Let's jam — orchestrator
 
 <!-- NOTE: This document is a skeleton. The content will be filled in in the next iteration. -->
 
-The task-management package that puts Traceability Chain × Gates and ACC into practice. The expert defines *what to build* as a Chain, and aiya-jam drives execution as an ACC Runner: Turns consume Chain content, hand off CCS, and surface gates to the expert. aiya-jam provides the workflow and skill definitions for that.
+The orchestrator package that puts Traceability Chain × Gates and ACC into practice. The expert defines *what to build* as a Chain, and aiya-jam drives execution as an ACC Runner: Turns consume Chain content, hand off CCS, and surface gates to the expert. aiya-jam provides the workflow and skill definitions for that.
 
 ## Responsibilities
 
@@ -58,7 +58,7 @@ TODO
 - [Traceability Chain × Gates](tc-x-gates.md) — Chain definition and gates
 - [ACC](acc.md) — Runner / Turn / CCS runtime
 - [aiya-pit](aiya-pit.md) — execution environment
-- [aiya-tape](aiya-tape.md) — auditing
+- [aiya-tape](aiya-tape.md) — auditor
 
 ## Open questions
 

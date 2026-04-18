@@ -64,9 +64,9 @@ A generic runtime that suppresses context bloat and drift by handing a bounded s
 
 AIYA is composed of three packages.
 
-- [**aiya-jam**](docs/aiya-jam.md) — task management (SKILL.md, workflow definitions)
+- [**aiya-jam**](docs/aiya-jam.md) — orchestrator (SKILL.md, workflow definitions)
 - [**aiya-pit**](docs/aiya-pit.md) — sandbox (Dockerfile, CA cert, network restrictions)
-- [**aiya-tape**](docs/aiya-tape.md) — audit proxy (Go + OpenObserve)
+- [**aiya-tape**](docs/aiya-tape.md) — auditor (Go + OpenObserve)
 
 jam (jam session), pit (mosh pit), tape (recording tape). All one-syllable, all music.
 

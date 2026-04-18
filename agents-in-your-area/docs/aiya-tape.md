@@ -1,6 +1,6 @@
 # aiya-tape
 
-> The tape is rolling — auditing and visualization
+> The tape is rolling — auditor
 
 <!-- NOTE: The overall architecture diagram, security model, and monorepo layout are consolidated in ../README.md. -->
 
