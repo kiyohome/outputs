@@ -102,7 +102,7 @@ The expert opens a task through aiya-jam, authoring the Chain and answering gate
 
 | Package | Underlying tech |
 |---|---|
-| [**aiya-jam**](docs/aiya-jam.md) | SKILL.md, workflow definitions |
+| [**aiya-jam**](docs/aiya-jam.md) | Claude Code plugin (SKILL.md, workflow definitions) |
 | [**aiya-pit**](docs/aiya-pit.md) | Docker (container image, internal network, CA cert) |
 | [**aiya-tape**](docs/aiya-tape.md) | aiya-proxy (Go + goproxy), OpenObserve |
 
