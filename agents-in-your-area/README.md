@@ -4,15 +4,16 @@
 
 AIYA is a framework that structurally embeds an expert's unwavering judgment into their collaboration with AI. AI agents have become "usable" — but not yet "delegable". AIYA closes that gap.
 
-Skilled developers have tried spec-driven development, Plan Mode, skills, and parallel execution piece by piece, yet still can't simultaneously achieve "freedom from babysitting" and "reproducible success" when working with AI. AIYA attacks that wall structurally. See [docs/vision.md](docs/vision.md) for the full picture.
+Skilled developers have tried spec-driven development, Plan Mode, skills, and parallel execution piece by piece, yet still can't simultaneously achieve "freedom from babysitting" and "reproducible success" when working with AI. AIYA attacks that wall structurally. See [Vision](docs/vision.md) for the full picture.
 
 ## Core concepts
 
-| Concept | One-liner | Details |
-|---|---|---|
-| **Traceability Chain** | Chains `Situation → Pain → Benefit → Success Scenarios → Testing → Technology → Design → Steps` across three phases (Goal / Approach / Delivery) so that drift is detectable | [docs/traceability-chain.md](docs/traceability-chain.md) |
-| **CCS (Compressed Cognitive State)** | A bounded state representation that hands off between Steps with replacement semantics | [docs/ccs.md](docs/ccs.md) |
-| **Gates** | Expert judgment points placed between phases of the Traceability Chain | [docs/traceability-chain.md](docs/traceability-chain.md) / [docs/architecture.md](docs/architecture.md) |
+AIYA stands on two orthogonal mechanisms.
+
+| Concept | What it guards | One-liner | Details |
+|---|---|---|---|
+| **Traceability Chain × Gates** | Purpose | An 8-element chain from user situation to execution, with expert-judged gates between phases — drift becomes structurally detectable | [Traceability Chain × Gates](docs/tc-x-gates.md) |
+| **ACC (Agent Cognitive Compressor)** | Context | A generic runtime that suppresses context bloat and drift by handing a bounded state (CCS) between Turns — replacement semantics, not accumulation | [ACC](docs/acc.md) |
 
 ## Quickstart
 
@@ -25,24 +26,23 @@ Skilled developers have tried spec-driven development, Plan Mode, skills, and pa
 ## Documentation index
 
 **Read first (for everyone)**
-- [docs/vision.md](docs/vision.md) — why we build this
-- [docs/traceability-chain.md](docs/traceability-chain.md) — what the Traceability Chain is
-- [docs/ccs.md](docs/ccs.md) — Compressed Cognitive State
-- [docs/architecture.md](docs/architecture.md) — overall architecture and work units
+- [Vision](docs/vision.md) — why AIYA exists
+- [Traceability Chain × Gates](docs/tc-x-gates.md) — purpose-based quality assurance
+- [ACC](docs/acc.md) — context control for multi-Turn agents
 
 **For users**
-- [docs/aiya-jam.md](docs/aiya-jam.md) — task management (SKILL.md, workflows)
-- [docs/aiya-pit.md](docs/aiya-pit.md) — sandbox
-- [docs/aiya-tape.md](docs/aiya-tape.md) — auditing and visualization
+- [aiya-jam](docs/aiya-jam.md) — task management (SKILL.md, workflows)
+- [aiya-pit](docs/aiya-pit.md) — sandbox
+- [aiya-tape](docs/aiya-tape.md) — auditing and visualization
 
 ## Monorepo layout
 
 | Package | Idea | Contents | Docs |
 |---|---|---|---|
 | **aiya** | Full AIYA experience (integration) | CLI + docker-compose | — |
-| **aiya-pit** | Go wild in here (sandbox) | Dockerfile, CA certificate, network restrictions | [docs/aiya-pit.md](docs/aiya-pit.md) |
-| **aiya-tape** | The tape is rolling (audit) | Go proxy, OpenObserve setup | [docs/aiya-tape.md](docs/aiya-tape.md) |
-| **aiya-jam** | Let's jam (task management) | SKILL.md, workflow definitions | [docs/aiya-jam.md](docs/aiya-jam.md) |
+| **aiya-pit** | Go wild in here (sandbox) | Dockerfile, CA certificate, network restrictions | [aiya-pit](docs/aiya-pit.md) |
+| **aiya-tape** | The tape is rolling (audit) | Go proxy, OpenObserve setup | [aiya-tape](docs/aiya-tape.md) |
+| **aiya-jam** | Let's jam (task management) | SKILL.md, workflow definitions | [aiya-jam](docs/aiya-jam.md) |
 
 pit (mosh pit), tape (recording tape), jam (jam session). All one-syllable, all music.
 

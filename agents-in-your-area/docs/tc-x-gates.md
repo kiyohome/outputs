@@ -1,15 +1,15 @@
-# Traceability Chain
+# Traceability Chain × Gates
 
-> An 8-element chain from user situation to executable steps, organized into three phases, so that drift is structurally detectable
+> Purpose-based quality assurance: link user situation to execution, and judge at each phase boundary
 
-The Traceability Chain keeps "what is this for, again?" answerable at every point between intent and execution. It is a single chain with eight elements, grouped into three phases, with gates (expert judgment points) placed between phases.
+**Traceability Chain (TC)** keeps "what is this for, again?" answerable at every point between intent and execution. It is a single chain of eight elements grouped into three phases. **Gates** sit between phases as expert judgment points — "did we get closer to the goal?" is answered here, not at the end.
 
 ```
 Situation → Pain → Benefit → Success Scenarios │ Testing → Technology → Design │ Steps
-|______________ Goal ______________|           |______ Approach ______|       | Delivery |
+|______________ Goal ______________|  G1       |______ Approach ______|  G2     | Delivery |  G3
 ```
 
-Each element is linked to the next; when a link breaks, the process stops. That is why the chain is managed as explicit documentation. See [vision.md](vision.md) for the full motivation.
+Each element links to the next; when a link breaks, the process stops. The chain plus its gates is what makes drift **structurally detectable**. See [Vision](vision.md) for the motivation.
 
 ## The three phases
 
@@ -48,6 +48,38 @@ The order within Approach is intentional: Testing first, then Technology, then D
 |---|---|---|
 | **Steps** | In what order do we proceed? | TODO |
 
+## Gates
+
+Three gates sit at phase boundaries. The expert judges at each one whether work can proceed to the next phase.
+
+| Gate | Placement | What the gate commits |
+|---|---|---|
+| **G1 — Goal gate** | after Success Scenarios, before Approach | "what we are building, and what counts as success" |
+| **G2 — Approach gate** | after Design, before Delivery | "how we will build it, including how we will confirm" |
+| **G3 — Delivery gate** | on completion of Steps | "did we get closer to the goal" |
+
+**Authoring split** (working hypothesis):
+
+| Phase | Authored by | Committed at |
+|---|---|---|
+| Goal | Expert | G1 |
+| Approach | AI-drafted, expert-reviewed | G2 |
+| Delivery | AI-generated from the approved Approach, executed by AI | G3 |
+
+**Who judges** — the expert (see [Vision](vision.md)).
+
+**Surface** — existing chat infrastructure (Slack, Claude Code Channels, etc.). AIYA does not build a dedicated UI.
+
+<!-- TODO: exact gate criteria, rejection fallbacks -->
+
+## How Delivery Steps run
+
+The Delivery phase's Steps are executed by [ACC](acc.md), a generic runtime for multi-Turn AI agents. Each Step is realized as one or more ACC Turns, and a bounded state (CCS) is handed between them. Chain content lands in the Turn's CCS — for example, Goal-phase elements flow into `goal_orientation`; Approach-phase constraints flow into `constraints`; authored documents flow into `retrieved_artifacts`.
+
+TC × Gates decides **what to build and whether we got there**. ACC decides **how state is carried while building it**. The two are orthogonal.
+
+<!-- TODO: exact reference vs value-copy scheme for Chain → CCS -->
+
 ## Format
 
 <!-- TODO: Schema for each element. Decide between YAML / Markdown frontmatter / plain Markdown. -->
@@ -71,38 +103,8 @@ The order within Approach is intentional: Testing first, then Technology, then D
 <!-- TODO: Creation → update → archival -->
 
 - **Creation** — when and by whom a Chain is stood up (at issue filing / at planning / ...)
-- **Authoring split** — which elements the expert writes and which the AI drafts. Working hypothesis: the expert owns the Goal phase; the Approach phase is AI-drafted and expert-reviewed at the gate; the Delivery phase is AI-generated from the approved Approach.
 - **Update** — how to handle a Chain that changes mid-implementation
 - **Archival** — how completed Chains are preserved
-
-TODO
-
-## Gates
-
-<!-- TODO: Placement and criteria for the gates -->
-
-Gates sit at phase boundaries. Working hypothesis:
-
-- **G1 — Goal gate** (after Success Scenarios): commit to "what we are building, and what counts as success"
-- **G2 — Approach gate** (after Design): commit to "how we will build it, including how we will confirm"
-- **G3 — Delivery gate** (after Steps / on completion): judge "did we get closer to the goal"
-
-For each gate:
-- Who judges — the expert (see [vision.md](vision.md))
-- UI — existing chat infrastructure (Slack, Claude Code Channels), not a dedicated UI
-- What is judged — TODO
-- Where to fall back on rejection — TODO
-
-## Link to CCS
-
-<!-- TODO: How to connect Chain and CCS -->
-
-**Open**: how CCS should reference Chain elements. Candidates:
-- (a) Path reference: `retrieved_artifacts: spec(chains/issue-123/success-scenarios.md)`
-- (b) ID reference: something like `SCN-123-01`
-- (c) Value copy: at CCS creation time, inline the relevant Chain content into `goal_orientation` / `constraints`
-
-See [ccs.md](ccs.md) for the CCS spec.
 
 ## Example
 
@@ -120,18 +122,16 @@ TODO
 
 ## Related documents
 
-- [vision.md](vision.md) — the thinking behind Chains
-- [ccs.md](ccs.md) — state representation during Step execution
-- [architecture.md](architecture.md) — how Chains map to Task/Context/Step/Action
-- [aiya-jam.md](aiya-jam.md) — the package that manages Chains
+- [Vision](vision.md) — why AIYA exists
+- [ACC](acc.md) — the runtime that executes Delivery Steps
+- [aiya-jam](aiya-jam.md) — the package that manages Chains
 
 ## Open questions
 
 - [ ] Format definition for each of the 8 elements
 - [ ] Physical layout (split files vs consolidated)
-- [ ] CCS linkage method
+- [ ] Chain → CCS linkage (reference vs value copy)
 - [ ] Gate criteria and rejection fallbacks
-- [ ] Mapping between Chain and the work-unit hierarchy (Task/Context/Step/Action, AIYA-original)
 - [ ] Chain versioning (how to keep change history)
 - [ ] Granularity (is 1 issue = 1 Chain the right unit?)
 - [ ] Authoring split between expert and AI, per element
