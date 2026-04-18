@@ -1,27 +1,67 @@
-# CCS (Compressed Cognitive State)
+# ACC (Agent Cognitive Compressor)
 
-> A bounded state representation that hands off Step-to-Step context with replacement semantics
+> A generic mechanism to suppress context bloat and drift across multi-turn AI agents
 
-CCS (Compressed Cognitive State) is a structured representation that AI agents use to hand off state between Steps. It adapts the Agent Cognitive Compressor (ACC) idea from the paper *AI Agents Need Memory Control Over More Context* (Bousetouane, 2026) to Claude Code agent skills.
+ACC is a runtime pattern for AI agents that run across many Turns. Instead of replaying the transcript, each Turn reconstructs a bounded state — **CCS (Compressed Cognitive State)** — and hands it to the next Turn. Context stops growing linearly, and early mistakes stop getting replayed.
+
+Both terms (ACC and CCS) come from the paper *AI Agents Need Memory Control Over More Context* (Bousetouane, 2026). ACC itself has no dependency on AIYA; it is a generic pattern that can sit under any multi-turn agent pipeline. AIYA adopts it as its runtime.
+
+## Why
 
 Traditional context management suffers from two problems:
 
 | Approach | Problem |
 |---|---|
 | Transcript Replay | Context grows linearly; early mistakes are replayed, accumulating drift and hallucinations |
-| Retrieval-based Memory | Semantic-similarity search does not match what Task control actually needs; stale or contradictory information leaks in |
+| Retrieval-based Memory | Semantic-similarity search does not match what task control actually needs; stale or contradictory information leaks in |
 
-CCS's answer:
+ACC's answer:
 
 - **Bounded state management** — replace, do not accumulate
 - **Structure via schema** — state explicitly what must be kept
 - **Separate artifact references from state commits** — retrieval only proposes candidates; actual state updates are strictly schema-controlled
 
-## The 9 components
+## Actors
+
+ACC has three actors.
+
+| Actor | Role |
+|---|---|
+| **Runner** | Orchestrates a sequence of Turns. Decides what runs next and delegates execution. Does not do the work itself. |
+| **Turn (AI)** | One AI invocation. Consumes `CCS_{N-1}` and Turn instructions, performs the work, and produces `CCS_N`. Turns do not share conversation context with each other. |
+| **CCS** | The bounded state handed between Turns. The only bridge. |
+
+## Turn I/O
+
+Every Turn follows the same input/output contract.
+
+```
+Each Turn:
+  Input:
+    - CCS_{N-1}
+    - Turn instructions
+
+  AI:
+    - Load CCS_{N-1} (the only handoff)
+    - Pull what it needs from CCS_{N-1}
+    - Run the work
+    - Produce a fresh CCS_N
+    - Record artifacts and information in CCS_N
+
+  Output:
+    - CCS_N
+    - Artifacts (code, findings, logs, etc.)
+```
+
+Because each Turn reconstructs CCS fresh, context does not accumulate across Turns — the replacement semantics are what make ACC bounded.
+
+## CCS
+
+### The 9 components
 
 | Component | Role |
 |---|---|
-| episodic_trace | What just happened in the previous Step |
+| episodic_trace | What just happened in the previous Turn |
 | semantic_gist | What we are fundamentally doing |
 | focal_entities | What we are working on |
 | relational_map | How they relate to each other |
@@ -31,7 +71,7 @@ CCS's answer:
 | uncertainty_signal | What is still uncertain |
 | retrieved_artifacts | Where information came from |
 
-## Format
+### Format
 
 CCS is written in the form:
 
@@ -45,14 +85,14 @@ component_name:
 | Part | Description |
 |---|---|
 | component_name | One of the nine CCS components |
-| type | A predicate or type defined per Component |
+| type | A predicate or type defined per component |
 | contents | The concrete value or content (free-form) |
 
 The paper calls this a "TOON style token-oriented representation". It is lighter than JSON or YAML and optimized for token efficiency.
 
-## Type vocabulary
+### Type vocabulary
 
-`type` defines "what this represents" per Component.
+`type` defines "what this represents" per component.
 
 | Principle | Description |
 |---|---|
@@ -73,28 +113,51 @@ The paper calls this a "TOON style token-oriented representation". It is lighter
 | uncertainty_signal | Kind of uncertainty | level, gap, assumption, pending, unverified |
 | retrieved_artifacts | Kind of reference | doc, code, log, config, spec, guide, snippet |
 
-## Management principles
+### Management principles
 
 | Principle | Description |
 |---|---|
-| One file per Task | Create exactly one CCS file per Task |
-| New file per Step | Do not accumulate; always create the latest state fresh (replacement semantics) |
-| No shared context | Task Agent and Step Agent do not share conversation context |
-| CCS is the only bridge | The only handoff between Steps is the CCS |
+| One file per run | Create exactly one CCS file per Runner invocation |
+| New file per Turn | Do not accumulate; always create the latest state fresh (replacement semantics) |
+| No shared context | Runner and Turn do not share conversation context |
+| CCS is the only bridge | The only handoff between Turns is the CCS |
 
-## Size health
+### Size health
 
-When a CCS starts to bloat, revisit Step design. CCS size is a **health indicator for Step design**.
+When a CCS starts to bloat, revisit Turn design. CCS size is a **health indicator for Turn design**.
 
 | Symptom | Cause | Remedy |
 |---|---|---|
-| Too many focal_entities | The Step's scope is too broad | Split the Step |
+| Too many focal_entities | The Turn's scope is too broad | Split the Turn |
 | relational_map is tangled | Too many relationships in one pass | Narrow the scope |
-| Lots of uncertainty_signal | Too much was left unresolved | Insert a Step whose job is to resolve it |
+| Lots of uncertainty_signal | Too much was left unresolved | Insert a Turn whose job is to resolve it |
 
-## Examples
+## Example: diagnose a production alert
 
-### IT operations task
+A generic multi-Turn flow. No framework, no hierarchy — just Runner + Turns + CCS.
+
+```mermaid
+flowchart LR
+    R["Runner"]
+    T1["Turn 1: observe"]
+    T2["Turn 2: hypothesize"]
+    T3["Turn 3: mitigate"]
+    T4["Turn 4: verify"]
+    R --> T1
+    R --> T2
+    R --> T3
+    R --> T4
+    T1 -.->|CCS_1| T2
+    T2 -.->|CCS_2| T3
+    T3 -.->|CCS_3| T4
+```
+
+- **Turn 1 — observe**: collect recent logs and metrics. `CCS_0 → CCS_1`
+- **Turn 2 — hypothesize**: form hypotheses on the root cause. `CCS_1 → CCS_2`
+- **Turn 3 — mitigate**: apply a safe mitigation. `CCS_2 → CCS_3`
+- **Turn 4 — verify**: confirm the symptom is resolved. `CCS_3 → CCS_4`
+
+A CCS snapshot after Turn 2 might look like this:
 
 ```
 episodic_trace:
@@ -141,52 +204,7 @@ retrieved_artifacts:
   doc(constraint note no restart)
 ```
 
-### Development task
-
-```
-episodic_trace:
-  completed(design review)
-  received(approval from tech lead)
-  failed(first test run due to missing mock)
-
-semantic_gist:
-  implement(user authentication module)
-
-focal_entities:
-  file(src/auth/login.ts)
-  function(validateCredentials)
-  function(generateToken)
-  function(refreshToken)
-  interface(UserCredentials)
-  interface(AuthToken)
-
-relational_map:
-  calls(login -> validateCredentials)
-  depends(validateCredentials -> bcrypt)
-  implements(LoginService -> IAuthService)
-
-goal_orientation:
-  achieve(auth module implementation)
-  ensure(test coverage 80%+)
-
-constraints:
-  must(use bcrypt for password hashing)
-  must_not(store plain text password)
-  follow(project coding standards)
-  avoid(external api call in unit test)
-
-predictive_cue:
-  next(generate test cases for validateCredentials)
-  verify(token expiry handling)
-
-uncertainty_signal:
-  level(low)
-  gap(token expiry time not specified in design)
-
-retrieved_artifacts:
-  spec(auth-module-spec.md)
-  guide(CODING_STANDARDS.md)
-```
+Turn 3 loads this CCS, picks a mitigation, applies it, and writes `CCS_3` with the outcome. No transcript is replayed; only the bounded CCS is passed.
 
 ## Paper evaluation
 
@@ -215,16 +233,17 @@ The ACC paper reports the following results over a 50-turn multi-turn evaluation
 
 ## Related documents
 
-- [architecture.md](architecture.md) — the Task/Context/Step/Action structure that produces and consumes CCS
-- [traceability-chain.md](traceability-chain.md) — how to connect Chain elements into `goal_orientation` / `constraints` / `retrieved_artifacts`
-- [aiya-jam.md](aiya-jam.md) — the package that stores and hands off CCS files
+- [AIYA README](../README.md) — why AIYA exists
+- [Traceability Chain × Gates](tc-x-gates.md) — how AIYA drives Turns toward a goal
+- [aiya-jam](aiya-jam.md) — the package that stores and hands off CCS files
 
 ## Open questions
 
-- [ ] Linkage between Chain elements and CCS (reference vs value copy)
 - [ ] Physical location of CCS files
 - [ ] CCS versioning (whether to keep the state before replacement)
 - [ ] Extension policy for the type vocabulary
+- [ ] Runner implementation form (subagent / separate session / separate container)
+- [ ] Async coordination for parallel Turns
 
 ## References
 

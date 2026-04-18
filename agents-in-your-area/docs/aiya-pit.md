@@ -87,8 +87,8 @@ aiya-pit can be used without the proxy. In that mode:
 
 ## Related documents
 
-- [aiya-tape.md](aiya-tape.md) — audit proxy (typically used alongside aiya-pit)
-- [../README.md](../README.md) — overall architecture diagram and security model
+- [aiya-tape](aiya-tape.md) — audit proxy (typically used alongside aiya-pit)
+- [AIYA README](../README.md) — overall architecture diagram and security model
 
 ## Open questions
 

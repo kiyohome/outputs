@@ -109,8 +109,8 @@ aiya-tape can be used without the sandbox. In that mode:
 
 ## Related documents
 
-- [aiya-pit.md](aiya-pit.md) — sandbox (typically used alongside aiya-tape)
-- [../README.md](../README.md) — overall architecture diagram and security model
+- [aiya-pit](aiya-pit.md) — sandbox (typically used alongside aiya-tape)
+- [AIYA README](../README.md) — overall architecture diagram and security model
 
 ## Open questions
 
