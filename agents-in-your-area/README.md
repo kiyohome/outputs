@@ -115,24 +115,20 @@ The expert opens a task through aiya-jam, authoring the Chain and answering gate
 
 ## Security
 
-Two layers: **early detection** + **runtime enforcement**.
+**Threat model** — we assume the AI agent inside aiya-pit may make mistakes or be attacked. The layers below cap the blast radius.
 
-**Layer 1: PreToolUse Hooks (early detection)**
+**Layer 1 — Early detection**
 
-Claude Code's hook mechanism. Rules are evaluated before tool execution and suspicious operations are flagged. Detection only; bypassable.
+Claude Code's `PreToolUse` hook evaluates rules before each tool call and flags suspicious operations. Detection only; bypassable, so it never stands alone.
 
-**Layer 2: Docker + Proxy (runtime enforcement)**
+**Layer 2 — Runtime enforcement**
 
-This is where actual restrictions are enforced.
+- **Filesystem** (aiya-pit) — only the working directory is bind-mounted; the host filesystem is inaccessible
+- **Network** (aiya-pit) — Docker's internal network cuts the agent off from direct egress; the only reachable peer is aiya-tape's proxy
+- **Egress allowlist** (aiya-tape) — the proxy drops traffic to domains outside the allowlist
+- **Recording hygiene** (aiya-tape) — the MITM CA private key is regenerated per container start; `Authorization` headers and API keys are masked before the request/response lands in OpenObserve
 
-Filesystem restrictions (Docker):
-- Only the working directory is mounted (bind mount)
-- The host filesystem is inaccessible
-
-Network restrictions (Docker network):
-- Docker's `internal` network setting physically cuts off the CC container from external access
-- The CC container can only reach aiya-proxy
-- Only aiya-proxy attaches to the external network, and it controls outbound traffic via an allowlist
+See [aiya-pit](docs/aiya-pit.md) and [aiya-tape](docs/aiya-tape.md) for implementation details.
 
 ## Contributing
 
