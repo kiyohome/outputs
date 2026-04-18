@@ -14,7 +14,7 @@ People who already use AI agents heavily — who have tried spec-driven developm
 
 This is not a tool to level up juniors. It is a tool that unlocks scaling for people who can already make the right call.
 
-## The problem
+## Problem
 
 Core pain: **an expert's unwavering judgment is not being put to use in AI collaboration.**
 
@@ -40,7 +40,7 @@ An expert's unwavering judgment becomes structurally part of the AI's work proce
 
 For deeper background — prior art, scope, comparisons with existing tools, and FAQ — see [Background](docs/background.md).
 
-## Core concepts
+## Concepts
 
 AIYA stands on two orthogonal mechanisms.
 
@@ -57,19 +57,7 @@ AIYA stands on two orthogonal mechanisms.
 # TODO
 ```
 
-## Documentation index
-
-**Read first (for everyone)**
-- [Background](docs/background.md) — prior art, scope, FAQ
-- [Traceability Chain × Gates](docs/tc-x-gates.md) — purpose-based quality assurance
-- [ACC](docs/acc.md) — context control for multi-Turn agents
-
-**For users**
-- [aiya-jam](docs/aiya-jam.md) — task management (SKILL.md, workflows)
-- [aiya-pit](docs/aiya-pit.md) — sandbox
-- [aiya-tape](docs/aiya-tape.md) — auditing and visualization
-
-## Monorepo layout
+## Packages
 
 | Package | Idea | Contents | Docs |
 |---|---|---|---|
@@ -80,7 +68,7 @@ AIYA stands on two orthogonal mechanisms.
 
 pit (mosh pit), tape (recording tape), jam (jam session). All one-syllable, all music.
 
-## System architecture
+## Architecture
 
 ```mermaid
 flowchart TB
@@ -111,7 +99,7 @@ flowchart TB
 - Built-in MCP
 - SQL queries
 
-## Security model
+## Security
 
 Two layers: **early detection** + **runtime enforcement**.
 
