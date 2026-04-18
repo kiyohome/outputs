@@ -74,6 +74,42 @@
             ]
         },
         {
+            "description": "アプリ終了: Opt+Q → Cmd+Q（HHKB接続時）",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "q",
+                        "modifiers": {
+                            "mandatory": [
+                                "option"
+                            ]
+                        }
+                    },
+                    "to": [
+                        {
+                            "key_code": "q",
+                            "modifiers": [
+                                "command"
+                            ]
+                        }
+                    ],
+                    "conditions": [
+                        {
+                            "type": "device_if",
+                            "identifiers": [
+                                {
+                                    "description": "HHKB Studio",
+                                    "vendor_id": 1278,
+                                    "product_id": 22
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "description": "Chrome: Ctrl+T → Cmd+T（HHKB接続時、Chromeのみ）",
             "manipulators": [
                 {
@@ -131,6 +167,48 @@
                     "to": [
                         {
                             "key_code": "l",
+                            "modifiers": [
+                                "command"
+                            ]
+                        }
+                    ],
+                    "conditions": [
+                        {
+                            "type": "device_if",
+                            "identifiers": [
+                                {
+                                    "description": "HHKB Studio",
+                                    "vendor_id": 1278,
+                                    "product_id": 22
+                                }
+                            ]
+                        },
+                        {
+                            "type": "frontmost_application_if",
+                            "bundle_identifiers": [
+                                "^com\\.google\\.Chrome$"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "description": "Chrome: Ctrl+R → Cmd+R ページ更新（HHKB接続時、Chromeのみ）",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "r",
+                        "modifiers": {
+                            "mandatory": [
+                                "control"
+                            ]
+                        }
+                    },
+                    "to": [
+                        {
+                            "key_code": "r",
                             "modifiers": [
                                 "command"
                             ]
