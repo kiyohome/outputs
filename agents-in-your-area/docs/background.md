@@ -1,4 +1,4 @@
-# Vision
+# Background
 
 > Strategic context: prior art, scope, and FAQ
 

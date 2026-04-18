@@ -38,7 +38,7 @@ An expert's unwavering judgment becomes structurally part of the AI's work proce
 
 **Scale as one** — the value one expert can produce changes by an order of magnitude. AI does the work; the expert focuses on "what to build" and "did we get closer to the goal". Because the phases are clearly demarcated, multiple workers can be reviewed asynchronously.
 
-For deeper background — prior art, scope, comparisons with existing tools, and FAQ — see [Vision](docs/vision.md).
+For deeper background — prior art, scope, comparisons with existing tools, and FAQ — see [Background](docs/background.md).
 
 ## Core concepts
 
@@ -60,7 +60,7 @@ AIYA stands on two orthogonal mechanisms.
 ## Documentation index
 
 **Read first (for everyone)**
-- [Vision](docs/vision.md) — strategic context: prior art, scope, FAQ
+- [Background](docs/background.md) — prior art, scope, FAQ
 - [Traceability Chain × Gates](docs/tc-x-gates.md) — purpose-based quality assurance
 - [ACC](docs/acc.md) — context control for multi-Turn agents
 

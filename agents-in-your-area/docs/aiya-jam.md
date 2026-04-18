@@ -17,7 +17,7 @@ Expected:
 - **Turn execution direction** — the delegation interface the Runner uses to invoke a Turn
 - **SKILL.md** — skill definitions that Claude Code reads
 - **Workflow definitions** — declarative expression of the Turn sequence
-- **Gate surface** — present G1 / G2 / G3 through existing chat infrastructure (Slack, Claude Code Channels); AIYA does not build a dedicated UI (see [Vision](vision.md) Scope)
+- **Gate surface** — present G1 / G2 / G3 through existing chat infrastructure (Slack, Claude Code Channels); AIYA does not build a dedicated UI (see [Background](background.md) Scope)
 
 ## Quickstart
 

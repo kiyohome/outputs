@@ -9,7 +9,7 @@ Situation → Pain → Benefit → Success Scenarios │ Testing → Technology 
 |______________ Goal ______________|  G1       |______ Approach ______|  G2     | Delivery |  G3
 ```
 
-Each element links to the next; when a link breaks, the process stops. The chain plus its gates is what makes drift **structurally detectable**. See [Vision](vision.md) for the motivation.
+Each element links to the next; when a link breaks, the process stops. The chain plus its gates is what makes drift **structurally detectable**. See the [AIYA README](../README.md) for the motivation.
 
 ## The three phases
 
@@ -66,7 +66,7 @@ Three gates sit at phase boundaries. The expert judges at each one whether work 
 | Approach | AI-drafted, expert-reviewed | G2 |
 | Delivery | AI-generated from the approved Approach, executed by AI | G3 |
 
-**Who judges** — the expert (see [Vision](vision.md)).
+**Who judges** — the expert (see the [AIYA README](../README.md)).
 
 **Surface** — existing chat infrastructure (Slack, Claude Code Channels, etc.). AIYA does not build a dedicated UI.
 
@@ -122,7 +122,7 @@ TODO
 
 ## Related documents
 
-- [Vision](vision.md) — why AIYA exists
+- [AIYA README](../README.md) — why AIYA exists
 - [ACC](acc.md) — the runtime that executes Delivery Steps
 - [aiya-jam](aiya-jam.md) — the package that manages Chains
 
