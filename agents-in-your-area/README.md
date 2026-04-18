@@ -73,33 +73,45 @@ jam (jam session), pit (mosh pit), tape (recording tape). All one-syllable, all 
 ## Architecture
 
 ```mermaid
-flowchart TB
-    CLI["aiya CLI (Bash + tmux)"]
+flowchart LR
+    Expert["Expert"]
+    API["External APIs (LLM, etc.)"]
 
-    subgraph Host["Host (WSL2/Ubuntu)"]
-        subgraph DockerNet["Docker Network"]
-            CC["CC Container × N"]
-            Proxy["aiya-proxy (Go + goproxy)"]
-            O2["OpenObserve"]
-            CC --> Proxy
-            Proxy --> O2
-        end
+    subgraph AIYA["AIYA"]
+      Jam["aiya-jam (orchestrator)"]
+      subgraph Pit["aiya-pit (sandbox)"]
+        Agent["AI Agent"]
+      end
+      subgraph Tape["aiya-tape (auditor)"]
+        Proxy["proxy"]
+        O2["OpenObserve"]
+      end
     end
 
-    CLI --> CC
+    Expert --> Jam
+    Jam --> Agent
+    Agent --> Proxy
+    Proxy --> API
+    Proxy --> O2
+    Expert --> O2
 ```
 
-**aiya-proxy responsibilities:**
-- API gateway
-- HTTPS MITM
-- Domain allow/deny
-- Masking
+The expert opens a task through aiya-jam, authoring the Chain and answering gates as they appear. Jam dispatches Turns to an AI Agent running inside aiya-pit. All outbound traffic from the Agent is routed through aiya-tape, which enforces the allowlist and records every request into OpenObserve; the expert reviews what happened via OpenObserve's dashboards or MCP.
 
-**OpenObserve responsibilities:**
-- Log storage
-- Dashboards
-- Built-in MCP
-- SQL queries
+**Stack**
+
+| Package | Underlying tech |
+|---|---|
+| [**aiya-jam**](docs/aiya-jam.md) | SKILL.md, workflow definitions |
+| [**aiya-pit**](docs/aiya-pit.md) | Docker (container image, internal network, CA cert) |
+| [**aiya-tape**](docs/aiya-tape.md) | aiya-proxy (Go + goproxy), OpenObserve |
+
+**Data**
+
+- **Chain** — authored via aiya-jam; defines what to build and how success is judged
+- **CCS** — bounded state handed between ACC Turns; managed by aiya-jam
+- **Artifacts** — code, tests, and logs produced inside the aiya-pit worktree
+- **Audit trail** — every outbound HTTPS request/response recorded by aiya-tape
 
 ## Security
 
