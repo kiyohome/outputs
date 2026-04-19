@@ -14,15 +14,6 @@ Records and visualizes all traffic from AI agents, so "what happened" is always 
 # TODO
 ```
 
-## MCP integration
-
-```bash
-claude mcp add o2 http://localhost:5080/api/default/mcp \
-  -t http --header "Authorization: Basic <TOKEN>"
-```
-
-OpenObserve's built-in MCP supports stream search, alert management, and more. No custom MCP server is needed.
-
 ## aiya-proxy
 
 **Technology:** Go + goproxy
@@ -100,7 +91,16 @@ openobserve:
     - ZO_ROOT_USER_PASSWORD=xxx
 ```
 
-## Single use (without aiya-pit)
+### MCP integration
+
+```bash
+claude mcp add o2 http://localhost:5080/api/default/mcp \
+  -t http --header "Authorization: Basic <TOKEN>"
+```
+
+OpenObserve's built-in MCP supports stream search, alert management, and more. No custom MCP server is needed.
+
+## Without aiya-pit
 
 aiya-tape can be used without the sandbox. In that mode:
 - Point the host-side CC's `HTTP_PROXY` / `HTTPS_PROXY` at the proxy
