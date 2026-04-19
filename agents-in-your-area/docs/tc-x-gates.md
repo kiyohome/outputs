@@ -9,9 +9,9 @@ Situation → Pain → Benefit → Success Scenarios │ Testing → Technology 
 |______________ Goal ______________|  G1       |______ Approach ______|  G2     | Delivery |  G3
 ```
 
-Each element links to the next; when a link breaks, the process stops. The chain plus its gates is what makes drift **structurally detectable**. See the [AIYA README](../README.md) for the motivation.
+Each element links to the next; when a link breaks, the process stops. The chain plus its Steering Gates is what makes drift **structurally detectable**. See the [AIYA README](../README.md) for the motivation.
 
-## The three phases
+## Phases
 
 | Phase | Elements | What the phase answers |
 |---|---|---|
@@ -21,32 +21,32 @@ Each element links to the next; when a link breaks, the process stops. The chain
 
 The order within Approach is intentional: Testing first, then Technology, then Design. Placing Testing first prevents the drift of entering technology selection or design before deciding how success will be confirmed. Approach is inherently the most drift-prone phase, so it is split into three to increase drift-detection points.
 
-## The 8 elements
+## Elements
 
-<!-- TODO: Fill in the writing format (schema) for each element. For now, only the question each element answers is defined. -->
+Each element answers one question. The authoring schema for each is still open — see [Storage](#storage).
 
 ### Goal phase
 
-| Element | Question | What to write (TODO) |
-|---|---|---|
-| **Situation** | What situation is the user in? | TODO |
-| **Pain** | What is the user struggling with in that situation? | TODO |
-| **Benefit** | How does it change when the user's problem is resolved? | TODO |
-| **Success Scenarios** | What state of the user counts as "resolved"? | TODO |
+| Element | Question |
+|---|---|
+| **Situation** | What situation is the user in? |
+| **Pain** | What is the user struggling with in that situation? |
+| **Benefit** | How does it change when the user's problem is resolved? |
+| **Success Scenarios** | What state of the user counts as "resolved"? |
 
 ### Approach phase
 
-| Element | Question | What to write (TODO) |
-|---|---|---|
-| **Testing** | How do we confirm it was solved? | TODO |
-| **Technology** | What do we use to solve it? | TODO |
-| **Design** | How do we implement it? | TODO |
+| Element | Question |
+|---|---|
+| **Testing** | How do we confirm it was solved? |
+| **Technology** | What do we use to solve it? |
+| **Design** | How do we implement it? |
 
 ### Delivery phase
 
-| Element | Question | What to write (TODO) |
-|---|---|---|
-| **Steps** | In what order do we proceed? | TODO |
+| Element | Question |
+|---|---|
+| **Steps** | In what order do we proceed? |
 
 ## Steering Gates
 
@@ -80,45 +80,27 @@ TC × Steering Gates decides **what to build and whether we got there**. ACC dec
 
 <!-- TODO: exact reference vs value-copy scheme for Chain → CCS -->
 
-## Format
+## Storage
 
-<!-- TODO: Schema for each element. Decide between YAML / Markdown frontmatter / plain Markdown. -->
+How a Chain is written, where it lives, and how it ages. All three are still open.
 
-**Open**: which format to use. Candidates:
+**File format**
+
 - (a) A single file with sections per element
 - (b) One file per element
 - (c) Hybrid (Goal consolidated, Approach split per element, Delivery consolidated)
 
-## Physical layout
+**Location**
 
-<!-- TODO: File path, directory structure, naming conventions -->
-
-**Open**: where to store Chains. Candidates:
 - Under `aiya-jam/chains/<issue-id>/`
 - Inside the issue repository itself
 - Managed elsewhere
 
-## Lifecycle
-
-<!-- TODO: Creation → update → archival -->
+**Lifecycle**
 
 - **Creation** — when and by whom a Chain is stood up (at issue filing / at planning / ...)
 - **Update** — how to handle a Chain that changes mid-implementation
 - **Archival** — how completed Chains are preserved
-
-## Example
-
-<!-- TODO: One worked example based on a real issue -->
-
-```
-TODO
-```
-
-## Common pitfalls
-
-<!-- TODO: Frequent failure patterns -->
-
-TODO
 
 ## Related documents
 
@@ -128,8 +110,8 @@ TODO
 
 ## Open questions
 
-- [ ] Format definition for each of the 8 elements
-- [ ] Physical layout (split files vs consolidated)
+- [ ] Per-element authoring schema (what exactly to write)
+- [ ] Storage (format / location / lifecycle)
 - [ ] Chain → CCS linkage (reference vs value copy)
 - [ ] Gate criteria and rejection fallbacks
 - [ ] Chain versioning (how to keep change history)
