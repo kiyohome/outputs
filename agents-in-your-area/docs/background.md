@@ -48,8 +48,6 @@ AIYA focuses on the process layer. It does not build a UI layer. The CLI is the 
 
 A framework that is publicly usable by other experts. Minimizing environmental dependencies and lowering the adoption bar is a baseline requirement.
 
-The current aiya-dev is a prototype for validating this thinking.
-
 Issue-level first. Product-level is a separate occasion.
 
 ## Why it matters
