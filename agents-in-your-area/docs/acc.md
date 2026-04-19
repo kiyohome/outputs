@@ -234,7 +234,7 @@ The ACC paper reports the following results over a 50-turn multi-turn evaluation
 ## Related documents
 
 - [AIYA README](../README.md) — why AIYA exists
-- [Traceability Chain × Gates](tc-x-gates.md) — how AIYA drives Turns toward a goal
+- [Traceability Chain × Steering Gates](tc-x-gates.md) — how AIYA drives Turns toward a goal
 - [aiya-jam](aiya-jam.md) — the package that stores and hands off CCS files
 
 ## Open questions

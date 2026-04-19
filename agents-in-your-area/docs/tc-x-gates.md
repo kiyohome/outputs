@@ -1,8 +1,8 @@
-# Traceability Chain × Gates
+# Traceability Chain × Steering Gates
 
-> Purpose-based quality assurance: link user situation to execution, and judge at each phase boundary
+> Purpose-based quality assurance: link user situation to execution, and steer at each phase boundary
 
-**Traceability Chain (TC)** keeps "what is this for, again?" answerable at every point between intent and execution. It is a single chain of eight elements grouped into three phases. **Gates** sit between phases as expert judgment points — "did we get closer to the goal?" is answered here, not at the end.
+**Traceability Chain (TC)** keeps "what is this for, again?" answerable at every point between intent and execution. It is a single chain of eight elements grouped into three phases. **Steering Gates** sit between phases as expert judgment points — "did we get closer to the goal?" is answered here, not at the end. The expert does not just approve or reject; they redirect the work toward the goal.
 
 ```
 Situation → Pain → Benefit → Success Scenarios │ Testing → Technology → Design │ Steps
@@ -48,9 +48,9 @@ The order within Approach is intentional: Testing first, then Technology, then D
 |---|---|---|
 | **Steps** | In what order do we proceed? | TODO |
 
-## Gates
+## Steering Gates
 
-Three gates sit at phase boundaries. The expert judges at each one whether work can proceed to the next phase.
+Three Steering Gates sit at phase boundaries. The expert judges at each one whether the work is heading toward the goal — and redirects when it is not.
 
 | Gate | Placement | What the gate commits |
 |---|---|---|
@@ -76,7 +76,7 @@ Three gates sit at phase boundaries. The expert judges at each one whether work 
 
 The Delivery phase's Steps are executed by [ACC](acc.md), a generic runtime for multi-Turn AI agents. Each Step is realized as one or more ACC Turns, and a bounded state (CCS) is handed between them. Chain content lands in the Turn's CCS — for example, Goal-phase elements flow into `goal_orientation`; Approach-phase constraints flow into `constraints`; authored documents flow into `retrieved_artifacts`.
 
-TC × Gates decides **what to build and whether we got there**. ACC decides **how state is carried while building it**. The two are orthogonal.
+TC × Steering Gates decides **what to build and whether we got there**. ACC decides **how state is carried while building it**. The two are orthogonal.
 
 <!-- TODO: exact reference vs value-copy scheme for Chain → CCS -->
 

@@ -41,7 +41,7 @@ See the FAQ below for comparisons with individual tools.
 Three layers: philosophy, process, and code.
 
 - **Philosophy** — scale an expert's judgment
-- **Process** — delegation and quality assurance via the Traceability Chain × three-stage gates
+- **Process** — delegation and quality assurance via Traceability Chain × Steering Gates
 - **Code** — a reference implementation so others can adopt the process immediately
 
 AIYA focuses on the process layer. It does not build a UI layer. The CLI is the engine; existing chat infrastructure (Slack, Claude Code Channels, and similar) serves as both dashboard and remote control. The industry is already investing in UI layers, so AIYA sits on top as the process layer.
@@ -77,5 +77,5 @@ Parallel execution is one ingredient of AIYA, but not its essence. Parallel tool
 ## Related documents
 
 - [README](../README.md) — entry point and the always-conscious framing (who / problem / what you get)
-- [Traceability Chain × Gates](tc-x-gates.md) — the chain and gates referenced above
+- [Traceability Chain × Steering Gates](tc-x-gates.md) — the chain and Steering Gates referenced above
 - [ACC](acc.md) — the runtime that executes Delivery Steps

@@ -44,9 +44,9 @@ For deeper background — prior art, scope, comparisons with existing tools, and
 
 AIYA stands on two orthogonal mechanisms. One guards **purpose**; the other guards **context**.
 
-### Traceability Chain × Gates — guards purpose
+### Traceability Chain × Steering Gates — guards purpose
 
-An 8-element chain from user situation to execution, with expert-judged gates between phases. Drift becomes structurally detectable. See [Traceability Chain × Gates](docs/tc-x-gates.md).
+An 8-element chain from user situation to execution, with expert-judged Steering Gates between phases. Drift becomes structurally detectable. See [Traceability Chain × Steering Gates](docs/tc-x-gates.md).
 
 ### ACC (Agent Cognitive Compressor) — guards context
 
