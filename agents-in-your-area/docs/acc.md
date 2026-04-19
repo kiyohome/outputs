@@ -82,24 +82,20 @@ component_name:
   ...
 ```
 
-| Part | Description |
-|---|---|
-| component_name | One of the nine CCS components |
-| type | A predicate or type defined per component |
-| contents | The concrete value or content (free-form) |
+- `component_name` — one of the nine CCS components
+- `type` — a predicate or type defined per component
+- `contents` — the concrete value or content (free-form)
 
 The paper calls this a "TOON style token-oriented representation". It is lighter than JSON or YAML and optimized for token efficiency.
 
 ### Type vocabulary
 
-`type` defines "what this represents" per component.
+`type` defines "what this represents" per component. Principles:
 
-| Principle | Description |
-|---|---|
-| Constrain types | Writing stays stable; the agent never hesitates |
-| Predictable for readers | Fixed types yield consistent interpretation |
-| Contents are free-form | Show the concrete shape via samples |
-| Vocabulary is not frozen | Adjust as it gets used in practice |
+- **Constrain types** — writing stays stable; the agent never hesitates
+- **Predictable for readers** — fixed types yield consistent interpretation
+- **Contents are free-form** — show the concrete shape via samples
+- **Vocabulary is not frozen** — adjust as it gets used in practice
 
 | Component | What `type` means | Sample types (paper + extensions) |
 |---|---|---|
