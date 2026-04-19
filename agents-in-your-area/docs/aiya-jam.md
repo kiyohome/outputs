@@ -2,56 +2,58 @@
 
 > Let's jam — orchestrator
 
-<!-- NOTE: This document is a skeleton. The content will be filled in in the next iteration. -->
+<!-- NOTE: This document is a skeleton. Quickstart and Architecture will be filled in as decisions land. -->
 
-The orchestrator package that puts Traceability Chain × Steering Gates and ACC into practice. The expert defines *what to build* as a Chain, and aiya-jam drives execution as an ACC Runner: Turns consume Chain content, hand off CCS, and surface Steering Gates to the expert. aiya-jam provides the workflow and skill definitions for that.
+The orchestrator package that puts Traceability Chain × Steering Gates and ACC into practice. The expert defines *what to build* as a Chain, and aiya-jam drives execution as an ACC Runner: Turns consume Chain content, hand off CCS, and surface Steering Gates to the expert. aiya-jam ships as a Claude Code plugin — SKILL.md plus workflow definitions.
 
 ## Responsibilities
 
-<!-- TODO: Nail down responsibilities: SKILL.md, workflow definitions, Chain management, CCS storage, etc. -->
-
-Expected:
-
-- **Traceability Chain creation and update** — templates for the 8 elements across Goal / Approach / Delivery
-- **CCS handoff management** — store and reference CCS files between Turns
-- **Turn execution direction** — the delegation interface the Runner uses to invoke a Turn
-- **SKILL.md** — skill definitions that Claude Code reads
+- **Chain authoring** — templates for the 8 elements across Goal / Approach / Delivery
+- **Steering Gate surface** — present G1 / G2 / G3 through existing chat infrastructure (Slack, Claude Code Channels); AIYA does not build a dedicated UI (see [Background](background.md) Scope)
+- **Runner** — the ACC Runner that drives the Turn sequence
+- **Turn dispatch** — the delegation interface the Runner uses to invoke each Turn
+- **CCS handoff** — store and reference CCS files between Turns
+- **SKILL.md** — skill definitions that Claude Code loads
 - **Workflow definitions** — declarative expression of the Turn sequence
-- **Gate surface** — present G1 / G2 / G3 through existing chat infrastructure (Slack, Claude Code Channels); AIYA does not build a dedicated UI (see [Background](background.md) Scope)
 
 ## Quickstart
 
-<!-- TODO -->
+<!-- TODO: Install the plugin, stand up a Chain for a new task, run a Turn. -->
 
-TODO
+```
+# TODO
+```
 
-## Creating a new chain
+## Architecture
 
-<!-- TODO: Steps to open a new task and stand up a Chain -->
+Open design decisions for the plugin, storage, and integration with the other packages.
 
-TODO
-
-## Running a task
-
-<!-- TODO: The Runner → Turn flow -->
-
-TODO
-
-## Components
-
-<!-- TODO: Finalize the components -->
+**Plugin shape** (Claude Code plugin)
 
 - [ ] SKILL.md placement and loading
-- [ ] Workflow definition format (YAML / TypeScript / plain Markdown)
-- [ ] Chain storage (file / DB / issue body)
-- [ ] CCS storage
+- [ ] SKILL.md granularity (per Chain / per Turn kind)
+- [ ] Slash commands / hooks exposed to the expert
 
-## Interfaces
+**Workflow definitions**
 
-<!-- TODO: Connections to aiya-pit / aiya-tape -->
+- [ ] Definition language (YAML / TypeScript / plain Markdown)
+- [ ] Parallel Turn handling
 
-- [ ] Connection to aiya-pit (does the Runner live outside pit or inside?)
-- [ ] Connection to aiya-tape (should CCS creation events be recorded by tape?)
+**Storage**
+
+- [ ] Chain storage (file / DB / issue body) — see also [Traceability Chain × Steering Gates](tc-x-gates.md) Storage
+- [ ] CCS storage (physical location, versioning)
+
+**Runner**
+
+- [ ] Implementation form (Claude Code subagent / separate session / separate container)
+- [ ] Where the Runner runs (outside aiya-pit / inside aiya-pit)
+
+**Integration**
+
+- [ ] Connection to [aiya-pit](aiya-pit.md) — how Turns are launched inside the sandbox
+- [ ] Connection to [aiya-tape](aiya-tape.md) — whether CCS creation events are recorded
+- [ ] Steering Gate surface (which chat platform, how the gate prompt/response is modeled)
 
 ## Related documents
 
@@ -62,9 +64,4 @@ TODO
 
 ## Open questions
 
-- [ ] Chain management implementation (file-based / issue extension / custom DB)
-- [ ] SKILL.md granularity (per Chain / per Turn kind)
-- [ ] Choice of workflow definition language
-- [ ] Runner implementation (Claude Code subagent / separate container / separate session)
-- [ ] Gate surface concretization (which chat platform, how the gate prompt/response is modeled)
-- [ ] Handling of parallel Turns
+See Architecture above. Each bullet under Architecture is tracked as an open decision until it is chosen and documented.
