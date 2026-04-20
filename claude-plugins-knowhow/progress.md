@@ -1,10 +1,10 @@
-# smith Design Progress Log
+# Progress Log
 
-> Resumption log. Full design specification lives in [`smith-design.md`](./smith-design.md).
+> Resumption log. smith design lives in `smith-design.md`. Knowhow taxonomy lives in `docs/taxonomy.md`. Per-file audit findings live in `audit-notes.md`.
 
 ## Original intent
 
-First message (Japanese, preserved verbatim to protect against goal drift):
+First message (Japanese, preserved verbatim):
 
 > plugin-smith
 > aiya-jam
@@ -13,58 +13,75 @@ First message (Japanese, preserved verbatim to protect against goal drift):
 > イメージできますか？
 > smith作って、smith使ってjamを作る
 
-### Pivots since then
+Subsequent intent (this work-stream):
 
-- **jam removed from smith's scope; Create mode dropped.** jam is built separately by scripts — smith does not generate it.
-- **"Consultant" reframed to "craftsperson".** smith applies changes itself, so "consultant" (advise-only) was the wrong metaphor.
+> claude pluginのノウハウ、ノウハウに分かりやすく覚えやすい名前を付けて、チェック項目を扱いやすくしたい。
+
+## Pivots
+
+- jam removed from smith's scope; Create mode dropped.
+- "Consultant" reframed to "craftsperson".
+- **Knowhow indexing surfaced as a prerequisite to smith implementation.** smith's `smith-knowhow` skill needs a structured taxonomy with stable IDs.
+- **Original 49-item extraction was contaminated by domain-classification bias.** Items that didn't fit 5 domains were silently dropped; table rows were collapsed; case-studies/checklists/README/smith-design were never scanned. Re-audit required.
 
 ## Current phase
 
-**GO** — design complete. Proceed to implementation per `smith-design.md`.
+**Stage 3 — Full knowhow audit across 7 files.** smith implementation blocked on this.
 
-## Completed milestones
+## Files in scope (7)
 
-- Identity fixed (craftsperson, Evaluate → Propose → Apply).
-- 10-step flow agreed (plain language, reviewed with user).
-- Architecture form decided (1 command + 3 inspector agents + skill + 3 scripts).
-- Independent review completed (Good / MoreThan).
-- Multi-lens parallel, confidence scoring with threshold 80, Opus inspectors, script-based evaluator all adopted.
-- Knowhow embedding plan confirmed (SKILL.md + `references/` split).
-- Final integrated review returned HOLD; all 3 blockers and 6 residual MoreThan resolved in `smith-design.md` Interfaces, Exception flows, Design rationale, and Dependency ordering sections.
+| File | Status |
+|---|---|
+| `docs/concepts.md` | needs re-scan (domain bias) |
+| `docs/components.md` | needs re-scan (table rows collapsed) |
+| `docs/patterns.md` | needs re-scan |
+| `docs/case-studies.md` | not yet scanned |
+| `docs/checklists.md` | not yet scanned (orphans confirmed) |
+| `README.md` | not yet scanned |
+| `smith-design.md` | not yet scanned |
 
-## Next tasks (priority order)
+Per-file findings accumulate in `audit-notes.md`.
 
-1. Implement smith at `agents-in-your-area/.claude/plugins/smith/` per `smith-design.md`.
-2. Dogfood smith against aiya's own `.claude/` and iterate.
+## Decisions made
+
+- 5 domains: `ARC` / `SPC` / `PRM` / `FLW` / `CTX` (mechanism-axis).
+- ID format: `DOMAIN-INITIALS` (e.g. `SPC-ATR`).
+- Name: kebab-case 2-4 words, mechanism-focused.
+- Stability: IDs stable once assigned.
+
+## Decisions deferred (revisit after audit)
+
+- Single-file vs per-domain split of `taxonomy.md` (currently single).
+- `severity` 3-tier vs `blocking: bool` (user leaning M/R/Q).
+- `checklists.md` as authoring surface vs generated view (user leaning authoring surface).
+- Schema fields per item: minimal vs rich (lean minimal until smith forces additions).
+- `case-studies.md` atomization.
+
+## Next tasks (one at a time)
+
+1. Re-scan `docs/concepts.md`. Append findings to `audit-notes.md`. Confirm with user.
+2. Re-scan `docs/components.md`.
+3. Re-scan `docs/patterns.md`.
+4. Scan `docs/case-studies.md`.
+5. Scan `docs/checklists.md`.
+6. Scan `README.md`.
+7. Scan `smith-design.md`.
+8. Reconcile against existing 49: list new / revised / merged / dropped.
+9. Update `taxonomy.md`.
+10. Resolve deferred decisions.
+11. (Then) implement smith.
 
 ## Session context
 
-- Proposal-based progression: always recommend, don't interview.
-- `k` means approve; `進めて` means proceed autonomously for multiple steps.
-- Desktop Claude Code is in use; markdown renders correctly.
-- Flat structure preferred: minimize nested bullets, sparing bold, tables only when comparing.
-- Plain-language rationale required (the user does not memorize knowhow citations).
-- Knowhow source: `claude-plugins-knowhow/docs/` (concepts / components / patterns / case-studies / checklists).
-- `outputs/` is the scratch area (叩き台); implementation and maintenance move to the aiya monorepo later.
-
-## Document layout
-
-```
-outputs/
-├── .claude/rules/                # Project rules
-├── claude-plugins-knowhow/
-│   ├── docs/                     # Knowhow source
-│   │   └── {concepts,components,patterns,case-studies,checklists}.md
-│   ├── README.md
-│   ├── smith-design.md           # Design specification
-│   └── progress.md               # This file
-└── agents-in-your-area/
-    └── .claude/plugins/smith/    # Implementation target
-```
+- **One file per turn**. Do not bundle. User explicitly requested incremental progress.
+- After each file scan: write to `audit-notes.md`, then ask user to confirm before next file.
+- `k` = approve, `進めて` = proceed autonomously.
+- Working branch: `claude/plugin-knowledge-naming-dYL6G`.
 
 ## How to resume
 
-1. Read `.claude/rules/*.md` — especially `interaction.md`, `workflow.md`, `language.md`.
-2. Read this file — locate current phase and next tasks.
-3. Read `smith-design.md` for the full specification.
-4. Continue from Next tasks.
+1. Read `.claude/rules/*.md` (esp. `interaction.md`, `workflow.md`, `language.md`).
+2. Read this file.
+3. Read `audit-notes.md`. The "Next file to scan" pointer at the top tells you where to continue.
+4. Re-read existing `docs/taxonomy.md` to know what's already classified.
+5. Resume from the next unscanned file.
