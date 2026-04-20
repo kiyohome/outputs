@@ -1,6 +1,6 @@
 # Taxonomy
 
-> Domain classification of every knowhow item in `concepts.md`, `components.md`, and `patterns.md`. Each item is placed in exactly one of five mechanism-axis domains. This file is the canonical index; IDs and names will be assigned in a later pass.
+> Canonical index of every knowhow item in `concepts.md`, `components.md`, and `patterns.md`. Each item has a domain, a kebab-case name, and an abbreviated ID derived from the name's initials. Inspired by ESLint (kebab-case rule names), SpotBugs (`CATEGORY_ABBREV` pattern IDs), and TypeScript (stable numeric codes).
 
 ## Scope
 
@@ -35,121 +35,129 @@ Tie-break rule when an item plausibly fits two domains:
 4. If it is about **what persists across a turn/session/iteration**, → `CTX`.
 5. Otherwise, if it is about **plugin-level shape**, → `ARC`.
 
+## Naming and ID conventions
+
+- **Name**: kebab-case, 2–4 words, describes the mechanism (not the goal).
+- **ID**: `DOMAIN-INITIALS` where `INITIALS` is the first letter of each word in the name, uppercased. Unique within the domain.
+- **Stability**: once assigned, IDs are stable. Names can be refined but should keep the same initials so the ID survives.
+
+Example: `three-layer-separation` → initials `TLS` → ID `ARC-TLS`.
+
 ## ARC — Architecture (5 items)
 
-| # | Item | Source |
+| ID | Name | Source |
 |---|---|---|
-| ARC-1 | Standard directory layout | `concepts.md` §What is a Plugin |
-| ARC-2 | Archetype A: Command + Agent (workflow-oriented) | `concepts.md` §Plugin Taxonomy |
-| ARC-3 | Archetype B: Skill-only (knowledge provider) | `concepts.md` §Plugin Taxonomy |
-| ARC-4 | Archetype C: Hybrid (toolkit) | `concepts.md` §Plugin Taxonomy |
-| ARC-5 | Three-layer separation (procedure / knowledge / execution) | `concepts.md` §Core Design Patterns |
+| `ARC-SDL` | standard-directory-layout | `concepts.md` §What is a Plugin |
+| `ARC-ACA` | archetype-command-agent | `concepts.md` §Plugin Taxonomy |
+| `ARC-ASO` | archetype-skill-only | `concepts.md` §Plugin Taxonomy |
+| `ARC-AH`  | archetype-hybrid | `concepts.md` §Plugin Taxonomy |
+| `ARC-TLS` | three-layer-separation | `concepts.md` §Core Design Patterns |
 
 ## SPC — Component Spec (19 items)
 
 ### Commands
 
-| # | Item | Source |
+| ID | Name | Source |
 |---|---|---|
-| SPC-1 | Restrict tools with `allowed-tools` | `components.md` §Commands |
-| SPC-2 | Inline execution with `` !`command` `` | `components.md` §Commands |
-| SPC-3 | Argument expansion (`$ARGUMENTS`, `$1`, `@$1`, `@${CLAUDE_PLUGIN_ROOT}/...`) | `components.md` §Commands |
+| `SPC-ATR` | allowed-tools-restriction | `components.md` §Commands |
+| `SPC-ICE` | inline-command-execution | `components.md` §Commands |
+| `SPC-AE`  | argument-expansion | `components.md` §Commands |
 
 ### Agents
 
-| # | Item | Source |
+| ID | Name | Source |
 |---|---|---|
-| SPC-4 | Agent front matter (name / description / model / color / tools) | `components.md` §Agents |
-| SPC-5 | Trigger definition via `<example>` blocks | `components.md` §Agents |
-| SPC-6 | Color assignment conventions | `components.md` §Agents |
+| `SPC-AFM` | agent-front-matter | `components.md` §Agents |
+| `SPC-EBT` | example-block-trigger | `components.md` §Agents |
+| `SPC-CA`  | color-assignment | `components.md` §Agents |
 
 ### Skills
 
-| # | Item | Source |
+| ID | Name | Source |
 |---|---|---|
-| SPC-7 | Skill front matter (name / description / version) | `components.md` §Skills |
-| SPC-8 | Description optimization methodology (skill-creator: 20 queries, 60/40 split, 5 rounds) | `components.md` §Skills |
-| SPC-9 | Three roles of SKILL.md (auto-trigger / on-demand reference / long-form workflow) | `concepts.md` §Three roles of SKILL.md + `components.md` §Three roles a SKILL.md can play — canonical here |
+| `SPC-SFM` | skill-front-matter | `components.md` §Skills |
+| `SPC-DOM` | description-optimization-methodology | `components.md` §Skills |
+| `SPC-STR` | skill-three-roles | `concepts.md` + `components.md` — canonical here |
 
 ### Hooks
 
-| # | Item | Source |
+| ID | Name | Source |
 |---|---|---|
-| SPC-10 | Hook events roster (PreToolUse, PostToolUse, Stop, SubagentStop, SessionStart, SessionEnd, UserPromptSubmit, PreCompact, Notification) | `components.md` §Hooks |
-| SPC-11 | Two hook types: `prompt` (LLM) vs `command` (deterministic) | `components.md` §Hooks |
-| SPC-12 | `hooks.json` format (description / hooks / matcher / parallel execution) | `components.md` §Hooks |
-| SPC-13 | Use `${CLAUDE_PLUGIN_ROOT}` for portability | `components.md` §Hooks |
-| SPC-14 | SessionStart context injection exemplar | `components.md` §Representative hook patterns |
-| SPC-15 | PreToolUse two-layer design (fixed policy vs dynamic rules) | `components.md` §Representative hook patterns + `patterns.md` §Fixed patterns vs dynamic rules — canonical here |
+| `SPC-HER` | hook-events-roster | `components.md` §Hooks |
+| `SPC-THT` | two-hook-types | `components.md` §Hooks |
+| `SPC-HJF` | hooks-json-format | `components.md` §Hooks |
+| `SPC-PRV` | plugin-root-variable | `components.md` §Hooks |
+| `SPC-SSI` | session-start-injection | `components.md` §Representative hook patterns |
+| `SPC-PTL` | pretool-two-layer | `components.md` + `patterns.md` — canonical here |
 
 ### Hook-script conventions
 
-| # | Item | Source |
+| ID | Name | Source |
 |---|---|---|
-| SPC-16 | Reading and writing front matter from shell (`sed`/`awk` extraction) | `patterns.md` §State Management |
-| SPC-17 | Representative security patterns (security-guidance nine, hookify five) | `patterns.md` §Security |
-| SPC-18 | Hook script input validation (`set -euo pipefail`, JSON validation, exit 0/2) | `patterns.md` §Security |
-| SPC-19 | `clean_gone` for git worktrees | `patterns.md` §Advanced Patterns |
+| `SPC-FMS` | front-matter-shell-io | `patterns.md` §State Management |
+| `SPC-SDS` | security-detector-set | `patterns.md` §Security |
+| `SPC-HIV` | hook-input-validation | `patterns.md` §Security |
+| `SPC-CGW` | clean-gone-worktrees | `patterns.md` §Advanced Patterns |
 
 ## PRM — Prompt Authoring (9 items)
 
-| # | Item | Source |
+| ID | Name | Source |
 |---|---|---|
-| PRM-1 | Prompts are instructions to Claude, not explanations for humans | `concepts.md` §Design Principles + `components.md` §Write commands as instructions — canonical here |
-| PRM-2 | Emphasize critical phases (DO NOT SKIP / DO NOT START WITHOUT APPROVAL) | `concepts.md` §Design Principles |
-| PRM-3 | Control output shape (single-turn directives, brevity, no emojis) | `concepts.md` §Design Principles |
-| PRM-4 | Constrain scope (restate what not to do) | `concepts.md` §Design Principles |
-| PRM-5 | Single-message completion pattern | `components.md` §Commands |
-| PRM-6 | Skill body style (imperative, avoid second person, 1,500–2,000 words, explicit `references/` mentions) | `components.md` §Skills |
-| PRM-7 | Explicit enumeration of false positives | `patterns.md` §Quality Control |
-| PRM-8 | Output format discipline (link + cite, full SHA, line ranges with context) | `patterns.md` §Quality Control |
-| PRM-9 | Code delegation prompt (what to ask the user to write vs auto-generate) | `patterns.md` §Advanced Patterns |
+| `PRM-IV`  | instruction-voice | `concepts.md` + `components.md` — canonical here |
+| `PRM-CPM` | critical-phase-markers | `concepts.md` §Design Principles |
+| `PRM-OSD` | output-shape-directives | `concepts.md` §Design Principles |
+| `PRM-SC`  | scope-constraint | `concepts.md` §Design Principles |
+| `PRM-SMC` | single-message-completion | `components.md` §Commands |
+| `PRM-SBS` | skill-body-style | `components.md` §Skills |
+| `PRM-FPE` | false-positive-enumeration | `patterns.md` §Quality Control |
+| `PRM-OFD` | output-format-discipline | `patterns.md` §Quality Control |
+| `PRM-CD`  | code-delegation | `patterns.md` §Advanced Patterns |
 
 ## FLW — Flow (11 items)
 
-| # | Item | Source |
+| ID | Name | Source |
 |---|---|---|
-| FLW-1 | Convert "whatever you think is best" into explicit approval | `concepts.md` §Design Principles |
-| FLW-2 | Ban false promises for loop escape | `concepts.md` §Design Principles |
-| FLW-3 | Cost optimization: pick the right model tier (Haiku / Sonnet / Opus / `inherit`) | `concepts.md` §Design Principles |
-| FLW-4 | Parallel vs sequential dispatch choice | `concepts.md` §Design Principles |
-| FLW-5 | Phase control pattern (Goal / Actions / User confirmation point) | `components.md` §Commands |
-| FLW-6 | Model tiering pipeline (four-tier example from `code-review`) | `components.md` §Agents |
-| FLW-7 | Parallel dispatch with perspective split | `components.md` §Agents |
-| FLW-8 | Separation of reporter and evaluator | `components.md` §Agents + `patterns.md` §Quality Control — canonical here |
-| FLW-9 | Confidence scoring and threshold filtering (0–100, threshold 80) | `patterns.md` §Quality Control |
-| FLW-10 | Double eligibility check (pre and post, to survive long-running reviews) | `patterns.md` §Quality Control + `patterns.md` §Advanced Patterns — canonical here |
-| FLW-11 | Blind A/B comparison (comparator + analyzer) | `patterns.md` §Advanced Patterns |
+| `FLW-EAG` | explicit-approval-gate | `concepts.md` §Design Principles |
+| `FLW-LEB` | loop-escape-ban | `concepts.md` §Design Principles |
+| `FLW-MTS` | model-tier-selection | `concepts.md` §Design Principles |
+| `FLW-PVS` | parallel-vs-sequential | `concepts.md` §Design Principles |
+| `FLW-PC`  | phase-control | `components.md` §Commands |
+| `FLW-MTP` | model-tier-pipeline | `components.md` §Agents |
+| `FLW-PPS` | parallel-perspective-split | `components.md` §Agents |
+| `FLW-RES` | reporter-evaluator-separation | `components.md` + `patterns.md` — canonical here |
+| `FLW-CTF` | confidence-threshold-filter | `patterns.md` §Quality Control |
+| `FLW-DEC` | double-eligibility-check | `patterns.md` §Quality Control + §Advanced Patterns — canonical here |
+| `FLW-BAC` | blind-ab-comparison | `patterns.md` §Advanced Patterns |
 
 ## CTX — Context & State (5 items)
 
-| # | Item | Source |
+| ID | Name | Source |
 |---|---|---|
-| CTX-1 | Progressive disclosure (three-tier skill loading) | `concepts.md` §Core Design Patterns |
-| CTX-2 | `.local.md` pattern (YAML front matter + Markdown body, gitignored state) | `patterns.md` §State Management |
-| CTX-3 | `TodoWrite` for progress tracking (externalized stable anchor) | `patterns.md` §State Management |
-| CTX-4 | Self-referential loop / Stop-based loop control (filesystem as feedback channel) | `components.md` §Representative hook patterns + `patterns.md` §Advanced Patterns — canonical here |
-| CTX-5 | Conversation pattern mining (history → hook rules) | `patterns.md` §Advanced Patterns |
+| `CTX-PD`  | progressive-disclosure | `concepts.md` §Core Design Patterns |
+| `CTX-LMS` | local-md-state-file | `patterns.md` §State Management |
+| `CTX-TWA` | todo-write-anchor | `patterns.md` §State Management |
+| `CTX-FFL` | filesystem-feedback-loop | `components.md` + `patterns.md` — canonical here |
+| `CTX-CM`  | conversation-mining | `patterns.md` §Advanced Patterns |
 
 ## Duplicates resolved
 
-Six items appear in more than one source. Canonical domain is the single entry listed above; other occurrences are now cross-references.
+Six items appear in more than one source. Canonical ID is the single entry listed above; other occurrences are cross-references.
 
-| Canonical | Duplicate sources collapsed into it |
-|---|---|
-| `SPC-9` Three roles of SKILL.md | `concepts.md` §Three roles of SKILL.md, `components.md` §Three roles a SKILL.md can play |
-| `SPC-15` PreToolUse two-layer design | `components.md` §Representative hook patterns (PreToolUse bullet), `patterns.md` §Fixed patterns vs dynamic rules |
-| `PRM-1` Prompts are instructions | `concepts.md` §Prompts are instructions to Claude, `components.md` §Write commands as instructions |
-| `FLW-8` Reporter-evaluator separation | `components.md` §Separation of reporter and evaluator, `patterns.md` §Separation of reporter and evaluator |
-| `FLW-10` Double eligibility check | `patterns.md` §Double eligibility check, `patterns.md` §Double eligibility in long-running reviews |
-| `CTX-4` Self-referential / Stop-based loop | `components.md` §Representative hook patterns (Stop-based loop bullet), `patterns.md` §Self-referential loop |
+| Canonical ID | Name | Duplicate sources collapsed into it |
+|---|---|---|
+| `SPC-STR` | skill-three-roles | `concepts.md` §Three roles of SKILL.md, `components.md` §Three roles a SKILL.md can play |
+| `SPC-PTL` | pretool-two-layer | `components.md` §Representative hook patterns (PreToolUse bullet), `patterns.md` §Fixed patterns vs dynamic rules |
+| `PRM-IV`  | instruction-voice | `concepts.md` §Prompts are instructions to Claude, `components.md` §Write commands as instructions |
+| `FLW-RES` | reporter-evaluator-separation | `components.md` §Separation of reporter and evaluator, `patterns.md` §Separation of reporter and evaluator |
+| `FLW-DEC` | double-eligibility-check | `patterns.md` §Double eligibility check, `patterns.md` §Double eligibility in long-running reviews |
+| `CTX-FFL` | filesystem-feedback-loop | `components.md` §Representative hook patterns (Stop-based loop bullet), `patterns.md` §Self-referential loop |
 
 ## Out of scope (this pass)
 
 | Source | Treatment | Reason |
 |---|---|---|
 | `concepts.md` §Component inventory of official plugins | Reference table, not an item. | Data, not knowhow. |
-| `components.md` §Representative specialized agents | Exemplars of existing items (agent front matter, parallel dispatch, model tiering). | Illustrations, not standalone knowhow. |
+| `components.md` §Representative specialized agents | Exemplars of existing items (`SPC-AFM`, `FLW-PPS`, `FLW-MTP`). | Illustrations, not standalone knowhow. |
 | `case-studies.md` (all) | Will be linked to items as exemplars in a later pass. | Case studies are examples of these patterns, not independent items. |
 | `checklists.md` (all) | Will be attached as checkable surface of parent items in a later pass. | Checkboxes express the same knowhow in verification form. |
 
@@ -157,19 +165,19 @@ Six items appear in more than one source. Canonical domain is the single entry l
 
 | Domain | Items | Share |
 |---|---|---|
-| ARC | 5 | 10% |
+| ARC | 5  | 10% |
 | SPC | 19 | 39% |
-| PRM | 9 | 18% |
+| PRM | 9  | 18% |
 | FLW | 11 | 22% |
-| CTX | 5 | 10% |
+| CTX | 5  | 10% |
 | **Total** | **49** | — |
 
 Duplicates collapsed: 6 (listed above). Raw count before dedup: 55.
 
 ## TODO
 
-- Stage 2: assign ESLint-style kebab-case names and abbreviated IDs derived from initials, scoped per domain.
-- Stage 3: attach `checklists.md` items to their parent knowhow entries as the checkable surface.
-- Stage 4: link `case-studies.md` sections to the knowhow items they exemplify.
+- Stage 3: attach `checklists.md` items to their parent IDs as the checkable surface.
+- Stage 4: link `case-studies.md` sections to the IDs they exemplify.
 - Decide whether `SPC` is too large (19 items, ~39%) and needs a sub-axis, or stays flat because its items are genuinely component-scoped.
-- Confirm `CTX-4` naming — "Self-referential loop" is `ralph-loop`-specific; the general mechanism is "filesystem-as-feedback-channel" and the Stop hook is one way to trigger it.
+- Confirm `CTX-FFL` naming — the mechanism is "filesystem as feedback channel"; Stop hook is one triggering mode. `ralph-loop` is the canonical exemplar.
+- Consider whether 2-letter IDs (`ARC-AH`, `SPC-AE`, `SPC-CA`, `PRM-IV`, `PRM-SC`, `PRM-CD`, `FLW-PC`, `CTX-PD`, `CTX-CM`) should be padded to 3 letters for visual consistency, or left as-is (ESLint accepts variable-length rule names).
