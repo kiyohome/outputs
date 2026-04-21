@@ -46,7 +46,7 @@ AIYA stands on two orthogonal mechanisms. One guards **purpose**; the other guar
 
 ### Traceability Chain × Steering Gates — guards purpose
 
-An 8-element chain from user situation to execution, with expert-judged Steering Gates between phases. Drift becomes structurally detectable. See [Traceability Chain × Steering Gates](docs/tc-x-gates.md).
+An 8-element chain (Situation → Pain → Benefit → Acceptance Scenarios → Testing → Technology → Design → Steps) across three phases, with expert-judged Steering Gates between phases. Each gate has a Planning checkpoint (before work) and an Output checkpoint (after work). Drift becomes structurally detectable. See [Traceability Chain × Steering Gates](docs/tc-x-gates.md).
 
 ### ACC (Agent Cognitive Compressor) — guards context
 
@@ -54,11 +54,34 @@ A generic runtime that suppresses context bloat and drift by handing a bounded s
 
 ## Quickstart
 
-<!-- TODO: Install steps and a minimal run example -->
+Prerequisites: Docker, Claude Code, an Anthropic API key.
+
+**Setup (team lead, once per repo):**
+
+```bash
+cd my-project
+curl -sSL https://get.aiya.dev | sh
+git add .aiya && git commit -m "add AIYA" && git push
+```
+
+**Use (every team member):**
+
+```bash
+git clone <repo> && cd <repo>
+.aiya/up.sh
+```
+
+**Start a task:**
 
 ```
-# TODO
+/hi               # hear and file a new issue
+/go 42            # start work on issue 42
+/ty               # approve a gate
+/gm               # redirect with feedback
+/bb               # pause and save state
 ```
+
+See [aiya-jam](docs/aiya-jam.md) for the full command reference.
 
 ## Packages
 

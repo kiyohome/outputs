@@ -2,47 +2,126 @@
 
 > Let's jam — orchestrator
 
-<!-- NOTE: This document is a skeleton. Quickstart and Architecture will be filled in as decisions land. -->
-
-The orchestrator package that puts Traceability Chain × Steering Gates and ACC into practice. The expert defines *what to build* as a Chain, and aiya-jam drives execution as an ACC Runner: Turns consume Chain content, hand off CCS, and surface Steering Gates to the expert. aiya-jam ships as a Claude Code plugin — SKILL.md plus workflow definitions.
+The orchestrator package that puts Traceability Chain × Steering Gates and ACC into practice. aiya-jam ships as a Claude Code plugin installed into the project repository — slash commands, SKILL.md, and a docker-compose stack.
 
 ## Responsibilities
 
-- **Chain authoring** — templates for the 8 elements across Goal / Approach / Delivery
-- **Steering Gate surface** — present G1 / G2 / G3 through existing chat infrastructure (Slack, Claude Code Channels); AIYA does not build a dedicated UI (see [Background](background.md) Scope)
+- **Chain authoring** — guides the expert through the 8 elements via hearing and commits them as files under `.aiya/<issue-number>/`
+- **Steering Gate surface** — presents Planning Gates and Output Gates through Claude Code's slash commands
 - **Runner** — the ACC Runner that drives the Turn sequence
-- **Turn dispatch** — the delegation interface the Runner uses to invoke each Turn
-- **CCS handoff** — store and reference CCS files between Turns
+- **Turn dispatch** — the delegation interface the Runner uses to invoke each Turn inside aiya-pit
+- **CCS handoff** — stores and references CCS files between Turns
 - **SKILL.md** — skill definitions that Claude Code loads
-- **Workflow definitions** — declarative expression of the Turn sequence
+
+## Commands
+
+Expert interaction is five slash commands plus two shell scripts. Commands follow conversational phrasing, not functional labels.
+
+```
+"Hi, I've got a new one"     →  /hi
+"Go, 42, let's do this"      →  /go 42
+"Ty, looks great!"           →  /ty
+"Gm, one more thing..."      →  /gm
+"Bb, see you later"          →  /bb
+```
+
+| Command | When | Action |
+|---|---|---|
+| `/hi` | Task start | Hear and file a new issue (title, facts, hypotheses) |
+| `/go <N>` | After issue exists | Begin or resume work on issue N |
+| `/ty` | At any gate | Approve — proceed to next phase |
+| `/gm` | At any gate | Good, more — redirect with feedback via PR review comments |
+| `/bb` | Anytime | Bye-bye — pause and save state |
+
+Environment lifecycle (shell scripts, not slash commands):
+
+| Script | Action |
+|---|---|
+| `.aiya/up.sh` | Start the sandbox (aiya-pit) and auditor (aiya-tape) stack |
+| `.aiya/dn.sh` | Stop everything |
 
 ## Quickstart
 
-<!-- TODO: Install the plugin, stand up a Chain for a new task, run a Turn. -->
+**Setup (team lead, once per repo):**
+
+```bash
+cd my-project
+curl -sSL https://get.aiya.dev | sh
+git add .aiya && git commit -m "add AIYA" && git push
+```
+
+This generates `.aiya/up.sh`, `.aiya/dn.sh`, `docker-compose.yml`, and SKILL.md. Everything lives in the repository — team members get it on clone.
+
+**Use (every team member):**
+
+```bash
+git clone <repo> && cd <repo>
+.aiya/up.sh
+```
+
+`up.sh` starts aiya-tape and a pool of Claude Code instances inside aiya-pit.
+
+**Start a task:**
 
 ```
-# TODO
+/hi               ← hear and file a new issue
+/go 42            ← start work on issue 42
 ```
+
+**Answer a gate when it appears:**
+
+```
+/ty               ← approve — proceed to next phase
+/gm               ← good, more — redirect with feedback
+```
+
+**Stop:**
+
+```bash
+.aiya/dn.sh
+```
+
+## Chain directory
+
+Each issue gets a directory under `.aiya/`:
+
+```
+.aiya/<issue-number>/
+  meta.yaml           # phase, status, last Turn number
+  goal.md             # Plan + Situation + Pain + Benefit + Acceptance Scenarios
+  approach.md         # Plan + Testing + Technology + Design
+  delivery.md         # Steps + Verification
+  ccs/
+    t001.md
+    t002.md
+    ...
+  research/           # Intermediate artifacts: investigation outputs, spikes
+                      # Flat directory; naming convention distinguishes types
+                      # e.g. research-auth-flow.md / spike-oauth.py
+```
+
+Each phase file (`goal.md`, `approach.md`, `delivery.md`) opens with a **Plan** section:
+
+- The Planning Gate reviews the Plan section before execution begins
+- The Output Gate (G1 / G2 / G3) reviews the full file after execution
+
+**Pain vs Benefit writing discipline** (enforced via SKILL.md):
+- **Pain** — an observable symptom the user experiences
+- **Benefit** — the strategic impact when that symptom is gone; not the inverse of Pain
 
 ## Architecture
 
-Open design decisions for the plugin, storage, and integration with the other packages.
+Open design decisions.
 
-**Plugin shape** (Claude Code plugin)
+**Plugin shape**
 
 - [ ] SKILL.md placement and loading
-- [ ] SKILL.md granularity (per Chain / per Turn kind)
-- [ ] Slash commands / hooks exposed to the expert
+- [ ] SKILL.md granularity (per phase / per Turn kind)
 
 **Workflow definitions**
 
 - [ ] Definition language (YAML / TypeScript / plain Markdown)
 - [ ] Parallel Turn handling
-
-**Storage**
-
-- [ ] Chain storage (file / DB / issue body) — see also [Traceability Chain × Steering Gates](tc-x-gates.md) Storage
-- [ ] CCS storage (physical location, versioning)
 
 **Runner**
 
@@ -53,7 +132,6 @@ Open design decisions for the plugin, storage, and integration with the other pa
 
 - [ ] Connection to [aiya-pit](aiya-pit.md) — how Turns are launched inside the sandbox
 - [ ] Connection to [aiya-tape](aiya-tape.md) — whether CCS creation events are recorded
-- [ ] Steering Gate surface (which chat platform, how the gate prompt/response is modeled)
 
 ## Related documents
 

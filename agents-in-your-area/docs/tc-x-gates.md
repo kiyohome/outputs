@@ -5,19 +5,19 @@
 **Traceability Chain (TC)** keeps "what is this for, again?" answerable at every point between intent and execution. It is a single chain of eight elements grouped into three phases. **Steering Gates** sit between phases as expert judgment points — "did we get closer to the goal?" is answered here, not at the end. The expert does not just approve or reject; they redirect the work toward the goal.
 
 ```
-Situation → Pain → Benefit → Success Scenarios │ Testing → Technology → Design │ Steps
-|______________ Goal ______________|  G1       |______ Approach ______|  G2     | Delivery |  G3
+Situation → Pain → Benefit → Acceptance Scenarios │ Testing → Technology → Design │ Steps
+|_________________ Goal _________________|  G1    |______ Approach ______|  G2    | Delivery |  G3
 ```
 
 Each element links to the next; when a link breaks, the process stops. The chain plus its Steering Gates is what makes drift **structurally detectable**. See the [AIYA README](../README.md) for the motivation.
 
 ## Phases
 
-| Phase | Elements | What the phase answers |
-|---|---|---|
-| **Goal** | Situation, Pain, Benefit, Success Scenarios | What are we trying to achieve, and how do we know when we've achieved it? |
-| **Approach** | Testing, Technology, Design | How will we achieve it? |
-| **Delivery** | Steps | In what order do we execute? |
+| Phase | | Elements | What the phase answers |
+|---|---|---|---|
+| **Goal** | 達成すべきこと | Situation, Pain, Benefit, Acceptance Scenarios | What are we trying to achieve, and how do we know when we've achieved it? |
+| **Approach** | 達成する方法 | Testing, Technology, Design | How will we achieve it? |
+| **Delivery** | 届ける | Steps | In what order do we execute? |
 
 The order within Approach is intentional: Testing first, then Technology, then Design. Placing Testing first prevents the drift of entering technology selection or design before deciding how success will be confirmed. Approach is inherently the most drift-prone phase, so it is split into three to increase drift-detection points.
 
@@ -27,12 +27,14 @@ Each element answers one question. The authoring schema for each is still open �
 
 ### Goal phase
 
-| Element | Question |
+| Element | Guiding question |
 |---|---|
 | **Situation** | What situation is the user in? |
 | **Pain** | What is the user struggling with in that situation? |
 | **Benefit** | How does it change when the user's problem is resolved? |
-| **Success Scenarios** | What state of the user counts as "resolved"? |
+| **Acceptance Scenarios (AS)** | What state of the user counts as "resolved"? |
+
+**Writing discipline for Pain and Benefit:** Pain describes an observable symptom the user experiences. Benefit describes the strategic impact when that symptom is gone — not the inverse of Pain, but the downstream consequence. "Users miss unread items" (Pain) vs "daily engagement drops" (Benefit) are distinct; "users can find unread items" would be the inverse of Pain and is not an acceptable Benefit.
 
 ### Approach phase
 
@@ -50,13 +52,15 @@ Each element answers one question. The authoring schema for each is still open �
 
 ## Steering Gates
 
-Three Steering Gates sit at phase boundaries. The expert judges at each one whether the work is heading toward the goal — and redirects when it is not.
+Three Steering Gates sit at phase boundaries. Each gate has two checkpoints: a **Planning Gate** before work begins, and an **Output Gate** after work completes.
 
-| Gate | Placement | What the gate commits |
+| Phase | Planning Gate (IN) | Output Gate (OUT) |
 |---|---|---|
-| **G1 — Goal gate** | after Success Scenarios, before Approach | "what we are building, and what counts as success" |
-| **G2 — Approach gate** | after Design, before Delivery | "how we will build it, including how we will confirm" |
-| **G3 — Delivery gate** | on completion of Steps | "did we get closer to the goal" |
+| **Goal** | Plan reviewed before research and drafting | **G1** — `goal.md` approved: Situation, Pain, Benefit, and Acceptance Scenarios confirmed |
+| **Approach** | Plan reviewed before technical investigation | **G2** — `approach.md` approved: Testing strategy, Technology choice, and Design confirmed |
+| **Delivery** | Steps reviewed before implementation | **G3** — `delivery.md` approved: Verification confirms Acceptance Scenarios are met |
+
+G1 / G2 / G3 are shorthand for the Output Gates. Both checkpoints use the same commands (`/ty` to approve, `/gm` to redirect with feedback). The expert does not just approve or reject; they redirect the work toward the goal.
 
 **Authoring split** (working hypothesis):
 
@@ -74,7 +78,9 @@ Three Steering Gates sit at phase boundaries. The expert judges at each one whet
 
 ## How Delivery Steps run
 
-The Delivery phase's Steps are executed by [ACC](acc.md), a generic runtime for multi-Turn AI agents. Each Step is realized as one or more ACC Turns, and a bounded state (CCS) is handed between them. Chain content lands in the Turn's CCS — for example, Goal-phase elements flow into `goal_orientation`; Approach-phase constraints flow into `constraints`; authored documents flow into `retrieved_artifacts`.
+The Delivery phase's Steps are executed by [ACC](acc.md), a generic runtime for multi-Turn AI agents. A bounded state (CCS) is handed between Turns. Chain content lands in the Turn's CCS — for example, Goal-phase elements flow into `goal_orientation`; Approach-phase constraints flow into `constraints`; authored documents flow into `retrieved_artifacts`.
+
+**Turn granularity:** 1 Step = 1 Turn is the design invariant. Each planned Step is realized in exactly one ACC Turn. When a Step cannot complete in a single Turn, the plan is updated (the Step is split or a corrective Step is added) before the next Turn runs — the plan and execution stay synchronized. CCS bloat is the health signal: if a Turn's CCS grows large, the Step scope is too broad.
 
 TC × Steering Gates decides **what to build and whether we got there**. ACC decides **how state is carried while building it**. The two are orthogonal.
 
@@ -82,25 +88,31 @@ TC × Steering Gates decides **what to build and whether we got there**. ACC dec
 
 ## Storage
 
-How a Chain is written, where it lives, and how it ages. All three are still open.
+**File format:** One file per phase, each opening with a Plan section.
 
-**File format**
+```
+.aiya/<issue-number>/
+  goal.md       # Plan + Situation + Pain + Benefit + Acceptance Scenarios
+  approach.md   # Plan + Testing + Technology + Design
+  delivery.md   # Steps + Verification
+  ccs/          # CCS files, one per Turn (lowercase)
+    t001.md
+    t002.md
+    ...
+  research/     # Intermediate artifacts: investigation outputs, spikes
+                # Flat directory; file naming distinguishes types
+                # e.g. research-auth-flow.md / spike-oauth.py
+```
 
-- (a) A single file with sections per element
-- (b) One file per element
-- (c) Hybrid (Goal consolidated, Approach split per element, Delivery consolidated)
+Each phase file opens with a **Plan** section reviewed at the Planning Gate before execution begins. The phase Chain elements follow, reviewed at the Output Gate on completion.
 
-**Location**
-
-- Under `aiya-jam/chains/<issue-id>/`
-- Inside the issue repository itself
-- Managed elsewhere
+**Location:** `.aiya/<issue-number>/` inside the project repository. Chain files are committed to a branch and reviewed via pull request. The PR body references the directory only; no Chain content is written into the PR body itself.
 
 **Lifecycle**
 
-- **Creation** — when and by whom a Chain is stood up (at issue filing / at planning / ...)
-- **Update** — how to handle a Chain that changes mid-implementation
-- **Archival** — how completed Chains are preserved
+- **Creation** — `/hi` hears and files the issue; `/go <N>` creates `.aiya/<N>/` and the branch
+- **Update** — plan changes (Step splits, gate redirects) are committed to the branch; the PR diff is the change history
+- **Archival** — open (how completed Chains are preserved after merge)
 
 ## Related documents
 
@@ -110,10 +122,8 @@ How a Chain is written, where it lives, and how it ages. All three are still ope
 
 ## Open questions
 
-- [ ] Per-element authoring schema (what exactly to write)
-- [ ] Storage (format / location / lifecycle)
+- [ ] Per-element authoring schema (what exactly to write per element)
 - [ ] Chain → CCS linkage (reference vs value copy)
-- [ ] Gate criteria and rejection fallbacks
-- [ ] Chain versioning (how to keep change history)
-- [ ] Granularity (is 1 issue = 1 Chain the right unit?)
+- [ ] Gate criteria (what exactly must hold for `/ty` to be appropriate)
+- [ ] Archival (how completed Chains are preserved after merge)
 - [ ] Authoring split between expert and AI, per element

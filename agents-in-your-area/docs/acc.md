@@ -117,6 +117,7 @@ The paper calls this a "TOON style token-oriented representation". It is lighter
 | New file per Turn | Do not accumulate; always create the latest state fresh (replacement semantics) |
 | No shared context | Runner and Turn do not share conversation context |
 | CCS is the only bridge | The only handoff between Turns is the CCS |
+| Lowercase filenames | CCS files are named `t001.md`, `t002.md`, … stored under `.aiya/<issue-number>/ccs/` |
 
 ### Size health
 
@@ -235,7 +236,6 @@ The ACC paper reports the following results over a 50-turn multi-turn evaluation
 
 ## Open questions
 
-- [ ] Physical location of CCS files
 - [ ] CCS versioning (whether to keep the state before replacement)
 - [ ] Extension policy for the type vocabulary
 - [ ] Runner implementation form (subagent / separate session / separate container)
