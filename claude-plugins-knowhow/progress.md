@@ -13,75 +13,99 @@ First message (Japanese, preserved verbatim):
 > イメージできますか？
 > smith作って、smith使ってjamを作る
 
-Subsequent intent (this work-stream):
+Subsequent intent (this work-stream, verbatim):
 
 > claude pluginのノウハウ、ノウハウに分かりやすく覚えやすい名前を付けて、チェック項目を扱いやすくしたい。
+
+User's explicit 2-step plan (verbatim):
+
+> **１** taxonomyにノウハウ集めてるんですよね？チェックリストやケーススタディなど、すべてのドキュメントを精査してtaxonomyに具体的なノウハウとして集めましょう
+>
+> **２** １でノウハウが固まるので、あとはチェックリストがあればよいですよね。ノウハウからチェックリストを作成しましょう、チェックリストにはチェック方法、改善方法、改善例など、smithの実行を想定して必要な項目を定義してから進めましょう。
 
 ## Pivots
 
 - jam removed from smith's scope; Create mode dropped.
 - "Consultant" reframed to "craftsperson".
-- **Knowhow indexing surfaced as a prerequisite to smith implementation.** smith's `smith-knowhow` skill needs a structured taxonomy with stable IDs.
-- **Original 49-item extraction was contaminated by domain-classification bias.** Items that didn't fit 5 domains were silently dropped; table rows were collapsed; case-studies/checklists/README/smith-design were never scanned. Re-audit required.
+- Knowhow indexing surfaced as a prerequisite to smith implementation.
+- Original 49-item extraction was contaminated by domain-classification bias. All 7 files re-scanned.
 
-## Current phase
+## Step status
 
-**Stage 3 — Full knowhow audit across 7 files.** smith implementation blocked on this.
+### Step 1 — Scrub all docs, collect all knowhow into taxonomy ✅ COMPLETE
 
-## Files in scope (7)
+All 7 source files scanned. taxonomy.md updated.
 
 | File | Status |
 |---|---|
-| `docs/concepts.md` | needs re-scan (domain bias) |
-| `docs/components.md` | needs re-scan (table rows collapsed) |
-| `docs/patterns.md` | needs re-scan |
-| `docs/case-studies.md` | not yet scanned |
-| `docs/checklists.md` | not yet scanned (orphans confirmed) |
-| `README.md` | not yet scanned |
-| `smith-design.md` | not yet scanned |
+| `docs/concepts.md` | ✅ scanned (commit b7f53bd) |
+| `docs/components.md` | ✅ scanned (commit 55433d5) |
+| `docs/patterns.md` | ✅ scanned (commit 778936d) |
+| `docs/case-studies.md` | ✅ scanned (commit 496d639) |
+| `docs/checklists.md` | ✅ scanned (commit 5f758f9) |
+| `README.md` | ✅ scanned (commit d436b2e) |
+| `smith-design.md` | ✅ scanned (commit 4a5d54b) |
 
-Per-file findings accumulate in `audit-notes.md`.
+Reconciliation complete (commit 4489a96). taxonomy.md: **107 items** across 5 domains.
+
+| Domain | Items |
+|---|---|
+| ARC | 10 |
+| SPC | 32 |
+| PRM | 24 |
+| FLW | 29 |
+| CTX | 12 |
+| **Total** | **107** |
+
+Excluded 2 items with reasons (see taxonomy.md §Excluded).
+
+### Step 2 — Generate checklists from taxonomy ❌ NOT STARTED
+
+For each taxonomy item, define:
+
+| Field | Description |
+|---|---|
+| `id` | taxonomy ID (e.g. `PRM-IV`) |
+| `severity` | Mandatory / Recommended / Quality |
+| `auto` | `[auto]` (machine-verifiable) or `[judgment]` (requires LLM/human) |
+| `check` | What to verify (one sentence) |
+| `fix` | How to improve when NG (one sentence) |
+| `example` | Before/after illustration (optional but preferred) |
+
+Output: a structured checklist file that smith's `smith-knowhow` skill can load at runtime. One entry per taxonomy ID.
+
+**Before starting Step 2**: agree on the output format and file structure with the user. Do not generate 107 entries without alignment.
 
 ## Decisions made
 
 - 5 domains: `ARC` / `SPC` / `PRM` / `FLW` / `CTX` (mechanism-axis).
 - ID format: `DOMAIN-INITIALS` (e.g. `SPC-ATR`).
-- Name: kebab-case 2-4 words, mechanism-focused.
-- Stability: IDs stable once assigned.
+- Name: kebab-case 2–4 words, mechanism-focused.
+- IDs are stable once assigned.
+- Severity model: Mandatory / Recommended / Quality (3-tier).
+- Automation stance: `[auto]` / `[judgment]` per item.
+- All 7 source files in taxonomy scope (no exclusions by file).
 
-## Decisions deferred (revisit after audit)
+## Decisions deferred
 
-- Single-file vs per-domain split of `taxonomy.md` (currently single).
-- `severity` 3-tier vs `blocking: bool` (user leaning M/R/Q).
-- `checklists.md` as authoring surface vs generated view (user leaning authoring surface).
-- Schema fields per item: minimal vs rich (lean minimal until smith forces additions).
-- `case-studies.md` atomization.
+- Single-file vs per-domain split for the Step 2 checklist output.
+- Whether Step 2 output is a new file (`docs/checklist-items.md`) or replaces / extends the existing `docs/checklists.md`.
+- Exact schema for `example` field (inline markdown vs separate file reference).
+- Whether to generate all 107 at once or domain by domain.
 
-## Next tasks (one at a time)
+## Next task
 
-1. Re-scan `docs/concepts.md`. Append findings to `audit-notes.md`. Confirm with user.
-2. Re-scan `docs/components.md`.
-3. Re-scan `docs/patterns.md`.
-4. Scan `docs/case-studies.md`.
-5. Scan `docs/checklists.md`.
-6. Scan `README.md`.
-7. Scan `smith-design.md`.
-8. Reconcile against existing 49: list new / revised / merged / dropped.
-9. Update `taxonomy.md`.
-10. Resolve deferred decisions.
-11. (Then) implement smith.
+**Step 2, pre-work**: propose the output format and file structure for the checklist items to the user. Wait for agreement, then generate.
 
 ## Session context
 
-- **One file per turn**. Do not bundle. User explicitly requested incremental progress.
-- After each file scan: write to `audit-notes.md`, then ask user to confirm before next file.
-- `k` = approve, `進めて` = proceed autonomously.
 - Working branch: `claude/plugin-knowledge-naming-dYL6G`.
+- `k` or `y` = approve. `進めて` = proceed autonomously.
+- One domain or one batch per turn — do not generate all 107 at once without user signal.
 
 ## How to resume
 
 1. Read `.claude/rules/*.md` (esp. `interaction.md`, `workflow.md`, `language.md`).
-2. Read this file.
-3. Read `audit-notes.md`. The "Next file to scan" pointer at the top tells you where to continue.
-4. Re-read existing `docs/taxonomy.md` to know what's already classified.
-5. Resume from the next unscanned file.
+2. Read this file — current state is in "Step status" above.
+3. Confirm with user: "Step 1 is done. Step 2 is next — shall I propose the output format?"
+4. Do NOT restart Step 1 scans. taxonomy.md is the authoritative output of Step 1.
