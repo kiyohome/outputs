@@ -4,7 +4,7 @@
 
 ## Next file to scan
 
-`README.md` (file 6 of 7)
+`smith-design.md` (file 7 of 7)
 
 ## Method
 
@@ -368,7 +368,56 @@ These sections are explicitly "newly derived from components.md". Each item trac
 
 ## File 6: README.md
 
-(pending)
+Mostly cross-references to existing taxonomy items and plugin-smith-specific design rationale. A few flow patterns surface as NEW candidates.
+
+### Covered by existing taxonomy
+
+| Source location | Unit | Status |
+|---|---|---|
+| §Usage §Create step 1 | Intent classified as archetype A/B/C | `EXISTS:ARC-ACA/ASO/AH` + file-4 NEW `component-choice-heuristic` |
+| §Usage §Create step 4 | Approval at structure proposal (proceed/adjust/reject) | `EXISTS:FLW-EAG` |
+| §Usage §Create — "clarifying questions only when decisive" | Leads with proposal; asks only when necessary | File-4 NEW `propose-not-execute` |
+| §Usage §Improve `--report-only` | Evaluate mode absorbed as a flag; no mutations | File-4 NEW `propose-not-execute` |
+| §Design principles — three-layer separation | Procedure / knowledge / execution | `EXISTS:ARC-TLS` |
+| §Design principles — reporter/evaluator | diagnoser separate from evaluator | `EXISTS:FLW-RES` |
+| §Design principles — confidence 80 | Consistent threshold | `EXISTS:FLW-CTF` |
+| §Design principles — `${CLAUDE_PLUGIN_ROOT}` | No hard-coded paths | `EXISTS:SPC-PRV` |
+| §Design principles — `allowed-tools` on entry command | Least privilege | `EXISTS:SPC-ATR` |
+| §Design principles — approval only at meaningful forks | Not at every step | `EXISTS:FLW-EAG` |
+| §Architecture component layout | plugin-smith directory structure | `EXISTS:ARC-SDL` + `EXISTS:ARC-AH` (exemplar) |
+
+### NEW candidates
+
+| Source location | Unit | Proposed name | Strength | Notes |
+|---|---|---|---|---|
+| §Usage §Create step 3 | "Present 2–3 candidate structures in parallel, each with rationale and trade-offs. Wait for user to select." | `parallel-candidate-presentation` (FLW) | **medium** | Distinct from `FLW-PPS` (parallel reviewers with different lenses). Here the agents produce alternative design proposals and the user picks one. A specific use of parallel dispatch for design-space exploration. |
+| §Usage §Improve path-only variant | Findings sorted by Critical / Important / Nice-to-have. | `finding-severity-bins` (FLW) | **medium** | Distinct from `severity-tier-model` (Mandatory/Recommended/Quality which ranks **rules**). This ranks **findings** after detection. Two orthogonal severity taxonomies needed. |
+| §Usage §Improve path + problem variant | "Start from the named symptom → use patterns.md to match anti-patterns near affected area → hypothesize root cause → propose patch." | `symptom-driven-diagnosis` (FLW) | **medium** | A targeted diagnostic flow for focused improvements. Distinct from the full-scan flow. |
+| §Architecture §Skills — "thin wrappers around docs/*.md; design docs are single source of truth" | Expose documentation as skills via thin wrappers; the underlying docs are the SSOT | `docs-as-skill-wrapper` (CTX) | **weak** | May generalize: a plugin that owns reference documents should wrap them as skills rather than duplicating content in SKILL.md bodies. |
+
+### REFINES candidates
+
+| Source location | Refinement | Target ID |
+|---|---|---|
+| §Shared principles — "Minimal approval points. Approval only at meaningful forks, not every intermediate step." | Adds the scoping rule: **how few** approval gates and **which** forks count. Currently `FLW-EAG` describes the gate itself but not the anti-pattern of over-gating. | `FLW-EAG` |
+| §Usage §Improve — "dry run by default; re-validate after apply; report before/after diff" | The post-apply re-validation + diff is a specific quality loop not captured in existing items. | File-4 NEW `propose-not-execute` or new REFINES |
+
+### Out of scope
+
+| Source location | Reason |
+|---|---|
+| §Overview (problem statement) | Context framing for plugin-smith; not plugin-authoring knowhow. |
+| §What it is not | Negative scope definition for plugin-smith. Not knowhow. |
+| §Mode → doc dependency table | Design-time reference for plugin-smith authors. Useful doc artifact, not a standalone knowhow item. |
+| §Open design questions | Cross-cutting TODOs pointing at progress.md. |
+
+### Summary
+
+- **11 units confirmed EXISTS**.
+- **3 medium NEW candidates**: `parallel-candidate-presentation`, `finding-severity-bins`, `symptom-driven-diagnosis`.
+- **1 weak NEW candidate**: `docs-as-skill-wrapper`.
+- **2 REFINES candidates**: `FLW-EAG` (minimal gates principle), `propose-not-execute` (dry-run + re-validate cycle).
+- README is thin on new knowhow vs. checklists.md; its value is confirming existing items appear as described.
 
 ## File 7: smith-design.md
 
