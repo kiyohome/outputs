@@ -4,7 +4,7 @@
 
 ## Next file to scan
 
-`docs/checklists.md` (file 5 of 7)
+`README.md` (file 6 of 7)
 
 ## Method
 
@@ -272,7 +272,99 @@ Case-studies.md surfaces knowhow that concepts/components/patterns did not cover
 
 ## File 5: docs/checklists.md
 
-(pending)
+Richest file for NEW knowhow. The §Prompt section articulates general prompt-authoring quality rules not captured in the narrative docs. The §CLAUDE.md section covers an entire area absent from the taxonomy (noted as "orphan" in the previous session). The §Skill / §Hook sections surface several SPC and CTX gaps.
+
+### §How to Use — meta-structure items
+
+| Source | Unit | Status |
+|---|---|---|
+| §Severity tiers | Mandatory / Recommended / Quality with definitions | **NEW** — `severity-tier-model` (FLW). Not in taxonomy. How triage works is knowhow for both smith authors and plugin authors. |
+| §Automation stance | `[auto]` / `[judgment]` tagging | **NEW** — `automation-stance-tagging` (FLW). Defines the machine-vs-judgment distinction that governs smith's Improve mode. |
+| §When to apply table | 3-timing model (Create / Improve / PR gate) | SUBSUMED by `severity-tier-model` + smith's mode design. Not a standalone item. |
+
+### §Prompt — general prompt-authoring quality (NEW-heavy section)
+
+The narrative docs captured some prompt-authoring principles (PRM-IV through PRM-SC) but the §Prompt checklist surfaces 8 orthogonal rules that are absent from the taxonomy.
+
+| Checklist item | Proposed name | Domain | Strength |
+|---|---|---|---|
+| §1 Conciseness — "does not re-state what Claude already knows"; "every paragraph justifies its token cost" | `context-window-frugality` | PRM | **strong** |
+| §2 Specificity — state what/where/how; reference existing patterns; name target files | `instruction-specificity` | PRM | **strong** |
+| §3 Positive form — "do X" not "don't do Y" | `positive-instruction-form` | PRM | **strong** |
+| §4 Motivation — include the reason; Claude 4 generalizes better with rationale | `instruction-rationale` | PRM | **strong** |
+| §5 Degree of freedom — match freedom level to task (high/medium/low; narrow-bridge vs. open-field) | `instruction-freedom-level` | PRM | **strong** |
+| §6 Verification — define success criteria (tests / lint / typecheck / screenshots); root-cause over suppression | `verifiable-success-criteria` | PRM | **strong** |
+| §7 Workflow structure — number steps; use checklist for complex tasks; define verify→fix→re-verify | `multi-step-structuring` | PRM | **medium** |
+| §8 Terminology — same term for the same concept throughout | `terminology-consistency` | PRM | **medium** |
+
+### §Skill — gaps in SPC and CTX
+
+| Source | Unit | Status |
+|---|---|---|
+| §1 Metadata — name conventions (lowercase, ≤64 chars, no XML, reserved words `anthropic`/`claude`) | REFINES:`SPC-SFM` — more constraints than currently documented |
+| §1 Metadata — gerund form (`processing-pdfs`) | REFINES:`SPC-SFM` |
+| §1 Metadata — description ≤ 1024 characters | REFINES:`SPC-SFM` |
+| §1 Metadata — `disable-model-invocation` for side-effect workflows | **NEW** — `disable-model-invocation` (SPC). Field not covered anywhere. |
+| §2 Progressive disclosure — references stay one level deep | REFINES:`CTX-PD` |
+| §2 Progressive disclosure — mutually exclusive contexts in separate files | **NEW** — `context-separation` (CTX). Distinct from tier depth; about segmenting by audience/context. |
+| §2 Progressive disclosure — reference files >100 lines have ToC | **NEW** — `reference-toc-threshold` (SPC). Concrete navigability rule. |
+| §3 Content — no time-dependent information | **NEW** — `time-independent-content` (PRM). Maintenance rule: no dated claims like "until August 2025". |
+| §3 Content — one default plus an escape hatch | **NEW** — `default-plus-escape` (PRM). Limiting the cognitive load of choices. |
+| §5 Code/scripts — "generates verifiable intermediate outputs (plan-validate-execute)" | **NEW** — `plan-validate-execute` (FLW). Three-stage safety pattern for scripts. |
+| §6 CC-specific — `context: fork` field | **NEW** — `skill-fork-context` (SPC). Front-matter field not documented elsewhere. |
+| §6 CC-specific — `agent` field (Explore/Plan/general-purpose/custom) | **NEW** — `skill-agent-field` (SPC). Front-matter field not documented elsewhere. |
+| §7 Evaluation — "build evaluations BEFORE writing extensive docs" | REFINES:`SPC-DOM` — test-first sequencing |
+| §7 Evaluation — observe Claude's exploration path (file order, oversights, ignored files) | REFINES:`SPC-DOM` — behavioral observation |
+| §7 Evaluation — test with all target models (Haiku/Sonnet/Opus) | REFINES:`SPC-DOM` |
+
+### §Hook — SPC gaps
+
+| Source | Unit | Status |
+|---|---|---|
+| §1 Is a hook the right mechanism? | **NEW** — `hook-applicability-rule` (SPC). "Must happen every time with zero exceptions → hook; sometimes → CLAUDE.md rule." Decision gate before hook authoring. **strong** |
+| §2 Event selection — correct event for intent | EXISTS:`SPC-HER` (event roster covers this) |
+| §3 I/O design — exit codes: 0 success / 2 block / other non-blocking error | REFINES:`SPC-HIV` |
+| §3 I/O design — "Claude only sees stderr from exit code 2, except UserPromptSubmit" | **NEW** — `hook-stderr-visibility` (SPC). Behavioral gotcha not documented anywhere. |
+| §5 Execution — idempotency | **NEW** — `hook-idempotency` (SPC). Hooks may run multiple times; side effects must not accumulate. |
+| §5 Execution — no race conditions (matching hooks run in parallel) | REFINES:`SPC-HJF` (parallel execution already noted there) |
+| §5 Execution — session-start snapshot: setting changes not reflected mid-session | **NEW** — `session-snapshot-timing` (CTX). Behavioral constraint: hooks/settings loaded once at session start. |
+| §6 Type selection — command for deterministic, prompt for judgment | EXISTS:`SPC-THT` |
+| §7 Hooks in skill front matter — scoped to skill lifecycle | EXISTS:`SPC-SFM` (hooks field) |
+
+### §CLAUDE.md — orphan section (new territory for taxonomy)
+
+This entire section has no corresponding taxonomy items. The narrative docs (concepts / components / patterns) do not cover CLAUDE.md management at all.
+
+| Source | Unit | Status |
+|---|---|---|
+| §1 Content inclusion — include: non-guessable bash, code style, test runner, etiquette, arch decisions, gotchas | **NEW** — `claude-md-inclusion-rules` (CTX). What belongs vs. does not belong. **strong** |
+| §1 Content inclusion — exclude: derivable code, standard conventions, detailed API docs, frequent-change info, truisms | Subsumed by `claude-md-inclusion-rules` |
+| §2 Conciseness — "would removing this line cause Claude to make mistakes?" test | **NEW** — `necessity-test` (PRM or CTX). A specific pruning heuristic. |
+| §3 Instruction effectiveness — "rules that should be hooks have been identified" | **NEW** — `rule-to-hook-migration` (CTX). When a CLAUDE.md rule is repeatedly ignored, convert it to a hook. **strong** |
+| §3 Instruction effectiveness — important instructions carry `IMPORTANT`/`YOU MUST` emphasis | EXISTS:`PRM-CPM` (critical-phase markers cover this) |
+| §4 Placement — global `~/.claude/CLAUDE.md` / project `./CLAUDE.md` / local `./CLAUDE.local.md` / monorepo parent-child / `@import` syntax | **NEW** — `claude-md-placement` (CTX). Full placement taxonomy not captured anywhere. **strong** |
+| §4 Placement — `@import` syntax | Subsumed by `claude-md-placement` |
+| §5 Continuous improvement — `/init` baseline | Workflow tooling note; defer to smith design. |
+| §5 Continuous improvement — `#` key for immediate additions | Workflow tooling note; defer. |
+
+### §Command, §Agent, §Plugin (overall) — derivation checks
+
+These sections are explicitly "newly derived from components.md". Each item traces back to an existing taxonomy item and is checked correctly.
+
+| Section | Maps to |
+|---|---|
+| Command: imperative voice, allowed-tools, inline exec, args, phase labels, approval, single-message, plugin-root-var | `PRM-IV`, `SPC-ATR`, `SPC-ICE`, `SPC-AE`, `FLW-PC`, `FLW-EAG`, `PRM-SMC`, `SPC-PRV` — all `EXISTS` |
+| Agent: name constraints, example blocks, model choice, tools, reporter/evaluator, confidence, color | `SPC-AFM`, `SPC-EBT`, `FLW-MTS`, `SPC-ATR`, `FLW-RES`, `FLW-CTF`, `SPC-CA` — all `EXISTS` |
+| Plugin overall: plugin.json, directory layout, archetype, three-layer, no hard paths, wiring, security, README, LICENSE | `ARC-SDL`, `ARC-ACA/ASO/AH`, `ARC-TLS`, `SPC-PRV`, `SPC-HIV` — all `EXISTS` |
+
+### Summary
+
+- **Many EXISTS** confirmed across Command / Agent / Plugin sections.
+- **NEW candidates — strong (10)**: `severity-tier-model`, `context-window-frugality`, `instruction-specificity`, `positive-instruction-form`, `instruction-rationale`, `instruction-freedom-level`, `verifiable-success-criteria`, `hook-applicability-rule`, `claude-md-inclusion-rules`, `rule-to-hook-migration`, `claude-md-placement`.
+- **NEW candidates — medium (8)**: `automation-stance-tagging`, `multi-step-structuring`, `terminology-consistency`, `disable-model-invocation`, `context-separation`, `hook-idempotency`, `session-snapshot-timing`, `necessity-test`.
+- **NEW candidates — weak (6)**: `reference-toc-threshold`, `time-independent-content`, `default-plus-escape`, `plan-validate-execute`, `skill-fork-context`, `skill-agent-field`, `hook-stderr-visibility`.
+- **REFINES candidates**: `SPC-SFM` (name constraints + description length), `CTX-PD` (one-level-deep, size constants), `SPC-DOM` (test-first + behavioral obs + multi-model), `SPC-HIV` (exit codes), `SPC-HJF` (parallel race conditions), `PRM-CPM` (emphasis markers).
+- **The §CLAUDE.md section is entirely uncovered by the existing taxonomy** — at least 3 strong items.
 
 ## File 6: README.md
 
