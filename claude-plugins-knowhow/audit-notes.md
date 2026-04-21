@@ -4,7 +4,7 @@
 
 ## Next file to scan
 
-`smith-design.md` (file 7 of 7)
+(all files scanned — proceed to Reconciliation summary)
 
 ## Method
 
@@ -421,7 +421,82 @@ Mostly cross-references to existing taxonomy items and plugin-smith-specific des
 
 ## File 7: smith-design.md
 
-(pending)
+Implementation spec for smith. Dense with FLW and SPC items. Several generalizable patterns surface beyond smith-specific details.
+
+### Covered by existing taxonomy
+
+| Source location | Unit | Status |
+|---|---|---|
+| §Overview — "Defaults: dry-run; disk writes require explicit user approval" | dry-run default | File-4 NEW `propose-not-execute` |
+| §Overview — "Dogfooded: smith run on itself" | self-applicable | File-6 weak `docs-as-skill-wrapper` (partial) |
+| §Flow step 8 — "no auto-rollback — user reverts via git" | ban false promises + git as revert owner | `EXISTS:FLW-LEB` |
+| §Flow exception — "never fabricate a target" | ban fabrication under uncertainty | `EXISTS:FLW-LEB` |
+| §Flow exception — "do not emit completion claim while NG remain" | loop-escape ban | `EXISTS:FLW-LEB` |
+| §Architecture rationale — "Inspector = Opus for most-important judgment" | highest-reasoning model for hardest task | `EXISTS:FLW-MTS` |
+| §Architecture rationale — "three parallel inspector lenses; independent judgments" | parallel perspective split | `EXISTS:FLW-PPS` |
+| §Architecture — `/smith` model = inherit | non-judgment orchestrator uses inherit | `EXISTS:FLW-MTS` |
+| §Architecture — smith-inspector agents: `Read, Glob, Grep` only (no write) | read-only tool restriction for reporters | `EXISTS:SPC-ATR` + `EXISTS:FLW-RES` |
+| §Interfaces — `.smith.local.md` schema (YAML front matter + body) | session state file | `EXISTS:CTX-LMS` (exemplar with smith-specific fields) |
+| §Interfaces — `scripts/smith-state.sh` reads `.smith.local.md` with sed/awk | front-matter shell I/O | `EXISTS:SPC-FMS` |
+| §smith-knowhow layout — one reference file per component, references stay one level deep | single-level skill references | REFINES:`CTX-PD` (confirms depth constraint) |
+
+### NEW candidates
+
+#### Strong
+
+| Source location | Unit | Proposed name | Notes |
+|---|---|---|---|
+| §Architecture rationale bullet 3 | "Scoring/ranking/reconcile as a **script**, not an agent: deterministic → faster/cheaper/reproducible/no agent-bias risk." | `deterministic-steps-as-scripts` (FLW) | Generalizable: in any multi-agent pipeline, steps that are pure math/sorting/aggregation should be scripts, not LLM agents. |
+| §Interfaces §Convergence score formula | `(num_lenses_caught × 30) + (max(self_confidence) × 0.3)`. Threshold 80. `[auto]` findings bypass threshold. | `convergence-scoring-formula` (FLW) | Extends `FLW-CTF` (single-agent confidence) to multi-lens scenarios. Lens agreement is the primary signal. |
+| §Interfaces §Ranking formula | Sort by `len(expected_effect)` desc (more checklist items fixed = higher priority); tiebreak on convergence_score. | `expected-effect-ranking` (FLW) | Impact-first ordering. Complements confidence scoring — addresses *which* finding to fix first, not just *whether* it's real. |
+| §Interfaces §Finding schema | `{ target_file, finding_type, verdict, comment, self_confidence, rationale, expected_effect, patch_content }` — standard inspector output contract. | `finding-schema` (SPC/FLW) | Reusable interface for any multi-inspector tool. Enables merging, scoring, and ranked output. |
+| §Flow step 8 | "Re-verify pre-image immediately before each write; halt on failure." | `pre-image-verification` (FLW) | Any file-writing agent should confirm the file still matches what the patch was drafted against before applying. Prevents stale patches. |
+| §Flow step 9 | "Re-run inspection on touched files; compare expected effect with actual result; loop to step 4 if unmet or regressed (max 3 iterations)." | `reconcile-expected-actual` (FLW) | The post-apply quality loop. Generalizes to any improvement agent: don't declare done until predicted improvements are confirmed. |
+
+#### Medium
+
+| Source location | Unit | Proposed name | Notes |
+|---|---|---|---|
+| §Architecture rationale bullet 5 | "Architecture lens is **singleton per Feature**, not per-file parallel: its job is to see the whole — dependencies, responsibilities, wiring. Per-file parallelism only helps where judgments are meaningfully independent." | `singleton-whole-view-agent` (FLW) | Constraint on FLW-PPS: parallel only when independence holds. Whole-picture judgments require a single, non-partitioned agent. |
+| §Flow overall (steps 3–9) | Evaluate → Inspect (`[auto]` pre-pass + 3-lens LLM) → Draft → Rank → Approve → Preview → Apply → Reconcile | `evaluate-propose-apply-loop` (FLW) | The full improvement pipeline as a reusable workflow shape. |
+| §Interfaces §`patch_content` format | Edit-tool-compatible `{ old_string, new_string }` pairs. For whole-file: `old_string=""` (create) or `old_string=<full current content>` (replace). | `patch-content-format` (SPC) | The interface contract between inspector agents and the apply step. Makes agents write-capable without having Write tool access. |
+| §Interfaces §Agent/script data transport | Agents return findings as a JSON array in a single fenced ` ```json ` block as the last message; `/smith` concatenates and pipes to scripts on stdin; scripts emit JSON on stdout; no shared transient files. | `agent-json-transport` (SPC/CTX) | Data transport protocol for multi-agent → script pipelines. Avoids shared state files for transient data. |
+| §Dependency ordering (L210-215) | Topologically sort files by dependency edges (command → agent, skill → references); write foundation files first; break cycles alphabetically with warning. | `dependency-ordered-writes` (FLW) | Any tool writing multiple related files should determine and respect write order. |
+| §Interfaces §`finding_type` naming convention | `checklist:<component-type>:<item-slug>` / `pattern:<name-slug>` / `architecture:<name-slug>`. Merge relies on exact string equality. | `finding-type-taxonomy` (SPC) | Structured naming scheme for findings. Enables automated dedup/merge across inspector agents. |
+
+#### Weak
+
+| Source location | Unit | Proposed name | Notes |
+|---|---|---|---|
+| §Overview "Two-layer operating model: Feature / Component" | Feature = user-visible capability (entry); Component = inspection unit | `feature-vs-component-scope` (ARC) | Scoping model specific to improvement tools. May not generalize beyond smith-class plugins. |
+| §Interfaces §`OOS` verdict rule | OOS only when a checklist item is logically inapplicable; ambiguous cases resolve to NG or OK, never OOS. | `oos-verdict-rule` (SPC) | A classification discipline for inspector verdicts. Prevents hiding ambiguous findings as out-of-scope. |
+
+### REFINES candidates
+
+| Source location | Refinement | Target ID |
+|---|---|---|
+| §Architecture rationale bullet 5 | "Per-file parallelism only helps where judgments are meaningfully independent" — adds a scoping constraint to the parallel-dispatch pattern. | `FLW-PPS` |
+| §Architecture rationale bullet 2 | "Inspector combines inspection + improvement + patch synthesis: same file, same checklist — splitting would double reads and fragment reasoning." — the design rationale for co-locating related concerns. | `FLW-RES` (reporter/evaluator) — confirms when NOT to split roles |
+| §Architecture — inspector agents read-only, patch returned as data | Agents should be read-only; writes flow through the orchestrator. This scopes `FLW-RES` further: evaluator/applicator separation. | `FLW-RES` |
+| §Interfaces `.smith.local.md` schema | Extended CTX-LMS: adds `adoptions` / `rejections` / `reconcile_history_ref` fields; in-memory during run, persisted at end. | `CTX-LMS` |
+| §Flow exception — "self-inspection: extra confirmation, iteration cap 3→1" | Self-inspection guard: extra safety when a tool applies changes to itself. | File-4 weak `self-applicable-design` or `FLW-EAG` |
+
+### Out of scope
+
+| Source location | Reason |
+|---|---|
+| §Deferred to implementation section | Prompt wording, seed finding-type taxonomy, false-positive lists — authoring content, not authoring knowhow. |
+| §TODO | Meta-TODO for post-v1 dogfooding. |
+| Specific convergence-score table rows | Arithmetic examples illustrating the formula; embedded in `convergence-scoring-formula`. |
+
+### Summary
+
+- **12 units confirmed EXISTS**.
+- **6 strong NEW candidates**: `deterministic-steps-as-scripts`, `convergence-scoring-formula`, `expected-effect-ranking`, `finding-schema`, `pre-image-verification`, `reconcile-expected-actual`.
+- **6 medium NEW candidates**: `singleton-whole-view-agent`, `evaluate-propose-apply-loop`, `patch-content-format`, `agent-json-transport`, `dependency-ordered-writes`, `finding-type-taxonomy`.
+- **2 weak NEW candidates**: `feature-vs-component-scope`, `oos-verdict-rule`.
+- **5 REFINES**: `FLW-PPS` (independence constraint), `FLW-RES` (when not to split), `CTX-LMS` (smith-specific fields), `FLW-EAG` (self-inspection guard), `FLW-PPS`.
+- smith-design.md is the strongest source for FLW items — the scoring/ranking/reconcile formulas are quantitative knowhow absent from all other files.
 
 ## Reconciliation summary
 
