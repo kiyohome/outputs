@@ -1,6 +1,6 @@
 # aiya-tape
 
-> The tape is rolling — auditing and visualization
+> The tape is rolling — auditor
 
 <!-- NOTE: The overall architecture diagram, security model, and monorepo layout are consolidated in ../README.md. -->
 
@@ -13,15 +13,6 @@ Records and visualizes all traffic from AI agents, so "what happened" is always 
 ```
 # TODO
 ```
-
-## MCP integration
-
-```bash
-claude mcp add o2 http://localhost:5080/api/default/mcp \
-  -t http --header "Authorization: Basic <TOKEN>"
-```
-
-OpenObserve's built-in MCP supports stream search, alert management, and more. No custom MCP server is needed.
 
 ## aiya-proxy
 
@@ -100,7 +91,16 @@ openobserve:
     - ZO_ROOT_USER_PASSWORD=xxx
 ```
 
-## Single use (without aiya-pit)
+### MCP integration
+
+```bash
+claude mcp add o2 http://localhost:5080/api/default/mcp \
+  -t http --header "Authorization: Basic <TOKEN>"
+```
+
+OpenObserve's built-in MCP supports stream search, alert management, and more. No custom MCP server is needed.
+
+## Without aiya-pit
 
 aiya-tape can be used without the sandbox. In that mode:
 - Point the host-side CC's `HTTP_PROXY` / `HTTPS_PROXY` at the proxy
@@ -109,8 +109,8 @@ aiya-tape can be used without the sandbox. In that mode:
 
 ## Related documents
 
-- [aiya-pit.md](aiya-pit.md) — sandbox (typically used alongside aiya-tape)
-- [../README.md](../README.md) — overall architecture diagram and security model
+- [aiya-pit](aiya-pit.md) — sandbox (typically used alongside aiya-tape)
+- [AIYA README](../README.md) — overall architecture diagram and security model
 
 ## Open questions
 

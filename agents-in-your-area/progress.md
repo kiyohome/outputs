@@ -1,133 +1,102 @@
-# Progress
-
-> Record of work intent, completed items, and next steps. Start here when resuming.
-
-## How to resume
-
-Read in this order at the start of a new session:
-
-1. **`.claude/rules/`** — project-wide rules (read first, always)
-2. **This file** — current completion state and next tasks
-3. **PR #1**: https://github.com/kiyohome/outputs/pull/1
-4. The document being worked on (starting from the top-priority task below)
+# AIYA documentation polish — progress
 
 ## Original intent
 
-From the first message of the session (preserved verbatim so the intent is not lost):
+> READMEのコミット履歴を参考に、docsの中の文書を同じように修正と更新してみて。目的はaiyaの実装に進むために設計とUXを固めることです
 
-> aiyaのトレーサビリティチェイン、ccsの実現方法を考えたい
-> トレーサビリティチェインによりいくつかドキュメントが必要かと。ドキュメントの種類、フォーマット、管理方法が必要では？
-> 要件、UX、設計を順に考えましょう
-> 私にヒアリングしながら提案ベースで進めて
+(Follow-up redirect from the user:)
 
-**Honest status**: PR #1 delivered the groundwork (monorepo layout, doc skeletons, rules, progress tracking). The original design question — how Chain documents should be *typed / formatted / managed*, and how Chain and CCS actually hook together — is still **open**. "Next tasks" below is the real entry point.
+> それは逆です、作る前に利用者をイメージして決めるんです。あるべき姿を先に考えるんです。
+
+> 今は実装は不要、あるべき姿を書いて
 
 ## Current phase
 
-**Requirements phase**. First step of the requirements → UX → design sequence.
+**Design consolidation.** Planning-session decisions have been reflected into the docs (commit `b4a4265`). Remaining work is per-document **Open questions** hearings and two outstanding phase-flow designs (Approach, Delivery).
 
-The focus is pinning down how AIYA's Traceability Chain and CCS should actually work. Documentation refactoring is done; from here, each document's content gets filled in.
+Branch: `claude/aiya-documentation-polish-LLxbp`
 
 ## Completed
 
-### PR #1: monorepo refactor
+- [x] README: Concepts section names all 8 TC elements; Quickstart filled in with curl one-liner + 5 slash commands
+- [x] tc-x-gates.md: renamed Success Scenarios → **Acceptance Scenarios**; added Japanese phase subtitles (達成すべきこと / 達成する方法 / 届ける); Planning Gate + Output Gate (G1/G2/G3) structure; 1 Step = 1 Turn invariant articulated; Storage section resolved (`.aiya/<issue-number>/`)
+- [x] tc-x-gates.md: added Pain/Benefit writing discipline — Benefit is strategic impact, not Pain's inverse
+- [x] aiya-jam.md: full rewrite with conversational commands (`/hi /go /ty /gm /bb`), up.sh/dn.sh lifecycle, Chain directory layout, Quickstart
+- [x] acc.md: CCS lowercase filename convention (`t001.md`, `t002.md`) documented; physical-location open question resolved
 
-- [x] Reorganize `agents-in-your-area/` into a monorepo layout (`README.md` + `docs/`)
-- [x] Map, split, and deduplicate the four existing documents (vision / acc-agent-architecture / aiya-pit / aiya-tape)
-- [x] Classify documents into types (4 Concept + 3 Package)
-- [x] Optimize heading structure per file (common template dropped in favor of a flat `##` structure)
-- [x] Convert ASCII diagrams to mermaid (both diagrams in `architecture.md`, the system diagram in `README.md`)
-- [x] Create skeletons for `traceability-chain.md` and `aiya-jam.md`
-- [x] Translate `README.md` and all `docs/*.md` body text to English (follow-up on language.md)
+## Remaining tasks
 
-### `.claude/rules/` setup
+### Design (blocks the remaining Open questions)
 
-- [x] `rules.md` — meta rules (confirmation before writing, process improvement)
-- [x] `language.md` — English as the default output language
-- [x] `documentation.md` — structure, headings, OSS conventions, bilingual docs
-- [x] `workflow.md` — proposal-based progression, progress.md pattern, git operations
-- [x] `diagrams.md` — mermaid preferred, syntax safety, smartphone visibility
-- [x] Translate all five rule files to English
+Goal-phase pattern is set. Approach and Delivery need the same treatment so the whole lifecycle is closed before individual Open questions can be answered with confidence.
 
-## Next tasks (by priority)
+- [ ] **Approach phase flow** — apply the Goal pattern (Plan section + Planning Gate → drafting → Output Gate G2). Decide: AI-drafted vs expert-authored per element; how Technology choice is recorded; how Design shape is recorded.
+- [ ] **Delivery phase flow** — Steps authoring, Turn execution, Verification, PR → merge. Decide: who authors Steps (expert / AI); how Verification ties back to Acceptance Scenarios; what lands in the PR vs in `delivery.md`.
 
-### 1. Nail down Traceability Chain requirements ★top priority
+Recommended next tactical step: Approach phase flow (pattern already exists, low cost, closes the whole picture).
 
-Fill in the TODOs in `docs/traceability-chain.md`. Hearing points:
+### Open questions — per document
 
-- Format for each of the 6 Chain elements (Situation / Pain / Benefit / Acceptance Scenarios / Approach / Steps)
-- Physical layout (single file vs per-element split vs hybrid)
-- Granularity (is 1 issue = 1 Chain the right unit?)
-- Chain versioning (how to keep change history)
-- Authoring split (which elements the expert writes vs which the AI drafts)
+**tc-x-gates.md**
+- [ ] Per-element authoring schema (what exactly to write per element)
+- [ ] Chain → CCS linkage (reference vs value copy)
+- [ ] Gate criteria (what exactly must hold for `/ty` to be appropriate)
+- [ ] Archival (how completed Chains are preserved after merge)
+- [ ] Authoring split between expert and AI, per element
 
-### 2. Chain-to-CCS linkage
+**acc.md**
+- [ ] CCS versioning (whether to keep the state before replacement)
+- [ ] Extension policy for the type vocabulary
+- [ ] Runner implementation form (subagent / separate session / separate container)
+- [ ] Async coordination for parallel Turns
 
-- (a) Path reference: `retrieved_artifacts: spec(chains/issue-123/benefit.md)`
-- (b) ID reference: something like `BNF-123-01`
-- (c) Value copy: inline Chain content into `goal_orientation` / `constraints` at CCS creation time
+**aiya-jam.md**
+- [ ] SKILL.md placement and loading
+- [ ] SKILL.md granularity (per phase / per Turn kind)
+- [ ] Workflow definition language (YAML / TypeScript / plain Markdown)
+- [ ] Parallel Turn handling
+- [ ] Runner implementation form and location (inside / outside aiya-pit)
+- [ ] Integration with aiya-pit (how Turns are launched in the sandbox)
+- [ ] Integration with aiya-tape (whether CCS creation events are recorded)
 
-Pick one.
+**aiya-pit.md**
+- [ ] CA cert distribution
+- [ ] Base image selection
+- [ ] In-container user privileges
 
-### 3. Concretize the three-stage gates
+**aiya-tape.md**
+- [ ] Allowlist management
+- [ ] Default dashboard presets
+- [ ] Log retention
+- [ ] Masking rules
 
-[vision.md](docs/vision.md) mentions them but doesn't define them:
+**README**
+- [ ] Contributing section (branch strategy, commit rules, review flow)
 
-- Placement: Task start / Context boundaries / Step completion
-- Judge, criteria, and fallback target for each gate
-- UI (CLI dialogue / web UI / PR review)
+## Session context
 
-### 4. Resolve the "Step" naming collision
+- The user drove design via proposal-based hearing. Decisions crystallized in order: repo-scoped install model → conversational command names → phase-file structure → 8-element TC with Japanese definitions → 2-gate-per-phase (Planning + Output) → 1 Step = 1 Turn invariant maintained by plan updates → Acceptance Scenarios naming.
+- Key constraint: the expert's judgment must be structurally embedded, not bolted on. Gates exist because drift is structurally detectable only when there is something concrete to compare against.
+- Pain/Benefit discipline matters: Pain is observable symptom; Benefit is strategic downstream impact. Users often collapse them — the doc now enforces the distinction.
+- Command naming: conversational phrases over functional labels (`/ty` not `/approve`, `/gm` not `/feedback`).
 
-Chain's "Steps" (the action list after Approach) and ACC's "Step" (the work unit inside a Context) use the same word for different things. Rename one or introduce an explicit distinction.
-
-### 5. Chain ↔ Task/Context/Step/Action mapping
-
-Open item in [architecture.md § Chain ↔ Task mapping](docs/architecture.md). Working hypothesis:
-
-- Situation / Pain / Benefit / Acceptance Scenarios → Task-level context
-- Approach → basis for Context splitting
-- Steps → Step sequence inside the Implementation Context
-
-### 6. aiya-jam implementation shape
-
-TODOs in [aiya-jam.md](docs/aiya-jam.md):
-
-- SKILL.md granularity (per Task / per Step kind / per Context)
-- Workflow definition language (YAML / TypeScript / plain Markdown)
-- Chain storage (file / DB / issue body)
-- CCS storage
-- Task Agent implementation (Claude Code subagent / separate container / separate session)
-
-### 7. Quickstart sections
-
-Quickstart is still TODO in all of:
-
-- `README.md`
-- `docs/aiya-pit.md`
-- `docs/aiya-tape.md`
-- `docs/aiya-jam.md`
-
-## Session context (for resuming)
-
-- The user prefers **hearing-and-proposal-based** progression — don't just execute
-- **Monorepo** setup (packages: aiya / aiya-pit / aiya-tape / aiya-jam)
-- Order is **requirements → UX → design**
-- Documents are in **English** (full translation done in PR #1)
-- Working branch: `claude/traceability-chain-docs-VTFb8`
-
-## Documentation layout (current)
+## Document layout
 
 ```
 agents-in-your-area/
-├── README.md                   # Monorepo overview
-├── progress.md                 # This file
-└── docs/
-    ├── vision.md               # Why (migrated from aiya-vision.md)
-    ├── traceability-chain.md   # Chain spec (skeleton, many TODOs)
-    ├── ccs.md                  # CCS spec (extracted from existing)
-    ├── architecture.md         # Work units + agent placement
-    ├── aiya-pit.md             # Sandbox
-    ├── aiya-tape.md            # Audit proxy
-    └── aiya-jam.md             # Task management (skeleton, many TODOs)
+  README.md                  # entry point — why AIYA, Concepts, Quickstart, Architecture
+  progress.md                # this file
+  docs/
+    background.md            # prior art, scope, comparisons, FAQ
+    tc-x-gates.md            # Traceability Chain × Steering Gates
+    acc.md                   # Agent Cognitive Compressor runtime
+    aiya-jam.md              # orchestrator package
+    aiya-pit.md              # sandbox package
+    aiya-tape.md             # auditor package
 ```
+
+## Next session entry point
+
+1. Read this file.
+2. Pick up **Approach phase flow design** — use Goal phase as the template.
+3. Once Approach + Delivery flows are set, walk each Open questions list one document at a time.

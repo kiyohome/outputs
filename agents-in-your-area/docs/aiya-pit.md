@@ -78,7 +78,7 @@ networks:
     driver: bridge            # only aiya-proxy attaches here
 ```
 
-## Single use (without aiya-tape)
+## Without aiya-tape
 
 aiya-pit can be used without the proxy. In that mode:
 - Only filesystem isolation is active
@@ -87,8 +87,8 @@ aiya-pit can be used without the proxy. In that mode:
 
 ## Related documents
 
-- [aiya-tape.md](aiya-tape.md) — audit proxy (typically used alongside aiya-pit)
-- [../README.md](../README.md) — overall architecture diagram and security model
+- [aiya-tape](aiya-tape.md) — auditor (typically used alongside aiya-pit)
+- [AIYA README](../README.md) — overall architecture diagram and security model
 
 ## Open questions
 
