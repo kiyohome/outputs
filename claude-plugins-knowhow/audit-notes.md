@@ -4,7 +4,7 @@
 
 ## Next file to scan
 
-`docs/case-studies.md` (file 4 of 7)
+`docs/checklists.md` (file 5 of 7)
 
 ## Method
 
@@ -204,7 +204,71 @@ None identified. Every extractable unit is covered by an existing taxonomy item.
 
 ## File 4: docs/case-studies.md
 
-(pending)
+Original taxonomy dismissed this file as "concrete examples of the patterns below." Re-scan confirms **that treatment dropped several independent knowhow units**. Each case study contains both exemplar material and distinct authoring patterns not captured by existing taxonomy items.
+
+### Covered by existing taxonomy (exemplar material)
+
+| Source location | Unit | Status |
+|---|---|---|
+| §feature-dev §Layout | directory layout | `EXISTS:ARC-SDL` (exemplar) |
+| §feature-dev §Seven-phase workflow | phase blocks with Goal / Actions / CRITICAL markers | `EXISTS:FLW-PC` + `EXISTS:PRM-CPM` (exemplar) |
+| §feature-dev §User approval points | approval gates at multiple phases | `EXISTS:FLW-EAG` (exemplar) |
+| §feature-dev §Agent design notes — code-explorer (tools) | restricted read-only tool set | `EXISTS:SPC-ATR` (exemplar) |
+| §feature-dev §Agent design notes — code-reviewer | confidence ≥ 80 filter, Critical/Important bins | `EXISTS:FLW-CTF` (exemplar) |
+| §code-review §Pipeline | Haiku/Sonnet 4-tier pipeline + double eligibility | `EXISTS:FLW-MTP` + `EXISTS:FLW-DEC` (exemplar) |
+| §code-review §`gh` CLI usage | `allowed-tools` restricted to `gh pr/issue/search` | `EXISTS:SPC-ATR` (exemplar) |
+| §pr-review-toolkit §The six agents | per-agent model / color / specialty | `EXISTS:SPC-AFM` + `EXISTS:SPC-CA` + `EXISTS:FLW-MTP` (exemplar) |
+| §pr-review-toolkit §Sequential vs. parallel | default sequential, `all parallel` opt-in | `EXISTS:FLW-PVS` (exemplar) |
+| §hookify §Layout | command + agent + skill + hook bundle | `EXISTS:ARC-AH` (exemplar) |
+| §claude-md-management §`revise-claude-md` §Excluded items | verbose / obvious / one-shot filtering | `EXISTS:PRM-OFD` (exemplar) |
+| §ralph-loop §Mechanism | 9-step self-referential loop via Stop hook + `.local.md` | `EXISTS:CTX-FFL` + `EXISTS:CTX-LMS` + `EXISTS:FLW-LEB` (exemplar) |
+
+### NEW candidates
+
+Case-studies.md surfaces knowhow that concepts/components/patterns did not cover. Strength tagged as **strong** / **medium** / **weak**.
+
+| Source location | Unit | Proposed name | Strength | Notes |
+|---|---|---|---|---|
+| §claude-code-setup §Categories | 5-row mapping of Hooks / Subagents / Skills / Plugins / MCP Servers to "Best for" use cases | `component-choice-heuristic` (ARC) | **strong** | Directly resolves the known gap surfaced in File 2 ("when to choose command vs agent vs skill"). Extends it to the full 5-component surface. |
+| §pr-review-toolkit §Selective dispatch | Conditionally dispatch 1–2 of N agents based on file-change signals (test files → pr-test-analyzer, etc.) | `selective-dispatch` (FLW) | **strong** | Distinct from `FLW-PPS` (run all in parallel with different lenses) and `FLW-PC` (sequential pipeline). The mechanism is **signal-gated agent selection**. |
+| §claude-code-setup §Recommendation framework | "Analyze codebase signals (package.json, framework, test config) → surface 1–2 high-impact recommendations per category." | `signal-driven-proposal` (FLW) | **medium** | A recipe for recommendation/advisory plugins. |
+| §claude-code-setup §Recommendation framework (last sentence) | "The plugin does not install anything; it proposes." | `propose-not-execute` (ARC or PRM) | **medium** | An authoring stance: advisory plugins must surface options, not auto-apply. Complements `FLW-EAG` (approval gate for execution). |
+| §claude-md-management §`revise-claude-md` | 4-step retrospective: look back → categorize (CLAUDE.md vs `.claude.local.md`) → one-liner draft → diff + approval | `post-session-capture` (FLW) | **medium** | Specific command workflow for distilling learnings back into persistent config. Not a one-off; several plugins could adopt this shape. |
+| §hookify §Immediate reflection | "Rule files are loaded dynamically by the hook at runtime. Edits take effect immediately — no Claude Code restart." | `runtime-rule-reload` (CTX or SPC) | **medium** | A design affordance of the hook-reads-`.local.md`-per-event pattern. Distinct from `SPC-PTL` (static-vs-dynamic choice) — this is the **hot-reload** property that follows. |
+| §ralph-loop §Suitable for / §Not suitable for | 3+3 bullets of when-to-use / when-not-to-use | `applicability-criteria` (meta/doc) | **medium** | An authoring convention: every template/archetype plugin should publish its suitability envelope. Also a documentation pattern. |
+| §feature-dev §Agent design notes — code-architect | "Commits to a single approach rather than hedging. Outputs a blueprint with file paths, function names, and concrete steps." | `single-approach-commitment` (PRM) | **medium** | An authoring rule for design/architect agents: force commitment, no "either A or B" hedging. |
+| §feature-dev §Agent design notes — code-reviewer | "When there is nothing to say, reports 'meets standards' succinctly." | `null-result-protocol` (PRM) | **weak** | An output convention for evaluator agents: empty result must be stated, not produce silence or filler. |
+| §hookify §Rule file format | Schema: `name`/`enabled`/`event`/`pattern`/`action` front matter + message body; advanced `conditions` with `field`/`operator`/`pattern`. | `hook-rule-schema` (SPC) | **weak** | Very specific to rule-based hook plugins. Candidate if more than one plugin family adopts this schema; otherwise treat as exemplar. |
+| §claude-md-management §`claude-md-improver` skill | 6-criterion weighted rubric (Commands 20 / Clarity 20 / Patterns 15 / Conciseness 15 / Freshness 15 / Actionability 15 = 100) | `weighted-quality-rubric` (FLW) | **weak** | Speculative generalization. Distinct from `FLW-CTF` (single 0–100 confidence). Pattern is: **multi-criterion rubric with weights**. Include only if another plugin uses the same shape. |
+
+### REFINES candidates
+
+| Source location | Refinement | Target ID |
+|---|---|---|
+| §code-review §`gh` CLI usage | The applied form of `SPC-ATR`: when an external service has a CLI (`gh`, `git`, `aws`), prefer `allowed-tools: Bash(gh pr view:*)` over generic Bash or WebFetch access. | `SPC-ATR` |
+| §pr-review-toolkit §Sequential vs. parallel | Already flagged in File 1. Case-studies adds the concrete wording: "Default sequential + `all parallel` opt-in." | `FLW-PVS` |
+| §feature-dev §User approval points (3 bullets) | Multi-gate approval: a single command can have 2–3 discrete approval points (clarifying answers / design choice / review-response decision), not just one at Phase 5. | `FLW-EAG` |
+| §feature-dev §Agent design notes — code-explorer (output) | "Output must include a list of 5–10 must-read files" — explicit output-contract for exploration agents. Could fold into `PRM-OSD` as the "explorer output contract" example. | `PRM-OSD` |
+| §ralph-loop §Mechanism (9 steps) | Promote to the canonical exemplar of `CTX-FFL`. Already cross-referenced, but the 9-step trace is the clearest expression of the mechanism. | `CTX-FFL` |
+
+### Out of scope
+
+| Source location | Reason |
+|---|---|
+| §feature-dev §Layout code block | Exemplar of `ARC-SDL` — directory layout for a specific plugin. |
+| §code-review §Pipeline code block | Exemplar of `FLW-MTP` + `FLW-PC`. |
+| §hookify §Layout code block | Exemplar of `ARC-SDL` + `ARC-AH`. |
+| §pr-review-toolkit §The six agents table (full rows) | Exemplar data. Useful as linked reference, not taxonomy entry. |
+| §TODO | Meta-TODO about adding more case studies. Not plugin-authoring knowhow. |
+
+### Summary
+
+- **12 units confirmed EXISTS** as exemplars.
+- **2 strong NEW candidates**: `component-choice-heuristic` (ARC), `selective-dispatch` (FLW).
+- **5 medium NEW candidates**: `signal-driven-proposal`, `propose-not-execute`, `post-session-capture`, `runtime-rule-reload`, `applicability-criteria`, `single-approach-commitment`.
+- **3 weak NEW candidates**: `null-result-protocol`, `hook-rule-schema`, `weighted-quality-rubric`.
+- **5 REFINES candidates**: `SPC-ATR`, `FLW-PVS`, `FLW-EAG`, `PRM-OSD`, `CTX-FFL`.
+- The original "case-studies = exemplars only" decision was wrong — at minimum the 2 strong candidates should become taxonomy entries.
 
 ## File 5: docs/checklists.md
 
