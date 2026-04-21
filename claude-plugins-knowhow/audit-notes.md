@@ -4,7 +4,7 @@
 
 ## Next file to scan
 
-`docs/components.md` (file 2 of 7)
+`docs/patterns.md` (file 3 of 7)
 
 ## Method
 
@@ -77,7 +77,74 @@ Scanned top-to-bottom. Every paragraph, bullet, and table row was considered as 
 
 ## File 2: docs/components.md
 
-(pending)
+Scanned top-to-bottom. Every `###` heading, table, code block, and bullet was considered.
+
+### Covered by existing taxonomy
+
+| Source location | Unit | Status |
+|---|---|---|
+| §Commands §Write commands as instructions | imperative voice for commands | `EXISTS:PRM-IV` |
+| §Commands §Restrict tools with `allowed-tools` | allowed-tools front-matter | `EXISTS:SPC-ATR` |
+| §Commands §"Single-message completion" pattern | no-prose single-turn directive | `EXISTS:PRM-SMC` |
+| §Commands §Inline execution | `` !`cmd` `` inline shell embedding | `EXISTS:SPC-ICE` |
+| §Commands §Argument expansion | `$ARGUMENTS`, `$1..n`, `@$1`, `@${CLAUDE_PLUGIN_ROOT}/…` | `EXISTS:SPC-AE` |
+| §Commands §Phase control pattern | phase blocks with Goal / Actions / Approval | `EXISTS:FLW-PC` |
+| §Agents §Front matter | name / description / model / color / tools | `EXISTS:SPC-AFM` |
+| §Agents §Trigger definition via `<example>` | `<example>` blocks with `<commentary>` | `EXISTS:SPC-EBT` |
+| §Agents §Model tiering | per-agent model tier + 4-tier pipeline | `EXISTS:FLW-MTP` |
+| §Agents §Parallel dispatch | parallel perspective-split dispatch | `EXISTS:FLW-PPS` |
+| §Agents §Separation of reporter and evaluator | reporter agent + separate evaluator agent | `EXISTS:FLW-RES` |
+| §Agents §Color assignment | per-agent color convention | `EXISTS:SPC-CA` |
+| §Skills §Front matter | name / description / version | `EXISTS:SPC-SFM` |
+| §Skills §Body style | imperative / no 2nd person / 1500-2000 words | `EXISTS:PRM-SBS` |
+| §Skills §Description optimization | 7-step test-set methodology | `EXISTS:SPC-DOM` |
+| §Skills §Three roles a SKILL.md can play | auto-trigger / on-demand / long-form | `EXISTS:SPC-STR` |
+| §Hooks §Events | 9-event roster | `EXISTS:SPC-HER` |
+| §Hooks §Two hook types | prompt vs command | `EXISTS:SPC-THT` |
+| §Hooks §`hooks.json` format | wrapper schema + matcher syntax | `EXISTS:SPC-HJF` |
+| §Hooks §Use `${CLAUDE_PLUGIN_ROOT}` | portability variable | `EXISTS:SPC-PRV` |
+| §Hooks §Representative hook patterns — SessionStart | context-inject on session start | `EXISTS:SPC-SSI` |
+| §Hooks §Representative hook patterns — Stop-based loop | filesystem-as-feedback via Stop hook | `EXISTS:CTX-FFL` |
+| §Hooks §Representative hook patterns — PreToolUse two-layer | static policy + dynamic rules | `EXISTS:SPC-PTL` |
+
+### NEW candidates
+
+| Source location | Unit | Proposed name | Notes |
+|---|---|---|---|
+| §Skills §Front matter — third bullet | "Claude tends to *under*-trigger skills. Write the description aggressively so tangential requests still activate it." | `lean-forward-description` (PRM) | A **principle** about drafting bias, distinct from `SPC-DOM` (which is the test-set **process**). |
+| §Agents §Representative specialized agents — silent-failure-hunter + type-design-analyzer | Enumerate anti-patterns explicitly in the agent body ("empty catch blocks, log-and-continue, implicit fallbacks" / "anemic domain models, exposed mutable internals"). | `anti-pattern-enumeration` (PRM) | Cross-agent authoring pattern. Also flagged as a known gap in the file's own TODO: "Collect bad examples, not just good ones." |
+
+### REFINES candidates
+
+| Source location | Refinement | Target ID |
+|---|---|---|
+| §Commands §Argument expansion | `@$1` tells Claude to read the argument as a file; `@${CLAUDE_PLUGIN_ROOT}/templates/report.md` references plugin-internal files. These `@`-forms deserve explicit mention (not just positional `$n`). | `SPC-AE` |
+| §Agents §Front matter (name row) | `name` must be kebab-case, 3–50 characters. | `SPC-AFM` |
+| §Agents §Front matter (tools row) | `tools` omitted = full access; specified = restricted. Maps the "opt-in restrict" semantics. | `SPC-AFM` |
+| §Agents §Trigger definition | Include both **explicit-request** examples ("review my PR") and **proactive-dispatch** examples (Claude chooses without being named). | `SPC-EBT` |
+| §Skills §Body style | Write an explicit `## Additional Resources` section listing `references/` and `scripts/` so Claude knows they exist. Tier-3 resources are invisible unless signposted. | `PRM-SBS` |
+| §Hooks §Two hook types | `prompt` type is the **preferred** default; `command` type is for deterministic/speed/external-tool cases. | `SPC-THT` |
+| §Hooks §`hooks.json` format | `hooks` wrapper is **required** (differs from `settings.json`). Multiple hooks per matcher run **in parallel with no ordering guarantee**. | `SPC-HJF` |
+| §Hooks §Use `${CLAUDE_PLUGIN_ROOT}` | Hard-coded absolute paths are **forbidden**. The variable is also available inside hook scripts as an **environment variable** (not just inside `hooks.json`). | `SPC-PRV` |
+| §Commands §Phase control pattern | Phase blocks follow a **template** — `**Goal**`, `**Actions**`, `**User confirmation point**` / `**CRITICAL**` / `**DO NOT START WITHOUT USER APPROVAL**`. The template itself is the transferable pattern. | `FLW-PC` |
+| §Agents §Model tiering | Selective **Opus promotion** for judgment-heavy agents (`code-reviewer`, `code-simplifier`) while keeping peers at `inherit`. | `FLW-MTP` or `FLW-MTS` |
+
+### Out of scope
+
+| Source location | Reason |
+|---|---|
+| §Agents §Representative specialized agents — full bullets | Exemplars of `SPC-AFM`, `FLW-PPS`, `FLW-MTP`, `PRM-SC`, and the NEW-candidate `anti-pattern-enumeration`. Keep as case-study material, not standalone items. |
+| §Commands §Restrict tools — examples of `commit-commands` / `code-review` locking down | Exemplars of `SPC-ATR`. |
+| §Hooks §Events — per-event "Use" column phrasing | Descriptive commentary within `SPC-HER`, not separate items. |
+| §TODO section | Meta-TODO for the doc itself. The three TODOs there (`.mcp.json` patterns / component-choice heuristic / bad-example collection) are all known gaps — `.mcp.json` aligns with the file-1 NEW candidate `mcp-server-file`; bad-example collection aligns with the NEW candidate `anti-pattern-enumeration`; component-choice heuristic is a new known gap (no candidate yet). |
+
+### Summary
+
+- **23 units confirmed EXISTS** (no change).
+- **2 NEW candidates**: `lean-forward-description`, `anti-pattern-enumeration`.
+- **10 REFINES candidates** across `SPC-AE`, `SPC-AFM`, `SPC-EBT`, `PRM-SBS`, `SPC-THT`, `SPC-HJF`, `SPC-PRV`, `FLW-PC`, `FLW-MTP/MTS`.
+- **Known gap surfaced (no candidate yet)**: "when to choose command vs agent vs skill for a given responsibility."
+- Reconciliation deferred to post-scan pass.
 
 ## File 3: docs/patterns.md
 
