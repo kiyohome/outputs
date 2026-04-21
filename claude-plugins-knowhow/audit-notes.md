@@ -4,7 +4,7 @@
 
 ## Next file to scan
 
-`docs/patterns.md` (file 3 of 7)
+`docs/case-studies.md` (file 4 of 7)
 
 ## Method
 
@@ -148,7 +148,59 @@ Scanned top-to-bottom. Every `###` heading, table, code block, and bullet was co
 
 ## File 3: docs/patterns.md
 
-(pending)
+Scanned top-to-bottom with no domain bias. All major sections, tables, and code snippets covered.
+
+### Covered by existing taxonomy
+
+| Source location | Unit | Status |
+|---|---|---|
+| §Quality Control §Confidence scoring | 0–100 confidence scale + 80 threshold | `EXISTS:FLW-CTF` |
+| §Quality Control §Explicit enumeration of false positives | 7-item false-positive checklist | `EXISTS:PRM-FPE` |
+| §Quality Control §Double eligibility check (§Quality Control) | pre-review + post-review eligibility check | `EXISTS:FLW-DEC` |
+| §Quality Control §Output format discipline | brevity, no emoji, link+cite, full SHA | `EXISTS:PRM-OFD` |
+| §Quality Control §Separation of reporter and evaluator | Sonnet reports, Haiku scores | `EXISTS:FLW-RES` |
+| §State Management §`.local.md` pattern | YAML front matter + Markdown body in `.claude/` | `EXISTS:CTX-LMS` |
+| §State Management §Reading and writing front matter | `sed`/`awk` shell recipes | `EXISTS:SPC-FMS` |
+| §State Management §`TodoWrite` for progress tracking | todo list as externalized progress anchor | `EXISTS:CTX-TWA` |
+| §Security §Fixed patterns vs dynamic rules | static policy vs dynamic user rules | `EXISTS:SPC-PTL` |
+| §Security §Hook script input validation | `set -euo pipefail`, quote vars, exit codes, JSON | `EXISTS:SPC-HIV` |
+| §Advanced Patterns §Conversation pattern mining | extract rules from conversation history | `EXISTS:CTX-CM` |
+| §Advanced Patterns §Self-referential loop | re-inject prompt; prior work via files+git | `EXISTS:CTX-FFL` |
+| §Advanced Patterns §Blind A/B comparison | blind evaluator + analyst two-stage | `EXISTS:FLW-BAC` |
+| §Advanced Patterns §Double eligibility in long-running reviews | second mention / canonical here | `EXISTS:FLW-DEC` |
+| §Advanced Patterns §Code delegation | delegate learning-critical code to user | `EXISTS:PRM-CD` |
+| §Advanced Patterns §`clean_gone` for git worktrees | bulk-clean gone branches + worktrees | `EXISTS:SPC-CGW` |
+
+### NEW candidates
+
+None identified. Every extractable unit is covered by an existing taxonomy item. The §TODO in the file calls for "anti-patterns paired with each pattern" — that aligns with the `anti-pattern-enumeration` candidate surfaced in File 2.
+
+### REFINES candidates
+
+| Source location | Refinement | Target ID |
+|---|---|---|
+| §Confidence scoring — closing sentence | "The shared threshold is 80" — a cross-plugin standard, not just a guideline. Worth stating the constant explicitly in the item. | `FLW-CTF` |
+| §False positives — closing sentence | "Stating what *not* to report raises precision more reliably than tuning the threshold" — the **reason** to enumerate negatives, worth surfacing as the governing principle. | `PRM-FPE` |
+| §Output format discipline — bullet 3 | "Full git SHA required (no short SHAs, no shell expansion)" — specific enough to be a checkable rule, not just implied by "link and cite". | `PRM-OFD` |
+| §Security intro sentence | "Hooks run with user-level privileges and no sandbox." — The no-sandbox precondition shapes all hook-script design decisions; should be explicit in the item. | `SPC-HIV` |
+| §Self-referential loop — para 2 | "deterministically bad in an undeterministic world" — the underlying design philosophy: design loop failures to be predictable so prompt tuning can improve them systematically. | `CTX-FFL` |
+| §Blind A/B comparison — para 2 | Two-stage structure: `comparator` agent (blind verdict) → `analyzer` agent (explains why). The architecture detail is not captured in the current item. | `FLW-BAC` |
+| §Code delegation | "Only 5–10 lines of genuinely important code per interaction" — a concrete quantity that makes the pattern checkable. | `PRM-CD` |
+| §Representative security patterns | Concrete detector list (9 in security-guidance, 5 in hookify) — useful as a **reference list** for anyone building a security hook, even if not a standalone item. Link from `SPC-SDS`. | `SPC-SDS` |
+
+### Out of scope
+
+| Source location | Reason |
+|---|---|
+| §Security §Representative security patterns | Exemplar lists for `SPC-SDS` and `SPC-PTL`. Useful references, not independent knowhow items. |
+| §TODO section | Meta-TODO for the doc + `plugin-smith` roadmap. Not plugin-authoring knowhow. |
+
+### Summary
+
+- **16 units confirmed EXISTS** (no change to taxonomy).
+- **0 NEW candidates**.
+- **8 REFINES candidates** across `FLW-CTF`, `PRM-FPE`, `PRM-OFD`, `SPC-HIV`, `CTX-FFL`, `FLW-BAC`, `PRM-CD`, `SPC-SDS`.
+- Reconciliation deferred to post-scan pass.
 
 ## File 4: docs/case-studies.md
 
