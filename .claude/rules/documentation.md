@@ -16,7 +16,7 @@
 - Before deciding on a new heading name, **research what real OSS projects use** (Diátaxis, standard-readme, matklad's ARCHITECTURE.md convention, etc.).
 
 ## Mark unresolved items as TODO
-- Every doc ends with a TODO section listing unresolved questions and deferred work.
+- TODO handling: see [`artifact.md`](./artifact.md). Place TODOs in the section they belong to; do not add a trailing `## TODO` section.
 
 ## Structure
 - In a monorepo, call the building blocks **"packages"**, not "components" (OSS convention).
