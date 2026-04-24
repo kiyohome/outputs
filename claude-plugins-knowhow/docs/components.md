@@ -2,6 +2,11 @@
 
 > Design patterns for the four component types that make up a Claude Code plugin: commands, agents, skills, and hooks. Derived from the official plugin repository.
 
+**TODO**:
+- Document `.mcp.json` design patterns (not yet extracted from the sources); add a matching `## MCP` section.
+- Add explicit guidance for when to choose a command vs. an agent vs. a skill for a given responsibility.
+- Collect bad examples, not just good ones, so smith's pattern inspector has concrete anti-patterns to match against.
+
 ## Commands
 
 A slash command is a Markdown file under `commands/`. Its body is the instruction Claude executes when the user invokes the command.
@@ -338,8 +343,3 @@ Hard-coded absolute paths are forbidden. The variable is also available inside h
 - **Stop-based loop control** (`ralph-loop`): a Stop hook reads `.claude/ralph-loop.local.md`, increments an iteration counter, and re-injects the prompt unless the completion promise is detected. Claude "sees" prior iterations via files and git history.
 - **PreToolUse two-layer design**: `security-guidance` hardcodes nine patterns in Python (static, deterministic); `hookify` reads `.local.md` rules dynamically (extensible). Both are PreToolUse, but the first is a fixed policy and the second is a user-authored rule set.
 
-## TODO
-
-- Document `.mcp.json` design patterns (not yet extracted from the sources).
-- Add explicit guidance for when to choose a command vs. an agent vs. a skill for a given responsibility.
-- Collect bad examples, not just good ones, so smith's pattern inspector has concrete anti-patterns to match against.

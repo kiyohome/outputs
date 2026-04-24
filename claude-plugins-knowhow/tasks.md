@@ -28,7 +28,7 @@ User's explicit 2-step plan, verbatim:
 Goal: produce a structured per-ID checklist that the `smith-knowhow` skill can load at runtime.
 
 - **2.0** Agree on the output format. Proposed schema (`id` / `severity` / `auto` / `check` / `fix` / `example`) and filename (`docs/checklist-items.md` as a new file, or an extension of `docs/checklists.md`). Awaiting decision.
-- **2.1–2.5** Generate entries domain by domain: ARC (10) → SPC (32) → PRM (24) → FLW (29) → CTX (12). Total 107 items.
+- **2.1–2.5** Generate entries domain by domain: ARC (10) → SPC (32) → PRM (24) → FLW (29) → CTX (12). Total 107 items. Each entry carries a back-reference to the parent taxonomy ID, so `docs/taxonomy.md` ↔ `docs/checklist-items.md` form a two-way link.
 - **2.6** Sanity review: ID coverage, severity distribution, `[auto]` machine-verifiability, `fix` actionability.
 - **2.7** Retire or re-scope `docs/checklists.md` once `checklist-items.md` is authoritative.
 
@@ -43,6 +43,13 @@ Open decisions (blocking 2.0):
 - **3.1** Port `docs/checklist-items.md` into the `smith-knowhow` skill at `agents-in-your-area/.claude/plugins/smith/skills/smith-knowhow/`.
 - **3.2** Write `/smith` command, three inspector agents, three scripts per `README.md` + `docs/design.md`.
 - **3.3** Dogfood smith on `claude-plugins-knowhow/` itself.
+
+### Deferred
+
+- **Architecture diagram of smith's doc-routing** — draw a diagram showing how smith's inspectors consult `docs/concepts.md`, `docs/components.md`, `docs/patterns.md`, and `docs/checklists.md`. Land it at the top of `docs/concepts.md` once drawn.
+- **Case-study ↔ taxonomy linking (Stage 4)** — each section in `docs/case-studies.md` links to the taxonomy IDs it exemplifies.
+- **Smith test / verification strategy** — post-v1, once dogfooding is running.
+- **Dogfooding target catalog** — concrete targets inside the aiya monorepo, selected as aiya's `.claude/` develops.
 
 ## Pivots
 

@@ -77,6 +77,8 @@ The official plugins span three structural archetypes. Understanding which arche
 | frontend-design | 0 | 0 | 1 | 0 | Frontend design knowledge |
 | agent-sdk-dev | 1 | 2 | 0 | 0 | Agent SDK development |
 
+**TODO**: document the decision heuristic that maps user intent to archetype A/B/C.
+
 ## Core Design Patterns
 
 ### Three-layer separation
@@ -166,7 +168,3 @@ When a plugin is prone to over-reaching, restate the scope:
 - Sequential: pipelines where the next step consumes the previous one's output (e.g., eligibility → review → scoring in `code-review`).
 - User-selectable: some plugins (`pr-review-toolkit`) expose the choice.
 
-## TODO
-
-- Add an architecture diagram showing how smith's inspectors consult `concepts.md`, `components.md`, `patterns.md`, and `checklists.md`.
-- Document the decision heuristic that maps user intent to archetype A/B/C.

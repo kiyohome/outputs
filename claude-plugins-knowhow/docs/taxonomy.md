@@ -43,6 +43,8 @@ Tie-break rule when an item plausibly fits two domains:
 
 Example: `three-layer-separation` → initials `TLS` → ID `ARC-TLS`.
 
+**TODO**: decide whether 2-letter IDs should be padded for visual consistency, or left as-is (variable length accepted by convention).
+
 ## ARC — Architecture (10 items)
 
 | ID | Name | Source |
@@ -59,6 +61,8 @@ Example: `three-layer-separation` → initials `TLS` → ID `ARC-TLS`.
 | `ARC-AC`  | applicability-criteria | `case-studies.md` §ralph-loop §Suitable for / §Not suitable for |
 
 ## SPC — Component Spec (32 items)
+
+**TODO**: decide whether SPC (32 items, 30% of the taxonomy) needs a permanent sub-axis beyond the current subsections, or whether the subsections below are sufficient navigation.
 
 ### Commands
 
@@ -158,6 +162,8 @@ Example: `three-layer-separation` → initials `TLS` → ID `ARC-TLS`.
 
 ## FLW — Flow (29 items)
 
+**TODO**: decide whether FLW (29 items, 27%) needs further subsection refinement as the improvement-pipeline cluster grows.
+
 ### Dispatch & control flow
 
 | ID | Name | Source |
@@ -243,8 +249,8 @@ Items considered and deliberately excluded from this pass.
 
 | Item | Reason |
 |---|---|
-| `hook-rule-schema` — hookify's `name/enabled/event/pattern/action` rule file format | Single-plugin convention. Not yet generalizable. Add when a second plugin adopts the same schema. |
-| `feature-vs-component-scope` — smith's Feature vs Component two-layer model | Specific to improvement-class plugins. Too narrow for the general taxonomy. Remains in `smith-design.md`. |
+| `hook-rule-schema` — hookify's `name/enabled/event/pattern/action` rule file format | Single-plugin convention. Not yet generalizable. **TODO**: revisit once a second plugin adopts the same schema. |
+| `feature-vs-component-scope` — smith's Feature vs Component two-layer model | Specific to improvement-class plugins. Too narrow for the general taxonomy. Documented in `../README.md` §What smith does. |
 | `concepts.md` §Component inventory table (17 plugins) | Reference data. Not authoring knowhow. |
 | `components.md` §Representative specialized agents (bullets) | Exemplars of `SPC-AFM`, `FLW-PPS`, `FLW-MTP`. Not standalone items. |
 
@@ -263,11 +269,3 @@ Stage 2 total (concepts + components + patterns only): 49 items.
 Stage 3 additions (case-studies + checklists + README + smith-design): +58 items.
 Duplicates collapsed: 6 (unchanged from Stage 2). Raw count before dedup: 113.
 
-## TODO
-
-- Assign each taxonomy item as the parent of one or more checklist items from `checklists.md` (many new PRM items are derived directly from the §Prompt section).
-- Link `case-studies.md` sections to the IDs they exemplify (Stage 4).
-- Decide whether `SPC` (32 items, 30%) needs a permanent sub-axis beyond the current subsections, or whether the subsections are sufficient navigation.
-- Decide whether `FLW` (29 items, 27%) needs further subsection refinement as the improvement-pipeline cluster grows.
-- Consider whether 2-letter IDs should be padded for visual consistency, or left as-is (variable length accepted by convention).
-- Revisit `hook-rule-schema` exclusion once a second plugin adopts the same rule-file schema.

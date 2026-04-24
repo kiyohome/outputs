@@ -2,6 +2,10 @@
 
 > Cross-cutting patterns that are not tied to a single component type: quality control, state management, security, and advanced techniques. smith's pattern inspector matches against them; plugin authors compose them into new plugins.
 
+**TODO**:
+- Quantify how often each pattern appears across the official plugins, so smith can weight them when ranking findings.
+- Collect anti-patterns paired with each pattern, as smith's pattern inspector needs them as matching targets.
+
 ## Quality Control
 
 ### Confidence scoring and threshold filtering
@@ -252,7 +256,3 @@ done
 
 The `+` prefix (worktree-attached branches) is handled; this is the detail that distinguishes a correct implementation.
 
-## TODO
-
-- Quantify how often each pattern appears across the official plugins, so smith can weight them when ranking findings.
-- Collect anti-patterns paired with each pattern, as smith's pattern inspector needs them as matching targets.

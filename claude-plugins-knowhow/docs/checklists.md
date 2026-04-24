@@ -21,6 +21,8 @@
 
 Each item is tagged `[auto]` (machine-verifiable) or `[judgment]` (requires Claude / human judgment). smith runs `[auto]` items in its pre-pass and synthesizes an opinion for `[judgment]` items; the latter require user confirmation before being acted on.
 
+**TODO**: add per-item automation notes for the `[auto]` items — the exact shell / Python check that smith's `[auto]` pre-pass will run.
+
 ## Prompt
 
 Cross-cutting quality checks for any instruction text authored inside a command, agent, skill, or hook prompt.
@@ -209,8 +211,4 @@ Newly derived. Verifies the plugin as a whole rather than any single component.
 - [ ] **README.md exists and explains the plugin's purpose in the first paragraph.** `[auto]`
 - [ ] **LICENSE is present.** `[auto]`
 
-## TODO
-
-- Cross-check this file against the original `claude-plugins-knowhow.md` §20 when it is removed, and dedupe any items that were duplicated during the migration.
-- Add automation notes for the `[auto]` items: the exact shell / Python check that smith's `[auto]` pre-pass will run.
-- Extend the Plugin (overall) category with a "MCP integration sanity check" once `.mcp.json` design patterns are documented in `components.md`.
+**TODO**: add an "MCP integration sanity check" item here once `.mcp.json` design patterns are documented in `components.md`.

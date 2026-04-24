@@ -34,6 +34,8 @@ Merge relies on exact string equality, so discipline is required.
 
 All slugs are kebab-case. The enumerated list lives in `smith-knowhow/SKILL.md`; it grows as implementation and dogfooding surface new types.
 
+**TODO**: when `docs/checklist-items.md` lands (`tasks.md` §Step 2), replace `<item-slug>` in the examples above with the canonical per-ID form.
+
 ## `[auto]` pre-pass
 
 `scripts/smith-autocheck.sh` emits findings in the same Finding schema, with:
@@ -95,6 +97,8 @@ Lens agreement is the primary signal; `self_confidence` modifies.
 
 **`[auto]` findings bypass the threshold.** They have `self_confidence = 100` but by construction are emitted by only one "lens" (the script). Their determinism justifies the bypass — they are always kept.
 
+**TODO**: revisit whether `[auto]` findings should flow through the evaluator merge at all, or surface on a separate deterministic channel.
+
 ## Ranking
 
 Surviving findings are sorted by `len(expected_effect)` descending (more checklist items unlocked = higher priority). Ties break on `convergence_score` descending.
@@ -149,7 +153,3 @@ These will be written during the coding phase, not pre-specified here:
 - Initial contents of the common false-positive list and per-lens false-positive lists.
 - Exact structure of `reconcile_history_ref` anchors and body sections inside `.smith.local.md`.
 
-## TODO
-
-- Revisit whether `[auto]` findings should flow through the evaluator merge at all, or surface on a separate deterministic channel.
-- When `docs/checklist-items.md` lands (`tasks.md` §Step 2), replace references to per-item ids in the Finding schema and `finding_type` examples with the canonical per-ID form.

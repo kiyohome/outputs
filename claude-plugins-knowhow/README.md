@@ -126,7 +126,3 @@ The `references/` files are **derived from** `docs/checklists.md` and `docs/patt
   - [`docs/taxonomy.md`](./docs/taxonomy.md) — 107-item knowhow index across five domains.
 - [`tasks.md`](./tasks.md) — original intent, active cross-cutting tasks, pivot history.
 
-## TODO
-
-- Test / verification strategy for smith itself (post-v1, once dogfooding starts).
-- Concrete dogfooding targets inside the aiya monorepo (will emerge as aiya's `.claude/` develops).

@@ -2,6 +2,10 @@
 
 > Deep dives into seven official plugins. These are the empirical observations from which the patterns in `concepts.md`, `components.md`, and `patterns.md` were extracted. When a pattern feels abstract, trace it back here.
 
+**TODO**:
+- Add case studies for `plugin-dev`, `skill-creator`, `commit-commands`, and `security-guidance`. They are referenced heavily elsewhere but have no dedicated section here yet.
+- Each case study should end with a "patterns demonstrated" list pointing back to `concepts.md` / `components.md` / `patterns.md` for traceability.
+
 ## feature-dev
 
 **Role**: Structured seven-phase feature development.
@@ -238,7 +242,3 @@ User: /ralph-loop "Fix linting errors" --max-iterations 10 --completion-promise 
 
 Analyze the codebase for signals (package.json, framework, test configuration, etc.) and surface one or two high-impact recommendations per category. The plugin does not install anything; it proposes.
 
-## TODO
-
-- Add case studies for `plugin-dev`, `skill-creator`, `commit-commands`, and `security-guidance`. They were referenced heavily elsewhere but their dedicated sections are not yet written here.
-- Each case study should end with "patterns demonstrated" pointing back to `concepts.md` / `components.md` / `patterns.md` for traceability.
