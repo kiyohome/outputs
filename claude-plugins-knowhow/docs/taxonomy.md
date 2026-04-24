@@ -1,53 +1,53 @@
 # Taxonomy
 
-> Canonical index of every knowhow item extracted from the smith knowledge base. Each item has a domain, a kebab-case name, and an abbreviated ID derived from the name's initials. Inspired by ESLint (kebab-case rule names), SpotBugs (`CATEGORY_ABBREV` pattern IDs), and TypeScript (stable numeric codes).
+> smith ナレッジベースから抽出したすべてのノウハウ項目の正規インデックス。各項目はドメイン、kebab-case の名前、および名前のイニシャルから派生した略式 ID を持つ。ESLint（kebab-case のルール名）、SpotBugs（`CATEGORY_ABBREV` パターンの ID）、TypeScript（安定的な数値コード）に着想を得ている。
 
-## Scope
+## 範囲
 
-All 7 source documents audited during Stage 3 (`smith-design.md` has since been migrated into `../README.md` and `./design.md`):
+Stage 3 で監査した 7 つの出典文書すべて（`smith-design.md` はその後 `../README.md` と `./design.md` に移行済み）。
 
-- `concepts.md` — plugin shape, archetypes, design principles.
-- `components.md` — per-component mechanics (commands / agents / skills / hooks).
-- `patterns.md` — cross-cutting quality / state / security / advanced patterns.
-- `case-studies.md` — seven official plugin deep-dives; independent knowhow extracted.
-- `checklists.md` — quality checklists; prompt/skill/hook/CLAUDE.md authoring rules extracted.
-- `README.md` — smith usage and architecture; flow patterns extracted.
-- `smith-design.md` (retired) — implementation spec; scoring, ranking, and pipeline patterns extracted.
+- `concepts.md` — プラグインの形、アーキタイプ、設計原則。
+- `components.md` — コンポーネント別の仕組み（コマンド / エージェント / スキル / フック）。
+- `patterns.md` — 横断的な品質 / 状態 / セキュリティ / 高度なパターン。
+- `case-studies.md` — 7 つの公式プラグインの掘り下げ。独立したノウハウを抽出。
+- `checklists.md` — 品質チェックリスト。プロンプト/スキル/フック/CLAUDE.md の執筆ルールを抽出。
+- `README.md` — smith の使い方とアーキテクチャ。フローパターンを抽出。
+- `smith-design.md`（廃止） — 実装仕様。スコアリング、ランキング、パイプラインのパターンを抽出。
 
-## Domains
+## ドメイン
 
-Five domains, classified by **what mechanism the knowhow operates on**, not by what goal it serves.
+5 つのドメイン。**ノウハウがどの目的に資するか**ではなく、**どの仕組みに対して作用するか**で分類する。
 
-| Code | Domain | Operates on |
+| Code | ドメイン | 作用対象 |
 |---|---|---|
-| `ARC` | Architecture | Plugin shape: directory layout, archetype choice, layer separation, operational stance. |
-| `SPC` | Component Spec | Per-component mechanics: front matter, allowed-tools, events, hooks.json, hook-script conventions, agent interfaces. |
-| `PRM` | Prompt Authoring | The text inside `.md` prompts: voice, style, scope, output directives, instruction quality. |
-| `FLW` | Flow | Orchestration and control flow: phase gates, model tiering, dispatch, quality scoring, improvement pipelines. |
-| `CTX` | Context & State | Information flow, triggering, and persistence: progressive disclosure, `.local.md`, session state, CLAUDE.md management. |
+| `ARC` | アーキテクチャ | プラグインの形：ディレクトリレイアウト、アーキタイプ選定、レイヤー分離、運用スタンス。 |
+| `SPC` | コンポーネント仕様 | コンポーネント別の仕組み：フロントマター、allowed-tools、events、hooks.json、フックスクリプトの規約、エージェントのインターフェース。 |
+| `PRM` | プロンプト執筆 | `.md` プロンプト内のテキスト：声色、スタイル、範囲、出力指示、指示の品質。 |
+| `FLW` | フロー | オーケストレーションと制御フロー：フェーズゲート、モデル階層化、ディスパッチ、品質スコアリング、改善パイプライン。 |
+| `CTX` | コンテキストと状態 | 情報フロー、トリガリング、永続化：プログレッシブディスクロージャ、`.local.md`、セッション状態、CLAUDE.md 管理。 |
 
-Tie-break rule when an item plausibly fits two domains:
+ある項目が 2 つのドメインにまたがり得る場合のタイブレークルール。
 
-1. If it defines a **component field or file format**, → `SPC`.
-2. If it is about **what to write inside a prompt**, → `PRM`.
-3. If it is about **how phases, agents, or tiers relate**, → `FLW`.
-4. If it is about **what persists across a turn/session/iteration**, → `CTX`.
-5. Otherwise, if it is about **plugin-level shape**, → `ARC`.
+1. **コンポーネントのフィールドやファイル形式**を定義するなら → `SPC`。
+2. **プロンプトの中に何を書くか**に関するなら → `PRM`。
+3. **フェーズ、エージェント、階層がどう関係するか**に関するなら → `FLW`。
+4. **ターン/セッション/イテレーションをまたいで何が永続するか**に関するなら → `CTX`。
+5. それ以外で、**プラグインレベルの形**に関するなら → `ARC`。
 
-## Naming and ID conventions
+## 命名と ID の規約
 
-- **Name**: kebab-case, 2–4 words, describes the mechanism (not the goal).
-- **ID**: `DOMAIN-INITIALS` where `INITIALS` is the first letter of each word in the name, uppercased. Unique within the domain.
-- **Stability**: once assigned, IDs are stable. Names can be refined but should keep the same initials so the ID survives.
-- **Length**: 2–4 characters after the hyphen. Variable length is intentional (ESLint precedent).
+- **名前**：kebab-case、2〜4 単語、（目的ではなく）仕組みを表す。
+- **ID**：`DOMAIN-INITIALS` の形式。`INITIALS` は名前の各単語の頭文字を大文字化したもの。ドメイン内で一意。
+- **安定性**：いったん割り当てられた ID は安定。名前は細分化してよいが、ID が残るよう同じイニシャルを保つこと。
+- **長さ**：ハイフンの後は 2〜4 文字。可変長は意図的（ESLint の前例）。
 
-Example: `three-layer-separation` → initials `TLS` → ID `ARC-TLS`.
+例：`three-layer-separation` → イニシャル `TLS` → ID `ARC-TLS`。
 
-**TODO**: decide whether 2-letter IDs should be padded for visual consistency, or left as-is (variable length accepted by convention).
+**TODO**: 2 文字 ID を視覚的な一貫性のためにパディングするか、そのまま残すか（規約として可変長を受け入れる）を決める。
 
-## ARC — Architecture (10 items)
+## ARC — アーキテクチャ（10 項目）
 
-| ID | Name | Source |
+| ID | 名前 | 出典 |
 |---|---|---|
 | `ARC-SDL` | standard-directory-layout | `concepts.md` §What is a Plugin |
 | `ARC-ACA` | archetype-command-agent | `concepts.md` §Plugin Taxonomy |
@@ -60,29 +60,29 @@ Example: `three-layer-separation` → initials `TLS` → ID `ARC-TLS`.
 | `ARC-PNE` | propose-not-execute | `case-studies.md` §claude-code-setup + `README.md` §Shared principles |
 | `ARC-AC`  | applicability-criteria | `case-studies.md` §ralph-loop §Suitable for / §Not suitable for |
 
-## SPC — Component Spec (32 items)
+## SPC — コンポーネント仕様（32 項目）
 
-**TODO**: decide whether SPC (32 items, 30% of the taxonomy) needs a permanent sub-axis beyond the current subsections, or whether the subsections below are sufficient navigation.
+**TODO**: SPC（32 項目、taxonomy の 30%）について、現在のサブセクションを超えた恒久的なサブ軸が必要か、あるいは下記のサブセクションでナビゲーションとして十分かを決める。
 
-### Commands
+### コマンド
 
-| ID | Name | Source |
+| ID | 名前 | 出典 |
 |---|---|---|
 | `SPC-ATR` | allowed-tools-restriction | `components.md` §Commands |
 | `SPC-ICE` | inline-command-execution | `components.md` §Commands |
 | `SPC-AE`  | argument-expansion | `components.md` §Commands |
 
-### Agents
+### エージェント
 
-| ID | Name | Source |
+| ID | 名前 | 出典 |
 |---|---|---|
 | `SPC-AFM` | agent-front-matter | `components.md` §Agents |
 | `SPC-EBT` | example-block-trigger | `components.md` §Agents |
 | `SPC-CA`  | color-assignment | `components.md` §Agents |
 
-### Skills
+### スキル
 
-| ID | Name | Source |
+| ID | 名前 | 出典 |
 |---|---|---|
 | `SPC-SFM` | skill-front-matter | `components.md` §Skills |
 | `SPC-DOM` | description-optimization-methodology | `components.md` §Skills |
@@ -92,9 +92,9 @@ Example: `three-layer-separation` → initials `TLS` → ID `ARC-TLS`.
 | `SPC-SFC` | skill-fork-context | `checklists.md` §Skill §6 CC-specific |
 | `SPC-SAF` | skill-agent-field | `checklists.md` §Skill §6 CC-specific |
 
-### Hooks
+### フック
 
-| ID | Name | Source |
+| ID | 名前 | 出典 |
 |---|---|---|
 | `SPC-HER` | hook-events-roster | `components.md` §Hooks |
 | `SPC-THT` | two-hook-types | `components.md` §Hooks |
@@ -106,24 +106,24 @@ Example: `three-layer-separation` → initials `TLS` → ID `ARC-TLS`.
 | `SPC-HSV` | hook-stderr-visibility | `checklists.md` §Hook §3 I/O design |
 | `SPC-HI`  | hook-idempotency | `checklists.md` §Hook §5 Execution |
 
-### Hook-script conventions
+### フックスクリプトの規約
 
-| ID | Name | Source |
+| ID | 名前 | 出典 |
 |---|---|---|
 | `SPC-FMS` | front-matter-shell-io | `patterns.md` §State Management |
 | `SPC-SDS` | security-detector-set | `patterns.md` §Security |
 | `SPC-HIV` | hook-input-validation | `patterns.md` §Security |
 | `SPC-CGW` | clean-gone-worktrees | `patterns.md` §Advanced Patterns |
 
-### Plugin files
+### プラグインファイル
 
-| ID | Name | Source |
+| ID | 名前 | 出典 |
 |---|---|---|
 | `SPC-MSF` | mcp-server-file | `concepts.md` §Standard directory layout (`.mcp.json` row) |
 
-### Multi-agent interfaces
+### マルチエージェントのインターフェース
 
-| ID | Name | Source |
+| ID | 名前 | 出典 |
 |---|---|---|
 | `SPC-FS`  | finding-schema | `smith-design.md` §Interfaces §Finding schema |
 | `SPC-FTT` | finding-type-taxonomy | `smith-design.md` §Interfaces §`finding_type` naming convention |
@@ -131,9 +131,9 @@ Example: `three-layer-separation` → initials `TLS` → ID `ARC-TLS`.
 | `SPC-AJT` | agent-json-transport | `smith-design.md` §Interfaces §Agent/script data transport |
 | `SPC-OVR` | oos-verdict-rule | `smith-design.md` §Interfaces §`OOS` verdict rule |
 
-## PRM — Prompt Authoring (24 items)
+## PRM — プロンプト執筆（24 項目）
 
-| ID | Name | Source |
+| ID | 名前 | 出典 |
 |---|---|---|
 | `PRM-IV`  | instruction-voice | `concepts.md` + `components.md` — canonical here |
 | `PRM-CPM` | critical-phase-markers | `concepts.md` §Design Principles |
@@ -160,13 +160,13 @@ Example: `three-layer-separation` → initials `TLS` → ID `ARC-TLS`.
 | `PRM-NRP` | null-result-protocol | `case-studies.md` §feature-dev §Agent design notes (code-reviewer) |
 | `PRM-NT`  | necessity-test | `checklists.md` §CLAUDE.md §2 Conciseness |
 
-## FLW — Flow (29 items)
+## FLW — フロー（29 項目）
 
-**TODO**: decide whether FLW (29 items, 27%) needs further subsection refinement as the improvement-pipeline cluster grows.
+**TODO**: FLW（29 項目、27%）について、改善パイプラインのクラスタが拡張するにつれてサブセクションのさらなる細分化が必要かを決める。
 
-### Dispatch & control flow
+### ディスパッチと制御フロー
 
-| ID | Name | Source |
+| ID | 名前 | 出典 |
 |---|---|---|
 | `FLW-EAG` | explicit-approval-gate | `concepts.md` §Design Principles |
 | `FLW-LEB` | loop-escape-ban | `concepts.md` §Design Principles |
@@ -182,9 +182,9 @@ Example: `three-layer-separation` → initials `TLS` → ID `ARC-TLS`.
 | `FLW-WVA` | whole-view-agent | `smith-design.md` §Architecture §Rationale bullet 5 |
 | `FLW-DOW` | dependency-ordered-writes | `smith-design.md` §Dependency ordering |
 
-### Quality gates
+### 品質ゲート
 
-| ID | Name | Source |
+| ID | 名前 | 出典 |
 |---|---|---|
 | `FLW-CTF` | confidence-threshold-filter | `patterns.md` §Quality Control |
 | `FLW-DEC` | double-eligibility-check | `patterns.md` §Quality Control + §Advanced Patterns — canonical here |
@@ -194,9 +194,9 @@ Example: `three-layer-separation` → initials `TLS` → ID `ARC-TLS`.
 | `FLW-FSB` | finding-severity-bins | `README.md` §Usage §Improve (invocation table) |
 | `FLW-WQR` | weighted-quality-rubric | `case-studies.md` §claude-md-management §A–F grading |
 
-### Improvement pipeline
+### 改善パイプライン
 
-| ID | Name | Source |
+| ID | 名前 | 出典 |
 |---|---|---|
 | `FLW-PSC` | post-session-capture | `case-studies.md` §claude-md-management §`revise-claude-md` |
 | `FLW-PVE` | plan-validate-execute | `checklists.md` §Skill §5 Code and scripts |
@@ -205,17 +205,17 @@ Example: `three-layer-separation` → initials `TLS` → ID `ARC-TLS`.
 | `FLW-PIV` | pre-image-verification | `smith-design.md` §Flow step 8 |
 | `FLW-REA` | reconcile-expected-actual | `smith-design.md` §Flow step 9 |
 
-### Scoring & ranking
+### スコアリングとランキング
 
-| ID | Name | Source |
+| ID | 名前 | 出典 |
 |---|---|---|
 | `FLW-CSF` | convergence-scoring-formula | `smith-design.md` §Interfaces §Convergence score formula |
 | `FLW-EER` | expected-effect-ranking | `smith-design.md` §Interfaces §Ranking formula |
 | `FLW-DSAS` | deterministic-steps-as-scripts | `smith-design.md` §Architecture §Rationale bullet 3 |
 
-## CTX — Context & State (12 items)
+## CTX — コンテキストと状態（12 項目）
 
-| ID | Name | Source |
+| ID | 名前 | 出典 |
 |---|---|---|
 | `CTX-PD`  | progressive-disclosure | `concepts.md` §Core Design Patterns |
 | `CTX-LMS` | local-md-state-file | `patterns.md` §State Management |
@@ -230,11 +230,11 @@ Example: `three-layer-separation` → initials `TLS` → ID `ARC-TLS`.
 | `CTX-CMP` | claude-md-placement | `checklists.md` §CLAUDE.md §4 Placement |
 | `CTX-SDW` | skill-doc-wrapping | `README.md` §Architecture §Skills |
 
-## Duplicates resolved
+## 重複の解消
 
-Six items appear in more than one source. Canonical ID is the single entry listed above; other occurrences are cross-references.
+6 つの項目が複数の出典に登場する。正規 ID は上記に列挙されている単一のエントリで、その他の出現箇所はクロスリファレンスとなる。
 
-| Canonical ID | Name | Duplicate sources collapsed into it |
+| 正規 ID | 名前 | 集約された重複出典 |
 |---|---|---|
 | `SPC-STR` | skill-three-roles | `concepts.md` §Three roles of SKILL.md, `components.md` §Three roles a SKILL.md can play |
 | `SPC-PTL` | pretool-two-layer | `components.md` §Representative hook patterns (PreToolUse bullet), `patterns.md` §Fixed patterns vs dynamic rules |
@@ -243,29 +243,29 @@ Six items appear in more than one source. Canonical ID is the single entry liste
 | `FLW-DEC` | double-eligibility-check | `patterns.md` §Double eligibility check, `patterns.md` §Double eligibility in long-running reviews |
 | `CTX-FFL` | filesystem-feedback-loop | `components.md` §Representative hook patterns (Stop-based loop bullet), `patterns.md` §Self-referential loop |
 
-## Excluded from taxonomy
+## taxonomy から除外
 
-Items considered and deliberately excluded from this pass.
+検討の上、今回のパスから意図的に除外した項目。
 
-| Item | Reason |
+| 項目 | 理由 |
 |---|---|
-| `hook-rule-schema` — hookify's `name/enabled/event/pattern/action` rule file format | Single-plugin convention. Not yet generalizable. **TODO**: revisit once a second plugin adopts the same schema. |
-| `feature-vs-component-scope` — smith's Feature vs Component two-layer model | Specific to improvement-class plugins. Too narrow for the general taxonomy. Documented in `../README.md` §What smith does. |
-| `concepts.md` §Component inventory table (17 plugins) | Reference data. Not authoring knowhow. |
-| `components.md` §Representative specialized agents (bullets) | Exemplars of `SPC-AFM`, `FLW-PPS`, `FLW-MTP`. Not standalone items. |
+| `hook-rule-schema` — hookify の `name/enabled/event/pattern/action` ルールファイル形式 | 単一プラグインの規約。まだ汎用化可能ではない。**TODO**: 2 つ目のプラグインが同じスキーマを採用したら再検討する。 |
+| `feature-vs-component-scope` — smith のフィーチャー対コンポーネントの 2 層モデル | 改善系プラグインに固有。汎用 taxonomy には狭すぎる。`../README.md` §What smith does に文書化済み。 |
+| `concepts.md` §Component inventory table（17 プラグイン） | 参照データ。執筆ノウハウではない。 |
+| `components.md` §Representative specialized agents（箇条書き） | `SPC-AFM`, `FLW-PPS`, `FLW-MTP` の例示。独立した項目ではない。 |
 
-## Totals
+## 合計
 
-| Domain | Items | Share |
+| ドメイン | 項目数 | 比率 |
 |---|---|---|
 | ARC | 10 | 9% |
 | SPC | 32 | 30% |
 | PRM | 24 | 22% |
 | FLW | 29 | 27% |
 | CTX | 12 | 11% |
-| **Total** | **107** | — |
+| **合計** | **107** | — |
 
-Stage 2 total (concepts + components + patterns only): 49 items.
-Stage 3 additions (case-studies + checklists + README + smith-design): +58 items.
-Duplicates collapsed: 6 (unchanged from Stage 2). Raw count before dedup: 113.
+Stage 2 の合計（concepts + components + patterns のみ）：49 項目。
+Stage 3 の追加（case-studies + checklists + README + smith-design）：+58 項目。
+集約された重複：6（Stage 2 から変更なし）。重複排除前の生のカウント：113。
 

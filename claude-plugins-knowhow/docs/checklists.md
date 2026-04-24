@@ -1,214 +1,214 @@
-# Checklists
+# チェックリスト
 
-> Self-check lists for plugin quality. These are the direct inputs to smith's inspection pipeline, and humans can apply them by hand as PR gates.
+> プラグイン品質のためのセルフチェックリスト。これらは smith の検査パイプラインへの直接的な入力であり、人間が PR ゲートとして手作業で適用することもできます。
 
-## How to Use
+## 使い方
 
-### When to apply
+### 適用するタイミング
 
-| Timing | Checklists to run |
+| タイミング | 実行するチェックリスト |
 |---|---|
-| During a smith inspection | Run all applicable categories; prioritize Mandatory failures. |
-| Before PR / release (by-hand gate) | Run everything; a Mandatory failure blocks the gate. |
+| smith による検査中 | 該当するすべてのカテゴリーを実行し、必須(Mandatory)の失敗を優先する。 |
+| PR / リリース前(手作業ゲート) | すべて実行する。必須項目の失敗はゲートをブロックする。 |
 
-### Severity tiers
+### 重要度のティア
 
-- **Mandatory** — must be satisfied. A single failure is a blocker.
-- **Recommended** — should be satisfied for most plugins. Failures are reported as quality debt.
-- **Quality** — consistency and polish. Failures are nits.
+- **必須(Mandatory)** — 必ず満たすこと。1 件でも失敗すればブロッカーとなる。
+- **推奨(Recommended)** — ほとんどのプラグインで満たすべき。失敗は品質負債として報告される。
+- **品質(Quality)** — 一貫性と仕上げ。失敗は些細な指摘扱い。
 
-### Automation stance
+### 自動化スタンス
 
-Each item is tagged `[auto]` (machine-verifiable) or `[judgment]` (requires Claude / human judgment). smith runs `[auto]` items in its pre-pass and synthesizes an opinion for `[judgment]` items; the latter require user confirmation before being acted on.
+各項目には `[auto]`(機械的に検証可能)または `[judgment]`(Claude / 人間の判断が必要)のタグが付けられています。smith は前段パスで `[auto]` 項目を実行し、`[judgment]` 項目については意見を合成します。後者は実行前にユーザー確認を必要とします。
 
-**TODO**: add per-item automation notes for the `[auto]` items — the exact shell / Python check that smith's `[auto]` pre-pass will run.
+**TODO**: `[auto]` 項目ごとに自動化メモを追加する — smith の `[auto]` 前段パスが実行する正確な shell / Python チェックを記載する。
 
-## Prompt
+## プロンプト
 
-Cross-cutting quality checks for any instruction text authored inside a command, agent, skill, or hook prompt.
+コマンド・エージェント・スキル・フックのプロンプト内に記述された任意の指示テキストに対する横断的な品質チェック。
 
-### 1. Conciseness
-- [ ] **Does not re-state what Claude already knows.** General knowledge like "what a PDF is" is unnecessary. `[judgment]`
-- [ ] **Every paragraph justifies its token cost.** `[judgment]`
-- [ ] **No redundant openers or filler.** `[judgment]`
+### 1. 簡潔さ
+- [ ] **Claude が既に知っていることを再度述べていない。** 「PDF とは何か」のような一般知識は不要。 `[judgment]`
+- [ ] **すべての段落がトークンコストに見合う価値を持っている。** `[judgment]`
+- [ ] **冗長な前置きや埋め草がない。** `[judgment]`
 
-### 2. Specificity
-- [ ] **States what, where, and how explicitly.** Replace `add tests for foo.py` with `write a test for foo.py covering the edge case where the user is logged out; avoid mocks`. `[judgment]`
-- [ ] **References existing patterns.** For example, `look at HotDogWidget.php as a reference for how widgets are structured`. `[judgment]`
-- [ ] **Names target files or directories.** Uses `@file` references or concrete paths. `[auto]`
+### 2. 具体性
+- [ ] **何を、どこで、どのように行うかを明示している。** `add tests for foo.py` を `write a test for foo.py covering the edge case where the user is logged out; avoid mocks` に置き換える。 `[judgment]`
+- [ ] **既存パターンを参照している。** たとえば `look at HotDogWidget.php as a reference for how widgets are structured` のように。 `[judgment]`
+- [ ] **対象となるファイルやディレクトリ名を明示している。** `@file` 参照や具体的なパスを使用する。 `[auto]`
 
-### 3. Positive form
-- [ ] **Written as "do X" rather than "don't do Y".** Replace `do not use markdown in your response` with `respond in smoothly flowing prose paragraphs`. `[judgment]`
+### 3. 肯定形
+- [ ] **「Y するな」ではなく「X せよ」の形式で書かれている。** `do not use markdown in your response` を `respond in smoothly flowing prose paragraphs` に置き換える。 `[judgment]`
 
-### 4. Motivation
-- [ ] **Includes the reason the instruction matters.** Claude 4 generalizes better when given rationale. `[judgment]`
+### 4. 動機付け
+- [ ] **指示が重要である理由を含めている。** Claude 4 は理由を与えられるとよりよく汎化する。 `[judgment]`
 
-### 5. Degree of freedom
-- [ ] **Freedom level matches task.** High for open-ended work, medium for parameterized work, low for fragile procedures. `[judgment]`
-- [ ] **Applies the narrow-bridge vs. open-field analogy from the official guide.** `[judgment]`
+### 5. 自由度
+- [ ] **自由度のレベルがタスクに合っている。** オープンエンドな作業には高く、パラメータ化された作業には中程度、壊れやすい手順には低く。 `[judgment]`
+- [ ] **公式ガイドの「狭い橋 vs. 開けた野原」のアナロジーを適用している。** `[judgment]`
 
-### 6. Verification
-- [ ] **Defines success criteria:** tests, lint, typecheck, screenshots, or expected outputs so Claude can check its own work. `[judgment]`
-- [ ] **Directs toward root-cause fixes, not error suppression.** `[judgment]`
+### 6. 検証
+- [ ] **成功基準を定義している:** Claude が自分の作業を確認できるよう、テスト、lint、typecheck、スクリーンショット、期待される出力などを明示する。 `[judgment]`
+- [ ] **エラー抑制ではなく根本原因の修正に向かわせている。** `[judgment]`
 
-### 7. Workflow structure
-- [ ] **Multi-step tasks are numbered.** `[auto]`
-- [ ] **Checklist pattern is used for complex workflows.** Claude can copy the checklist and track progress. `[auto]`
-- [ ] **Feedback loops are defined.** Verify → fix → re-verify cycles. `[judgment]`
+### 7. ワークフロー構造
+- [ ] **複数ステップのタスクには番号が振られている。** `[auto]`
+- [ ] **複雑なワークフローにはチェックリストパターンが使われている。** Claude がチェックリストをコピーして進捗を追跡できる。 `[auto]`
+- [ ] **フィードバックループが定義されている。** 検証 → 修正 → 再検証のサイクル。 `[judgment]`
 
-### 8. Terminology
-- [ ] **Same term for the same concept throughout.** Do not mix "API endpoint", "URL", "route", "path". `[auto]`
+### 8. 用語
+- [ ] **同じ概念には全体を通じて同じ用語を使っている。** 「API endpoint」「URL」「route」「path」を混用しない。 `[auto]`
 
-## Skill
+## スキル
 
-### 1. Metadata / front matter
-- [ ] **Name follows conventions.** Lowercase, digits, hyphens only. ≤ 64 characters. No XML tags. `anthropic` / `claude` are reserved. `[auto]`
-- [ ] **Name uses gerund form** such as `processing-pdfs`. Avoid vague names like `helper` or `utils`. `[judgment]`
-- [ ] **Description is third person.** The description is injected into the system prompt, so first / second person is wrong. `[auto]`
-- [ ] **Description states both "what" and "when".** This is the selection criterion when Claude chooses from many skills. `[judgment]`
-- [ ] **Description is under 1024 characters.** `[auto]`
-- [ ] **`disable-model-invocation` is set when appropriate.** Workflows with side effects (deploy, PR creation) should set it to `true`. `[judgment]`
+### 1. メタデータ / フロントマター
+- [ ] **名前が規約に従っている。** 小文字・数字・ハイフンのみ。64 文字以下。XML タグなし。`anthropic` / `claude` は予約語。 `[auto]`
+- [ ] **名前は動名詞形である。** `processing-pdfs` のように。`helper` や `utils` のような曖昧な名前は避ける。 `[judgment]`
+- [ ] **description は三人称である。** description はシステムプロンプトに注入されるため、一人称・二人称は誤り。 `[auto]`
+- [ ] **description は「何を」と「いつ」の両方を述べている。** これは Claude が多数のスキルから選択する際の選定基準となる。 `[judgment]`
+- [ ] **description は 1024 文字未満である。** `[auto]`
+- [ ] **適切な場合に `disable-model-invocation` が設定されている。** 副作用のあるワークフロー(デプロイ、PR 作成)は `true` に設定すべき。 `[judgment]`
 
-### 2. Progressive disclosure
-- [ ] **SKILL.md body is under 500 lines.** Split into additional files if exceeded. `[auto]`
-- [ ] **Three-tier structure is followed.** Metadata → body → additional files. `[judgment]`
-- [ ] **References stay one level deep.** SKILL.md → `references/foo.md` is fine; additional file → yet another file is not. `[auto]`
-- [ ] **Mutually exclusive contexts are separated.** Information that is never needed simultaneously (e.g., `finance.md`, `sales.md`, `product.md`) lives in separate files. `[judgment]`
-- [ ] **Reference files over 100 lines have a table of contents.** `[auto]`
+### 2. プログレッシブディスクロージャー
+- [ ] **SKILL.md 本体は 500 行未満である。** 超える場合は追加ファイルに分割する。 `[auto]`
+- [ ] **3 階層構造が守られている。** メタデータ → 本体 → 追加ファイル。 `[judgment]`
+- [ ] **参照は 1 階層深さまでに留めている。** SKILL.md → `references/foo.md` は OK だが、追加ファイル → さらに別のファイルは NG。 `[auto]`
+- [ ] **相互排他的なコンテキストが分離されている。** 同時には決して必要とされない情報(例: `finance.md`、`sales.md`、`product.md`)は別ファイルに配置する。 `[judgment]`
+- [ ] **100 行を超える参照ファイルには目次がある。** `[auto]`
 
-### 3. Content
-- [ ] **Does not explain things Claude already knows.** `[judgment]`
-- [ ] **No time-dependent information.** Do not write "until August 2025, use the old API"; use an "old patterns" section. `[judgment]`
-- [ ] **Consistent terminology.** `[auto]`
-- [ ] **Examples are concrete in I/O shape.** `[judgment]`
-- [ ] **Not too many choices.** Provide one default plus an escape hatch. `[judgment]`
+### 3. 内容
+- [ ] **Claude が既に知っていることを説明していない。** `[judgment]`
+- [ ] **時間依存の情報がない。** 「2025 年 8 月までは旧 API を使う」のような書き方をせず、「旧パターン」セクションを設ける。 `[judgment]`
+- [ ] **用語が一貫している。** `[auto]`
+- [ ] **例は I/O の形が具体的である。** `[judgment]`
+- [ ] **選択肢が多すぎない。** デフォルト 1 つ + 抜け道を 1 つ提供する。 `[judgment]`
 
-### 4. Workflows and feedback loops
-- [ ] **Compound tasks are broken into numbered steps.** `[auto]`
-- [ ] **Checklist pattern for complex tasks.** `[auto]`
-- [ ] **Feedback loops present.** `[judgment]`
-- [ ] **Conditional branches are clear.** "Creating new content? → creation workflow. Editing existing? → editing workflow." `[judgment]`
+### 4. ワークフローとフィードバックループ
+- [ ] **複合タスクは番号付きステップに分解されている。** `[auto]`
+- [ ] **複雑なタスクにはチェックリストパターンを用いる。** `[auto]`
+- [ ] **フィードバックループが存在する。** `[judgment]`
+- [ ] **条件分岐が明確である。** 「新規コンテンツ作成? → 作成ワークフロー。既存編集? → 編集ワークフロー。」 `[judgment]`
 
-### 5. Code and scripts (if applicable)
-- [ ] **Scripts handle errors explicitly; do not punt to Claude.** `[judgment]`
-- [ ] **No magic numbers.** Constants have documented rationale. `[auto]`
-- [ ] **Dependencies are listed in SKILL.md and verified available.** `[auto]`
-- [ ] **Script execution intent is clear.** Distinguish "run this" from "read this as reference". `[judgment]`
-- [ ] **No Windows-style paths.** Use forward slashes. `[auto]`
-- [ ] **Generates verifiable intermediate outputs.** Plan-validate-execute pattern. `[judgment]`
+### 5. コードとスクリプト(該当する場合)
+- [ ] **スクリプトはエラーを明示的に処理し、Claude に丸投げしない。** `[judgment]`
+- [ ] **マジックナンバーがない。** 定数には根拠が文書化されている。 `[auto]`
+- [ ] **依存関係が SKILL.md に列挙され、利用可能であることが検証されている。** `[auto]`
+- [ ] **スクリプトの実行意図が明確である。** 「これを実行する」と「これを参照として読む」を区別する。 `[judgment]`
+- [ ] **Windows 形式のパスがない。** スラッシュを使用する。 `[auto]`
+- [ ] **検証可能な中間出力を生成する。** plan-validate-execute パターン。 `[judgment]`
 
-### 6. CC-specific options (if applicable)
-- [ ] **`context: fork` is used appropriately.** `[judgment]`
-- [ ] **`agent` field is correct.** Explore / Plan / general-purpose / custom. `[judgment]`
-- [ ] **`allowed-tools` is set when needed.** `[auto]`
-- [ ] **Hooks defined in front matter also pass the Hook checklist.** `[judgment]`
+### 6. CC 固有のオプション(該当する場合)
+- [ ] **`context: fork` が適切に使用されている。** `[judgment]`
+- [ ] **`agent` フィールドが正しい。** Explore / Plan / general-purpose / カスタム。 `[judgment]`
+- [ ] **必要な場合に `allowed-tools` が設定されている。** `[auto]`
+- [ ] **フロントマターで定義されたフックも Hook チェックリストを通過している。** `[judgment]`
 
-### 7. Evaluation and iteration
-- [ ] **Evaluation scenarios were created first.** "Build evaluations BEFORE writing extensive documentation." At least three scenarios. `[judgment]`
-- [ ] **Tested with real tasks, not just synthetic ones.** `[judgment]`
-- [ ] **Claude's exploration path was observed.** Checked for unexpected file read order, oversights, excessive dependencies, ignored files. `[judgment]`
-- [ ] **Tested with all target models** (Haiku / Sonnet / Opus). `[judgment]`
+### 7. 評価とイテレーション
+- [ ] **評価シナリオが先に作成された。** 「広範な文書を書く前に評価を構築せよ。」最低 3 つのシナリオ。 `[judgment]`
+- [ ] **合成タスクだけでなく、実際のタスクでテストされた。** `[judgment]`
+- [ ] **Claude の探索経路が観察された。** 想定外のファイル読み取り順序、見落とし、過剰な依存、無視されるファイルがないかを確認した。 `[judgment]`
+- [ ] **すべての対象モデル**(Haiku / Sonnet / Opus)**でテストされた。** `[judgment]`
 
-## Hook
+## フック
 
-### 1. Is a hook even the right mechanism?
-- [ ] **The action must happen every time with zero exceptions.** If it only needs to happen sometimes, a CLAUDE.md rule is sufficient. `[judgment]`
+### 1. そもそもフックが正しい仕組みなのか?
+- [ ] **そのアクションは例外なく毎回発生する必要がある。** たまにしか必要ないなら、CLAUDE.md ルールで十分。 `[judgment]`
 
-### 2. Event selection
-- [ ] **Correct event chosen** for the intent (PreToolUse for blocking, PostToolUse for feedback, UserPromptSubmit for input pre-processing, Stop / SubagentStop for completion, SessionStart / SessionEnd for lifecycle, PreCompact for compaction, Notification for permissions). `[judgment]`
-- [ ] **Matcher is set correctly.** Exact, regex, wildcard, or MCP prefix. `[auto]`
+### 2. イベントの選択
+- [ ] **意図に対して正しいイベントが選ばれている**(ブロックには PreToolUse、フィードバックには PostToolUse、入力前処理には UserPromptSubmit、完了には Stop / SubagentStop、ライフサイクルには SessionStart / SessionEnd、コンパクションには PreCompact、権限通知には Notification)。 `[judgment]`
+- [ ] **matcher が正しく設定されている。** 完全一致、正規表現、ワイルドカード、または MCP プレフィックス。 `[auto]`
 
-### 3. I/O design
-- [ ] **Exit codes are correct:** `0` for success, `2` for blocking, anything else for non-blocking error. `[auto]`
-- [ ] **Structured JSON output (when used) is well-formed.** `[auto]`
-- [ ] **stdout / stderr usage is correct.** Claude only sees stderr from exit code 2 (except UserPromptSubmit). `[judgment]`
+### 3. I/O 設計
+- [ ] **終了コードが正しい:** 成功は `0`、ブロッキングは `2`、それ以外は非ブロッキングエラー。 `[auto]`
+- [ ] **構造化 JSON 出力(使用する場合)が整形されている。** `[auto]`
+- [ ] **stdout / stderr の使い分けが正しい。** Claude は終了コード 2 の stderr のみを見る(UserPromptSubmit を除く)。 `[judgment]`
 
-### 4. Security (mandatory)
-- [ ] **Validates and sanitizes input** from stdin JSON. `[judgment]`
-- [ ] **Shell variables are quoted.** `[auto]`
-- [ ] **Blocks path traversal** by checking for `..`. `[auto]`
-- [ ] **Uses absolute paths** via `$CLAUDE_PROJECT_DIR`. `[auto]`
-- [ ] **Skips sensitive files** (`.env`, `.git/`, private keys). `[judgment]`
+### 4. セキュリティ(必須)
+- [ ] **stdin JSON からの入力を検証・サニタイズしている。** `[judgment]`
+- [ ] **シェル変数がクォートされている。** `[auto]`
+- [ ] **`..` をチェックしてパストラバーサルをブロックしている。** `[auto]`
+- [ ] **`$CLAUDE_PROJECT_DIR` 経由で絶対パスを使用している。** `[auto]`
+- [ ] **機微なファイルをスキップしている**(`.env`、`.git/`、秘密鍵)。 `[judgment]`
 
-### 5. Execution
-- [ ] **Timeout is configured** (default 60 s). `[auto]`
-- [ ] **Idempotent.** Running the same hook multiple times does not accumulate side effects. `[judgment]`
-- [ ] **No race conditions in parallel execution.** Matching hooks run in parallel. `[judgment]`
-- [ ] **Session-start snapshot behavior understood.** Setting changes are not reflected mid-session. `[judgment]`
+### 5. 実行
+- [ ] **タイムアウトが設定されている**(デフォルト 60 秒)。 `[auto]`
+- [ ] **冪等性を持つ。** 同じフックを複数回実行しても副作用が累積しない。 `[judgment]`
+- [ ] **並列実行時に競合状態がない。** マッチするフックは並列に実行される。 `[judgment]`
+- [ ] **セッション開始時のスナップショット動作が理解されている。** 設定変更はセッション中に反映されない。 `[judgment]`
 
-### 6. Type selection
-- [ ] **Command vs. prompt type is correct.** Command for deterministic, prompt for LLM-based judgment. `[judgment]`
+### 6. タイプの選択
+- [ ] **command と prompt のタイプ選択が正しい。** 決定論的なものには command、LLM ベースの判断には prompt。 `[judgment]`
 
-### 7. Hooks in skill front matter (if applicable)
-- [ ] **Scoped to the skill's lifecycle.** `[judgment]`
-- [ ] **Stop → SubagentStop conversion is understood.** `[judgment]`
+### 7. スキルのフロントマター内のフック(該当する場合)
+- [ ] **スキルのライフサイクルにスコープされている。** `[judgment]`
+- [ ] **Stop → SubagentStop の変換が理解されている。** `[judgment]`
 
 ## CLAUDE.md
 
-### 1. Content inclusion
-- [ ] **Includes what should be included:** bash commands Claude cannot guess, non-default code style rules, test runner preferences, repo etiquette, project-specific architectural decisions, environment quirks, non-obvious gotchas. `[judgment]`
-- [ ] **Excludes what should be excluded:** anything derivable from code, standard language conventions, detailed API documentation (link instead), information that changes frequently, long explanations, file-by-file descriptions, truisms like "write clean code". `[judgment]`
+### 1. 内容の取捨選択
+- [ ] **含めるべきものを含めている:** Claude が推測できない bash コマンド、デフォルトと異なるコードスタイルのルール、テストランナーの好み、リポジトリのエチケット、プロジェクト固有のアーキテクチャ的決定、環境特有の癖、自明でない落とし穴。 `[judgment]`
+- [ ] **除外すべきものを除外している:** コードから導出可能なもの、標準的な言語規約、詳細な API ドキュメント(代わりにリンクする)、頻繁に変わる情報、長い説明、ファイル単位の説明、「きれいなコードを書け」のような自明事項。 `[judgment]`
 
-### 2. Conciseness
-- [ ] **"Would removing this line cause Claude to make mistakes?" test applied to each line.** `[judgment]`
-- [ ] **Task-specific content is moved to skills.** `[judgment]`
-- [ ] **No signs of instructions being ignored.** When CLAUDE.md rules are ignored, the file is usually too long. `[judgment]`
+### 2. 簡潔さ
+- [ ] **「この行を消したら Claude がミスをするか?」テストを各行に適用している。** `[judgment]`
+- [ ] **タスク固有の内容はスキルに移動している。** `[judgment]`
+- [ ] **指示が無視されている兆候がない。** CLAUDE.md のルールが無視されるとき、たいていファイルが長すぎる。 `[judgment]`
 
-### 3. Instruction effectiveness
-- [ ] **Important instructions carry emphasis markers** (`IMPORTANT`, `YOU MUST`). `[auto]`
-- [ ] **Claude does not repeatedly ask questions already answered in CLAUDE.md.** `[judgment]`
-- [ ] **Claude does not act against CLAUDE.md.** `[judgment]`
-- [ ] **Rules that should be hooks have been identified.** If Claude keeps ignoring a rule, convert it to a hook. `[judgment]`
+### 3. 指示の有効性
+- [ ] **重要な指示には強調マーカー**(`IMPORTANT`、`YOU MUST`)**が付いている。** `[auto]`
+- [ ] **CLAUDE.md で既に答えられている質問を Claude が繰り返さない。** `[judgment]`
+- [ ] **Claude が CLAUDE.md に反した行動を取らない。** `[judgment]`
+- [ ] **フックにすべきルールが特定されている。** Claude があるルールを無視し続けるなら、フックに変換する。 `[judgment]`
 
-### 4. Placement
-- [ ] **Placement matches purpose:** `~/.claude/CLAUDE.md` for personal, `./CLAUDE.md` for project (commit to git), `./CLAUDE.local.md` for local-only, parent / child directories for monorepo layouts. `[judgment]`
-- [ ] **`@import` syntax used where appropriate.** `[auto]`
-- [ ] **Committed to git for team sharing.** `[auto]`
+### 4. 配置
+- [ ] **配置が目的に合っている:** 個人用には `~/.claude/CLAUDE.md`、プロジェクト用には `./CLAUDE.md`(git にコミット)、ローカル限定には `./CLAUDE.local.md`、モノレポ構成では親 / 子ディレクトリ。 `[judgment]`
+- [ ] **適切な場所で `@import` 構文を使っている。** `[auto]`
+- [ ] **チーム共有のため git にコミットされている。** `[auto]`
 
-### 5. Continuous improvement
-- [ ] **Started from a `/init` baseline.** `[judgment]`
-- [ ] **The `#` key is used for immediate additions during coding.** `[judgment]`
-- [ ] **CLAUDE.md is reviewed when problems occur.** `[judgment]`
-- [ ] **Pruned regularly.** `[judgment]`
+### 5. 継続的改善
+- [ ] **`/init` ベースラインから開始した。** `[judgment]`
+- [ ] **コーディング中の即時追加には `#` キーを使っている。** `[judgment]`
+- [ ] **問題が発生したら CLAUDE.md をレビューしている。** `[judgment]`
+- [ ] **定期的に整理している。** `[judgment]`
 
-## Command
+## コマンド
 
-Newly derived from `components.md > Commands` and cross-referenced with the overall design principles. Not present in the existing checklist set.
+`components.md > Commands` から新たに導出し、全体的な設計原則と相互参照したもの。既存のチェックリスト集には存在しない。
 
-- [ ] **Written as instructions to Claude, not as human documentation.** `[judgment]`
-- [ ] **`allowed-tools` restricts to the minimum necessary toolset.** `[auto]`
-- [ ] **Uses `` !`command` `` inline execution when dynamic context is needed.** `[judgment]`
-- [ ] **Uses `$ARGUMENTS` / `$1` / `$2` / `@$1` for argument handling.** `[auto]`
-- [ ] **Phase-control patterns label critical phases** (`DO NOT SKIP`, `DO NOT START WITHOUT APPROVAL`). `[judgment]`
-- [ ] **User approval points are explicit.** `[judgment]`
-- [ ] **Single-message completion pattern is applied when appropriate.** `[judgment]`
-- [ ] **Uses `${CLAUDE_PLUGIN_ROOT}` for all plugin-internal file references.** `[auto]`
+- [ ] **人間向けドキュメントではなく、Claude への指示として書かれている。** `[judgment]`
+- [ ] **`allowed-tools` が必要最小限のツールセットに制限されている。** `[auto]`
+- [ ] **動的なコンテキストが必要な場合に `` !`command` `` インライン実行を使っている。** `[judgment]`
+- [ ] **引数処理に `$ARGUMENTS` / `$1` / `$2` / `@$1` を使っている。** `[auto]`
+- [ ] **フェーズ制御パターンで重要なフェーズにラベルを付けている**(`DO NOT SKIP`、`DO NOT START WITHOUT APPROVAL`)。 `[judgment]`
+- [ ] **ユーザー承認ポイントが明示的である。** `[judgment]`
+- [ ] **適切な場合に単一メッセージ完結パターンが適用されている。** `[judgment]`
+- [ ] **プラグイン内部のすべてのファイル参照に `${CLAUDE_PLUGIN_ROOT}` を使っている。** `[auto]`
 
-## Agent
+## エージェント
 
-Newly derived from `components.md > Agents`. Not present in the existing checklist set.
+`components.md > Agents` から新たに導出。既存のチェックリスト集には存在しない。
 
-- [ ] **`name` is kebab-case, 3–50 characters.** `[auto]`
-- [ ] **`description` contains 2–4 `<example>` blocks.** `[auto]`
-- [ ] **Examples include both explicit-request and proactive-dispatch cases.** `[judgment]`
-- [ ] **`model` is chosen deliberately** (`inherit` is the default; Opus only when deep judgment is needed; Haiku for routine wrapping). `[judgment]`
-- [ ] **`tools` is restricted to the minimum necessary set** or omitted only when full access is genuinely required. `[judgment]`
-- [ ] **If the agent reports findings, a separate agent evaluates them.** Reporter and evaluator are not the same role. `[judgment]`
-- [ ] **Findings are filtered by confidence score (threshold ≥ 80).** `[judgment]`
-- [ ] **`color` is set and distinct from sibling agents in the same plugin.** `[auto]`
+- [ ] **`name` が kebab-case で 3〜50 文字である。** `[auto]`
+- [ ] **`description` に 2〜4 個の `<example>` ブロックを含む。** `[auto]`
+- [ ] **例には明示的リクエストと積極的ディスパッチの両方のケースが含まれている。** `[judgment]`
+- [ ] **`model` が意図的に選ばれている**(`inherit` がデフォルト。深い判断が必要な場合のみ Opus、定型的なラッピングには Haiku)。 `[judgment]`
+- [ ] **`tools` が必要最小限のセットに制限されている**、またはフルアクセスが本当に必要な場合のみ省略されている。 `[judgment]`
+- [ ] **エージェントが検出を報告する場合、別のエージェントがそれを評価する。** 報告者と評価者は同じロールではない。 `[judgment]`
+- [ ] **検出は信頼度スコア(閾値 ≥ 80)でフィルタリングされる。** `[judgment]`
+- [ ] **`color` が設定されており、同じプラグイン内の兄弟エージェントと区別できる。** `[auto]`
 
-## Plugin (overall)
+## プラグイン(全体)
 
-Newly derived. Verifies the plugin as a whole rather than any single component.
+新たに導出。単一のコンポーネントではなくプラグイン全体を検証する。
 
-- [ ] **`.claude-plugin/plugin.json` is present and has a `name` field.** `[auto]`
-- [ ] **Directory layout follows the standard from `concepts.md`.** `[auto]`
-- [ ] **Archetype (A command+agent / B skill-only / C hybrid) is identified and matches intent.** `[judgment]`
-- [ ] **Three-layer separation (procedure / knowledge / execution) is respected.** Commands are procedures, skills are knowledge, agents are execution. `[judgment]`
-- [ ] **No hard-coded paths; everything uses `${CLAUDE_PLUGIN_ROOT}`.** `[auto]`
-- [ ] **Wiring is sound:** commands that reference skills do so via the Skill tool; commands that dispatch agents name them explicitly. `[judgment]`
-- [ ] **Security posture:** all hook scripts validate input; no hook touches `.env`, `.git/`, or private keys without an explicit guard. `[judgment]`
-- [ ] **README.md exists and explains the plugin's purpose in the first paragraph.** `[auto]`
-- [ ] **LICENSE is present.** `[auto]`
+- [ ] **`.claude-plugin/plugin.json` が存在し、`name` フィールドを持つ。** `[auto]`
+- [ ] **ディレクトリレイアウトが `concepts.md` の標準に従っている。** `[auto]`
+- [ ] **アーキタイプ(A コマンド+エージェント / B スキルのみ / C ハイブリッド)が特定されており、意図に一致している。** `[judgment]`
+- [ ] **3 層分離(手順 / 知識 / 実行)が守られている。** コマンドは手順、スキルは知識、エージェントは実行。 `[judgment]`
+- [ ] **ハードコードされたパスがなく、すべて `${CLAUDE_PLUGIN_ROOT}` を使用している。** `[auto]`
+- [ ] **配線が健全である:** スキルを参照するコマンドは Skill ツール経由で呼び出し、エージェントをディスパッチするコマンドは明示的に名前を指定している。 `[judgment]`
+- [ ] **セキュリティ姿勢:** すべてのフックスクリプトが入力を検証しており、明示的なガードなしに `.env`、`.git/`、秘密鍵に触れるフックがない。 `[judgment]`
+- [ ] **README.md が存在し、最初の段落でプラグインの目的を説明している。** `[auto]`
+- [ ] **LICENSE が存在する。** `[auto]`
 
-**TODO**: add an "MCP integration sanity check" item here once `.mcp.json` design patterns are documented in `components.md`.
+**TODO**: `.mcp.json` の設計パターンが `components.md` に文書化された後、ここに「MCP 統合の整合チェック」項目を追加する。
