@@ -57,6 +57,8 @@ flowchart TD
 9. **Re-inspect and reconcile** — re-run inspection on touched files, compare expected vs actual effect. If `unmet` or `regressed` remain, loop to step 4.
 10. **Persist** — write findings, decisions, and reconcile history to `.claude/.smith.local.md`.
 
+Steps 3 and 4 are one inspector invocation per file × lens: the inspector emits the verdict and, when `NG`, the draft + `patch_content` in a single JSON payload. See [`docs/design.md`](./docs/design.md#finding-schema) for the schema.
+
 ### Exception flows
 
 - **Target unidentifiable** (hearing fails after 2 rounds): report and exit. Never fabricate a target.
@@ -73,7 +75,7 @@ Hybrid plugin (Archetype C) at `agents-in-your-area/.claude/plugins/smith/`.
 
 | Part | Model | Role | Pipeline steps |
 |---|---|---|---|
-| `/smith` command | inherit | Orchestrator: dialogue, approval gates, dependency sort, writes, persistence | 1, 2, 5 dispatch, 6, 7, 8, 10 |
+| `/smith` command | inherit | Orchestrator: dialogue, approval gates, dependency sort, writes, persistence | 1, 2, 5 (dispatch evaluator), 6, 7, 8, 10 |
 | `smith-inspector-conventions` agent | Opus | Applies `checklists.md` per component type. Parallel per file. | 3, 4, 9 |
 | `smith-inspector-patterns` agent | Opus | Matches anti-patterns from `patterns.md`. Parallel per file. | 3, 4, 9 |
 | `smith-inspector-architecture` agent | Opus | Whole-view: dependencies, roles, responsibilities, wiring. Single pass per Feature. | 3, 4, 9 |
@@ -108,7 +110,9 @@ smith-knowhow/
     └── patterns.md             # anti-pattern excerpts used across components
 ```
 
-One file per component type, mirroring the sections of [`docs/checklists.md`](./docs/checklists.md). `patterns.md` holds anti-pattern excerpts that apply across components. `references/` stays one level deep.
+One file per component type, mirroring the sections of [`docs/checklists.md`](./docs/checklists.md); `patterns.md` holds anti-pattern excerpts that apply across components. `references/` stays one level deep.
+
+The `references/` files are **derived from** `docs/checklists.md` and `docs/patterns.md`, not copies of the whole `docs/` set. `docs/*.md` remain the source of truth and evolve independently; `smith-knowhow/` is populated from them during implementation (`progress.md` Step 3.1).
 
 ## References
 

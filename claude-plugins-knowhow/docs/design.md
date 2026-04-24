@@ -10,7 +10,7 @@ Every inspector agent and the `[auto]` pre-pass script emit findings in this str
 {
   "target_file": "<absolute path or plugin-relative>",
   "finding_type": "<see naming convention>",
-  "verdict": "OK | NG | OOS",
+  "verdict": "OK" | "NG" | "OOS",
   "comment": "<always; for OK/OOS this is the whole content>",
   "self_confidence": 0,
   "rationale": null,
