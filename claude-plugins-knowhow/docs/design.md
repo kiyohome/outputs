@@ -8,6 +8,7 @@ Every inspector agent and the `[auto]` pre-pass script emit findings in this str
 
 ```json
 {
+  "id": "<12 hex chars: first 12 of sha256(target_file + '|' + finding_type)>",
   "target_file": "<absolute path or plugin-relative>",
   "finding_type": "<see naming convention>",
   "verdict": "OK" | "NG" | "OOS",
@@ -19,6 +20,7 @@ Every inspector agent and the `[auto]` pre-pass script emit findings in this str
 }
 ```
 
+- `id` — deterministic: the first 12 hex chars of `sha256(target_file + "|" + finding_type)`. Same issue flagged by multiple lenses (or re-flagged across iterations) carries the same `id`. Used as the merge key in convergence and as the token stored under `adoptions` / `rejections` in `.smith.local.md`.
 - `self_confidence` — 0-100, inspector's own certainty.
 - `rationale` — required when `verdict == NG`.
 - `expected_effect` — required when `verdict == NG`; list of `checklist_item_id` values the fix will cause to pass.
@@ -77,7 +79,7 @@ For whole-file creation or replacement, `old_string` is the empty string (create
 
 ## Convergence score
 
-After merging by `finding_type` exact match:
+After merging by `id` exact match (which encodes both `target_file` and `finding_type`, so the same issue in different files does not collapse):
 
 ```
 convergence_score = (num_lenses_caught * 30) + (max(self_confidence) * 0.3)
@@ -95,9 +97,9 @@ Findings with `convergence_score < 80` are dropped.
 
 Lens agreement is the primary signal; `self_confidence` modifies.
 
-**`[auto]` findings bypass the threshold.** They have `self_confidence = 100` but by construction are emitted by only one "lens" (the script). Their determinism justifies the bypass — they are always kept.
+**`[auto]` findings bypass the threshold.** They have `self_confidence = 100` but by construction are emitted by only one "lens" (the script). They still participate in the `id` merge: when an inspector lens flags the same `id`, the inspector is counted as an additional lens and the `[auto]` finding's `patch_content` wins (deterministic mechanical fix). `[auto]` findings that no inspector matched are kept unconditionally — the bypass applies.
 
-**TODO**: revisit whether `[auto]` findings should flow through the evaluator merge at all, or surface on a separate deterministic channel.
+**TODO**: revisit whether separating `[auto]` onto a dedicated deterministic channel (skipping the merger entirely) is simpler than this merge-and-bypass hybrid.
 
 ## Ranking
 
@@ -105,7 +107,17 @@ Surviving findings are sorted by `len(expected_effect)` descending (more checkli
 
 ## Dependency ordering (step 8)
 
-Step 2 produces a list of files plus directed edges (command → agent it invokes, hook → tool it matches, skill → reference files it points to, etc.). `/smith` topologically sorts for step 8:
+Step 2 produces a list of files plus directed edges: `A → B` means `A` references `B`, so an edit to `B` can break `A` and `B` must land first. Edges are extracted by `/smith` itself (deterministic, via `Grep` / `Glob` — no inspector agent), with these scan patterns:
+
+- **Command → Agent** — scan the command body for `subagent_type: <slug>` in Task-tool calls and for explicit `agents/<slug>.md` references.
+- **Hook → Script** — scan `hooks.json` for `${CLAUDE_PLUGIN_ROOT}/scripts/<path>` commands.
+- **Skill → Reference file** — scan `SKILL.md` for relative paths under `references/`.
+- **CLAUDE.md → Component file** — scan for mentions of component filenames (command / agent / skill).
+- **Plugin manifest → Any** — resolve references declared in `.claude-plugin/plugin.json`.
+
+Ambiguous matches (e.g., a skill name appearing in prose rather than as a real reference) surface as findings for the user to confirm, not as silent edges.
+
+`/smith` topologically sorts the resulting DAG for step 8:
 
 - Foundation files first (no incoming edges).
 - Dependents in topological order.
@@ -137,6 +149,17 @@ reconcile_history_ref: "#iteration-0"
 - Front-matter is parsed by `scripts/smith-state.sh` using the sed/awk pattern from the knowhow (`patterns.md §Reading front matter from shell`).
 - File is gitignored by convention.
 - State is held in-memory during a single `/smith` run and written to the file at step 10; the file is not re-read within a run. Reconcile state for iterations 1–2 uses in-memory history carried by `/smith`.
+
+### Reconcile verdicts
+
+The reconcile log records one verdict per adopted finding by comparing its `expected_effect` before apply to the post-apply re-inspection:
+
+- **`met`** — all `checklist_item_id` values in `expected_effect` now pass (re-inspection verdict `OK`).
+- **`partial`** — at least one but not all of the `expected_effect` items transitioned to `OK`.
+- **`unmet`** — none of the `expected_effect` items transitioned to `OK`.
+- **`regressed`** — a checklist item that was `OK` on a touched file before the apply is now `NG`. Unlike the three buckets above (which measure whether the intended fix landed), `regressed` measures unintended side effects on other items.
+
+Findings with verdict `unmet` or `regressed` are eligible for another draft iteration (step 4 re-entry) up to `max_iterations`.
 
 ## `allowed-tools`
 
