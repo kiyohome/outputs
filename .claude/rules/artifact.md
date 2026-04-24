@@ -1,17 +1,17 @@
-# Final-artifact-first
+# 最終成果物ファースト
 
-## Start from the final artifact
+## 最初から最終成果物を書く
 
-- On day one, write the final shape of the deliverable: title, section headings, diagram placeholders, table skeletons. Do not create separate plan / draft / design-preview files.
-- Every subsequent change brushes up the same artifact. There is no intermediate form that gets discarded.
+- 1 日目に最終成果物の形を書く：タイトル、章見出し、図のプレースホルダー、表の骨組み。プラン / ドラフト / 設計プレビュー といった別ファイルは作らない。
+- それ以降の変更はすべて同じ成果物のブラッシュアップ。途中で破棄される中間形は存在しない。
 
-## Mark gaps inline
+## ギャップは該当セクションにインラインで残す
 
-- Unresolved items, open questions, and deferred work go **in the section they belong to**, as inline TODO markers — not in a trailing `## TODO` section.
-- Preferred marker: `**TODO**: <what is missing>` (prose-visible) or `<!-- TODO: <what> -->` (hidden from rendered output).
-- Completion = zero TODO markers remain. Do not delete a TODO before its resolution lands in the surrounding text.
+- 未解決事項、開いている問い、保留中の作業は、**該当するセクション内**に inline TODO マーカーとして書く。末尾に `## TODO` 節を作らない。
+- 推奨マーカー：`**TODO**: <何が足りないか>`（レンダリング時に表示）または `<!-- TODO: <何が足りないか> -->`（レンダリング時に隠す）。
+- 完了とは TODO マーカーがゼロになること。解消内容が周辺本文に着地する前に TODO を消さない。
 
-## No intermediate artifacts
+## 中間成果物を作らない
 
-- Do not keep stepping-stone files that will be superseded. If content needs to migrate, migrate it; do not leave the old file as a transitional copy.
-- `tasks.md` is an exception: it preserves the user's original intent verbatim and tracks multi-session coordination. It is an orthogonal session log, not a draft of another artifact. See [`workflow.md`](./workflow.md).
+- 後続作業で置き換わる踏み台ファイルを残さない。内容を移すなら移し、旧ファイルを暫定的に残さない。
+- `tasks.md` は例外：ユーザーの最初の意図を verbatim で保持し、複数セッションをまたぐ調整を記録する。別の成果物のドラフトではなく、独立したセッションログである。詳細は [`workflow.md`](./workflow.md) 参照。

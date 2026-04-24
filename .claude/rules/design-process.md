@@ -1,10 +1,10 @@
-# Design Process Rules
+# 設計プロセス
 
-## Collapse overlapping modes or features
-- When two modes/features share most of their logic, collapse them into one and expose the difference via a flag or argument. Do not carry structural duplication forward.
+## 重なるモードや機能は畳む
+- 2 つのモード / 機能のロジックがほぼ重なる場合は、1 つに畳んで差分をフラグや引数として露出させる。構造的重複を持ち越さない。
 
-## Scrutinize names for intent alignment
-- Verify that the verb in a mode/command name matches the user's intent (e.g., "Review" implies judgment, "Improve" implies transformation). Rename when misaligned.
+## 名前と意図の整合を吟味する
+- モード名 / コマンド名の動詞がユーザーの意図と一致しているか確認する（例：「Review」は判断を含意、「Improve」は変換を含意）。ずれていたら改名する。
 
-## Start with the minimum number of modes
-- Do not import mode counts from external designs without justification. Add modes only when the existing ones cannot absorb the use case.
+## モード数は最小から始める
+- 外部設計のモード数を根拠なく持ち込まない。既存モードでユースケースが吸収できないときに限ってモードを足す。

@@ -1,28 +1,28 @@
-# Documentation Rules
+# ドキュメントのルール
 
-## Start from a mapping of existing material
-- Before refactoring docs, produce an explicit mapping table from existing files/sections to the new structure. Verify no content is lost and no duplication is introduced.
+## 既存資料のマッピングから始める
+- ドキュメントをリファクタする前に、既存ファイル / セクションから新構造へのマッピング表を作る。内容欠落と重複が起きていないことを確認する。
 
-## README + docs/ pattern
-- Use a single `README.md` as the entry point and a `docs/` directory for detailed references. The README links into docs; docs do not duplicate the README.
+## README + docs/ パターン
+- 入口は単一の `README.md`、詳細は `docs/` 配下に置く。README は docs にリンクするが、docs は README の内容を重複させない。
 
-## Optimize headings per document
-- Do not force a uniform template on every doc. Choose headings that fit each document's content.
-- Keep the macro ordering consistent across docs: overview-level → user-facing → developer-facing.
-- Drop unnecessary `## Overview` wrappers and flatten.
-- Use **English headings that follow OSS conventions**. Avoid invented terms and literal translations.
-  - Avoid `Development` — ambiguous between "how to contribute" and "how to use".
-  - Avoid `Internals` — skews toward runtimes / databases / compilers; dev tools typically use `Architecture`.
-- Before deciding on a new heading name, **research what real OSS projects use** (Diátaxis, standard-readme, matklad's ARCHITECTURE.md convention, etc.).
+## 見出しはドキュメントごとに最適化する
+- すべてのドキュメントに同一テンプレートを当てはめない。各ドキュメントの内容に合う見出しを選ぶ。
+- マクロ順序はドキュメント間で揃える：概要レベル → 利用者向け → 開発者向け。
+- 不要な `## 概要` ラッパーは外し、フラットにする。
+- **OSS の慣例に沿った見出しを使い、日本語に訳して用いる**。造語や直訳は避ける。
+  - 「Development」相当の見出しは避ける — 「貢献方法」と「利用方法」のどちらを指すか曖昧。
+  - 「Internals」相当の見出しは避ける — ランタイム / DB / コンパイラ寄りの語感。開発ツールでは「アーキテクチャ」を使うのが一般的。
+- 新しい見出し名を決める前に、**実在の OSS プロジェクトでの使われ方を調査する**（Diátaxis、standard-readme、matklad の ARCHITECTURE.md 等）。
 
-## Mark unresolved items as TODO
-- TODO handling: see [`artifact.md`](./artifact.md). Place TODOs in the section they belong to; do not add a trailing `## TODO` section.
+## 未解決事項は TODO で残す
+- TODO の扱いは [`artifact.md`](./artifact.md) を参照。該当セクションにインラインで置く。末尾に `## TODO` 節は作らない。
 
-## Structure
-- In a monorepo, call the building blocks **"packages"**, not "components" (OSS convention).
-- If the same content is duplicated across multiple documents, **consolidate the shared section into the README or a cross-cutting document**.
-- Split a large refactor into two phases: **skeleton first, then fill in content**.
+## 構造
+- モノレポでは構成単位を **「パッケージ」** と呼ぶ。「コンポーネント」とは呼ばない（OSS 慣例）。
+- 同じ内容が複数ドキュメントに重複している場合は、**README または横断ドキュメントに集約する**。
+- 大きなリファクタは 2 段階に分ける：**まず骨子、それから本文**。
 
-## Bilingual docs
-- When a Japanese document is expected to be translated to English eventually, put a `<!-- TODO(translation) -->` marker at the top of the file.
-- It is fine to translate only headings first. Translate the body in one pass later.
+## バイリンガルドキュメント
+- 既存の英語ドキュメントを日本語化する予定がある場合、ファイル冒頭に `<!-- TODO(translation) -->` マーカーを置く。
+- 見出しだけ先に訳して本文は後で一括、という段階的な翻訳でも可。

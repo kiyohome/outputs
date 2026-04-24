@@ -1,12 +1,20 @@
-# Language
+# 言語
 
-## Default
+## 既定
 
-- All output defaults to **English**.
-- This covers documentation, code, in-code comments, commit messages, variable names, and UI text.
-- Dialogue with the user (Claude → user) is separate: match the user's language.
+- すべての出力は**日本語**とする。例外は下記「ASCII のまま残すもの」と「例外」節のみ。
+- 対象：ドキュメント、コード内コメント、コミットメッセージ、UI 文字列、ユーザーとの対話。
 
-## Exceptions
+## ASCII のまま残すもの
 
-- When the user explicitly requests a different language.
-- When aligning with existing content (e.g., a surrounding file that is already in Japanese) to avoid inconsistency. In that case, add a `<!-- TODO(translation) -->` marker so it stays on the translation backlog.
+- コード識別子（変数名 / 関数名 / クラス名 / モジュール名）— ツール互換性のため。
+- ファイル名・パス・コマンド名（例：`/smith`、`tasks.md`、`docs/design.md`）。
+- 機械契約となる文字列（JSON キー、スキーマフィールド名、CLI 引数、環境変数名）。
+- インラインコードとして書かれたマーカー（例：`**TODO**:`、`<!-- TODO -->`）。
+- 既存の英語固有名詞（"Claude Code"、"GitHub"、"OSS"、製品名・ライブラリ名など）。
+- 引用元が英語の verbatim 引用。
+
+## 例外
+
+- ユーザーが明示的に別の言語を指定した場合。
+- 既存の英語ファイルの周辺と整合させるために一時的に英語のまま編集する場合。日本語化はリファクタの単位で実施する。
