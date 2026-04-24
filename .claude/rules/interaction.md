@@ -14,4 +14,5 @@
 - When the assistant holds the domain skill, lead with a concrete proposal (with rationale) rather than asking the user to specify requirements up front. Ask questions only for decisive ambiguities.
 
 ## Keep a decision log for long sessions
-- For multi-step agreements, persist decisions in a `progress.md` (or equivalent) so the thread survives context resets.
+- For decisions scoped to a single deliverable, record them inline in that deliverable (see [`artifact.md`](./artifact.md)).
+- For cross-cutting decisions that span multiple deliverables, record them in `tasks.md` (see [`workflow.md`](./workflow.md)).

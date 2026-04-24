@@ -112,7 +112,7 @@ smith-knowhow/
 
 One file per component type, mirroring the sections of [`docs/checklists.md`](./docs/checklists.md); `patterns.md` holds anti-pattern excerpts that apply across components. `references/` stays one level deep.
 
-The `references/` files are **derived from** `docs/checklists.md` and `docs/patterns.md`, not copies of the whole `docs/` set. `docs/*.md` remain the source of truth and evolve independently; `smith-knowhow/` is populated from them during implementation (`progress.md` Step 3.1).
+The `references/` files are **derived from** `docs/checklists.md` and `docs/patterns.md`, not copies of the whole `docs/` set. `docs/*.md` remain the source of truth and evolve independently; `smith-knowhow/` is populated from them during implementation (`tasks.md` §Step 3).
 
 ## References
 
@@ -124,7 +124,7 @@ The `references/` files are **derived from** `docs/checklists.md` and `docs/patt
   - [`docs/case-studies.md`](./docs/case-studies.md) — seven official plugins as traceable source.
   - [`docs/checklists.md`](./docs/checklists.md) — per-component quality checklists.
   - [`docs/taxonomy.md`](./docs/taxonomy.md) — 107-item knowhow index across five domains.
-- [`progress.md`](./progress.md) — session log, pivot history, remaining work.
+- [`tasks.md`](./tasks.md) — original intent, active cross-cutting tasks, pivot history.
 
 ## TODO
 

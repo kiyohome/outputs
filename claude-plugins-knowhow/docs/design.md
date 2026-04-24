@@ -152,4 +152,4 @@ These will be written during the coding phase, not pre-specified here:
 ## TODO
 
 - Revisit whether `[auto]` findings should flow through the evaluator merge at all, or surface on a separate deterministic channel.
-- When `docs/checklist-items.md` lands (`progress.md` Step 2), replace references to per-item ids in the Finding schema and `finding_type` examples with the canonical per-ID form.
+- When `docs/checklist-items.md` lands (`tasks.md` §Step 2), replace references to per-item ids in the Finding schema and `finding_type` examples with the canonical per-ID form.
