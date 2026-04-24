@@ -2,7 +2,7 @@
 
 ## Original intent
 
-First message (Japanese, preserved verbatim):
+最初のメッセージ（日本語、verbatim 保持）：
 
 > plugin-smith
 > aiya-jam
@@ -11,11 +11,11 @@ First message (Japanese, preserved verbatim):
 > イメージできますか？
 > smith作って、smith使ってjamを作る
 
-Subsequent intent for this work-stream, verbatim:
+本ワークストリームでの後続意図、verbatim：
 
 > claude pluginのノウハウ、ノウハウに分かりやすく覚えやすい名前を付けて、チェック項目を扱いやすくしたい。
 
-User's explicit 2-step plan, verbatim:
+ユーザーの 2 ステップ計画、verbatim：
 
 > **１** taxonomyにノウハウ集めてるんですよね？チェックリストやケーススタディなど、すべてのドキュメントを精査してtaxonomyに具体的なノウハウとして集めましょう
 >
@@ -23,39 +23,40 @@ User's explicit 2-step plan, verbatim:
 
 ## Active tasks
 
-### Step 2 — Generate checklists from taxonomy
+### Step 2 — taxonomy からチェックリストを生成
 
-Goal: produce a structured per-ID checklist that the `smith-knowhow` skill can load at runtime.
+ゴール: `smith-knowhow` スキルが実行時にロードできる、ID 単位の構造化チェックリストを作る。
 
-- **2.0** Agree on the output format. Proposed schema (`id` / `severity` / `auto` / `check` / `fix` / `example`) and filename (`docs/checklist-items.md` as a new file, or an extension of `docs/checklists.md`). Awaiting decision.
-- **2.1–2.5** Generate entries domain by domain: ARC (10) → SPC (32) → PRM (24) → FLW (29) → CTX (12). Total 107 items. Each entry carries a back-reference to the parent taxonomy ID, so `docs/taxonomy.md` ↔ `docs/checklist-items.md` form a two-way link.
-- **2.6** Sanity review: ID coverage, severity distribution, `[auto]` machine-verifiability, `fix` actionability.
-- **2.7** Retire or re-scope `docs/checklists.md` once `checklist-items.md` is authoritative.
+- **2.0** 出力形式の合意。提案スキーマ（`id` / `severity` / `auto` / `check` / `fix` / `example`）と、ファイル名（新規 `docs/checklist-items.md` か、既存 `docs/checklists.md` の拡張か）。決定待ち。
+- **2.1–2.5** ドメインごとに項目生成：ARC（10）→ SPC（32）→ PRM（24）→ FLW（29）→ CTX（12）。合計 107 項目。各項目は親 taxonomy ID への back-reference を持ち、`docs/taxonomy.md` ↔ `docs/checklist-items.md` が双方向リンクになる。
+- **2.6** 整合レビュー：ID カバレッジ、重要度分布、`[auto]` の機械検証可能性、`fix` の実行可能性。
+- **2.7** `checklist-items.md` が一次資料化したら `docs/checklists.md` をリタイア or 役割再定義する。
 
-Open decisions (blocking 2.0):
+未決事項（2.0 の前提）：
 
-- Single-file vs per-domain split for the Step 2 output.
-- Whether to generate all 107 at once or domain by domain.
-- Exact schema for the `example` field (inline markdown vs separate file reference).
+- Step 2 出力を単一ファイルにするか、ドメイン別に分けるか。
+- 107 項目を一度に出すか、ドメインごとに刻むか。
+- `example` フィールドの厳密スキーマ（インライン Markdown か、別ファイル参照か）。
 
-### Step 3 — Implement smith
+### Step 3 — smith を実装
 
-- **3.1** Port `docs/checklist-items.md` into the `smith-knowhow` skill at `agents-in-your-area/.claude/plugins/smith/skills/smith-knowhow/`.
-- **3.2** Write `/smith` command, three inspector agents, three scripts per `README.md` + `docs/design.md`.
-- **3.3** Dogfood smith on `claude-plugins-knowhow/` itself.
+- **3.1** `docs/checklist-items.md` を `smith-knowhow` スキル（`agents-in-your-area/.claude/plugins/smith/skills/smith-knowhow/`）にポート。
+- **3.2** `README.md` + `docs/design.md` に従い、`/smith` コマンド・3 インスペクターエージェント・3 スクリプトを書く。
+- **3.3** smith を `claude-plugins-knowhow/` 自身に対してドッグフーディング。
 
 ### Deferred
 
-- **Architecture diagram of smith's doc-routing** — draw a diagram showing how smith's inspectors consult `docs/concepts.md`, `docs/components.md`, `docs/patterns.md`, and `docs/checklists.md`. Land it at the top of `docs/concepts.md` once drawn.
-- **Case-study ↔ taxonomy linking (Stage 4)** — each section in `docs/case-studies.md` links to the taxonomy IDs it exemplifies.
-- **Smith test / verification strategy** — post-v1, once dogfooding is running.
-- **Dogfooding target catalog** — concrete targets inside the aiya monorepo, selected as aiya's `.claude/` develops.
+- **smith のドキュメント routing アーキテクチャ図** — smith のインスペクターが `docs/concepts.md`、`docs/components.md`、`docs/patterns.md`、`docs/checklists.md` をどう参照するかを示す図。描き起こした段階で `docs/concepts.md` 冒頭に着地させる。
+- **case-study ↔ taxonomy のリンク（Stage 4）** — `docs/case-studies.md` の各セクションを、それが例示する taxonomy ID にリンクする。
+- **smith のテスト / 検証戦略** — v1 後、ドッグフーディング開始時点で。
+- **ドッグフーディング対象カタログ** — aiya モノレポ内の具体対象。aiya の `.claude/` の発展に合わせて選定。
 
 ## Pivots
 
-- jam removed from smith's scope; Create mode dropped.
-- "Consultant" reframed to "craftsperson".
-- Knowhow indexing surfaced as a prerequisite to smith implementation.
-- The original 49-item extraction was contaminated by domain-classification bias; all 7 source files were re-scanned.
-- Design docs restructured: `smith-design.md` retired and split into `README.md` (usage + architecture) + `docs/design.md` (internal data contracts).
-- Rule shift: final-artifact-first (`.claude/rules/artifact.md`). Trailing `## TODO` sections are being replaced by inline TODO markers.
+- jam を smith のスコープから外した。Create モードを廃止。
+- 「コンサルタント」表現を「職人」に再フレーム。
+- ノウハウのインデックス化が smith 実装の前提条件として浮上。
+- 当初の 49 項目抽出にドメイン分類バイアスが混入していた。7 ソースファイルすべてを再スキャン。
+- 設計ドキュメントを再構成：`smith-design.md` をリタイアし、`README.md`（使い方 + アーキテクチャ）と `docs/design.md`（内部データ契約）に分割。
+- ルール変更：final-artifact-first（`.claude/rules/artifact.md`）。末尾 `## TODO` 節を inline TODO マーカーに置換中。
+- ルール変更：既定言語を English から日本語に切替（`.claude/rules/language.md`）。既存ドキュメントを順次和訳。

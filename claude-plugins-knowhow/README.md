@@ -1,108 +1,108 @@
 # smith
 
-> smith is a craftsperson tool for Claude Code setups: it inspects files, drafts improvements, applies them after approval, and verifies the result.
+> smith は Claude Code セットアップ向けの職人ツール。ファイルを検査し、改善をドラフトし、承認後に適用し、結果を検証する。
 
-**Status**: design-documentation stage. The plugin itself is not yet implemented; this repository holds the specification that the implementation at `agents-in-your-area/.claude/plugins/smith/` will follow.
+**ステータス**: 設計ドキュメント段階。プラグイン実装はまだ着手していない。本リポジトリは `agents-in-your-area/.claude/plugins/smith/` に置かれる実装が従う仕様を保持する。
 
-## What smith does
+## smith の役割
 
-- **Identity**: craftsperson. smith applies changes itself — it is not a consultant that only reports.
-- **Loop**: Evaluate → Propose → Apply, in a single pipeline.
-- **Two-layer model**:
-  - **Feature** = user-visible capability, the entry point (e.g., "PR review flow").
-  - **Component** = inspection unit: Prompt / Command / Agent / Skill / Hook / CLAUDE.md / Plugin.
-- **Target scope**: inside `.claude/` of the aiya monorepo (smith's deployment target) — plugins and project-level setup.
-- **Out of scope**: MCP servers, statusline, output-style.
-- **Defaults**: dry-run; disk writes require explicit user approval.
-- **Dogfooded**: smith is run on aiya's own `.claude/` to refine itself.
+- **アイデンティティ**: 職人。smith は変更を自分で適用する — 報告だけのコンサルタントではない。
+- **ループ**: 評価 → 提案 → 適用 を 1 本のパイプラインで回す。
+- **二層モデル**:
+  - **フィーチャー** = 利用者から見える機能。エントリポイント（例：「PR レビューフロー」）。
+  - **コンポーネント** = 検査単位：Prompt / Command / Agent / Skill / Hook / CLAUDE.md / Plugin。
+- **対象スコープ**: aiya モノレポ（smith のデプロイ先）の `.claude/` 配下 — プラグインおよびプロジェクトレベルのセットアップ。
+- **対象外**: MCP サーバー、statusline、output-style。
+- **既定動作**: dry-run。ディスクへの書き込みは明示的なユーザー承認が必要。
+- **ドッグフーディング**: smith は aiya 自身の `.claude/` に対して実行され、自己改善する。
 
-## Usage
+## 使い方
 
 ```
 /smith [<scope>]
 ```
 
-`<scope>` is an optional positional hint — a file path, directory path, or capability phrase. If omitted, smith asks the user for the target (max 2 rounds; exits on failure).
+`<scope>` はオプションの位置引数 — ファイルパス、ディレクトリパス、または機能を表す語句。省略すると smith はユーザーに対象を尋ねる（最大 2 ラウンド、特定できなければ終了）。
 
-Example:
+例：
 
 ```
 /smith commands/pr-review.md
 ```
 
-## Pipeline
+## パイプライン
 
-Fixed 10-step order. Approval gates at step 6 (adoption) and step 7 (preview). Step 9 may loop back to step 4, capped at 3 iterations (1 for self-inspection).
+固定 10 ステップ。承認ゲートはステップ 6（採用選択）とステップ 7（プレビュー）。ステップ 9 はステップ 4 にループバック可能。最大 3 反復（自己検査時は 1 反復）。
 
 ```mermaid
 flowchart TD
-    S1[1. Identify target]
-    S2[2. Enumerate files]
-    S3[3. Inspect]
-    S4[4. Draft improvements]
-    S5[5. Rank]
-    S6[6. User selects adoptions]
-    S7[7. Preview]
-    S8[8. Apply]
-    S9[9. Re-inspect and reconcile]
-    S10[10. Persist]
+    S1[1. 対象を特定]
+    S2[2. 構成ファイル列挙]
+    S3[3. 検査]
+    S4[4. 改善ドラフト]
+    S5[5. ランク付け]
+    S6[6. 採用選択]
+    S7[7. プレビュー]
+    S8[8. 適用]
+    S9[9. 再検査と突合]
+    S10[10. 永続化]
     S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7 --> S8 --> S9 --> S10
-    S9 -. loop up to 3 .-> S4
+    S9 -. 最大3反復 .-> S4
 ```
 
-1. **Identify target** — use `<scope>` if given; otherwise ask the user.
-2. **Enumerate constituent files** — list the files composing the target and their call relationships (command→agent, hook→tool, skill reference, etc.).
-3. **Inspect** — `[auto]` pre-pass (deterministic mechanical checks) + 3-lens parallel inspection. Each finding is `OK` / `NG` / `OOS` with a comment.
-4. **Draft improvements** — for each `NG`, produce proposal + rationale + expected effect + patch content.
-5. **Rank** — order by expected effect alone. Severity is internalized; effort is ignored because AI applies.
-6. **User selects adoptions** — all / subset / reject-all. Reject-all persists findings and exits.
-7. **Preview** — synthesize patches from adopted items, show diff, final confirmation.
-8. **Apply** — write in dependency order (foundation → dependents); re-verify pre-image before each write; halt on failure.
-9. **Re-inspect and reconcile** — re-run inspection on touched files, compare expected vs actual effect. If `unmet` or `regressed` remain, loop to step 4.
-10. **Persist** — write findings, decisions, and reconcile history to `.claude/.smith.local.md`.
+1. **対象を特定** — `<scope>` が与えられていればそれを使う。なければユーザーに尋ねる。
+2. **構成ファイル列挙** — 対象を構成するファイルとその呼び出し関係（command→agent、hook→tool、skill 参照など）を列挙する。
+3. **検査** — `[auto]` 前段パス（決定論的な機械的チェック）+ 3 レンズ並列検査。各検出項目は `OK` / `NG` / `OOS` とコメントを持つ。
+4. **改善ドラフト** — 各 `NG` について、提案 + 根拠 + 期待効果 + パッチ内容 を出す。
+5. **ランク付け** — 期待効果のみで順序付け。重要度は内部化されており、コストは AI が適用するため無視。
+6. **採用選択** — 全採用 / 部分採用 / 全却下 から選ぶ。全却下なら検出を保存して終了。
+7. **プレビュー** — 採用された項目からパッチを合成し、差分を表示し、最終確認を取る。
+8. **適用** — 依存順（基盤 → 依存先）で書き込み。各書き込み直前に pre-image を再検証し、失敗時は停止。
+9. **再検査と突合** — 触ったファイルを再検査し、期待効果と実結果を突合する。`unmet` または `regressed` が残ればステップ 4 に戻る。
+10. **永続化** — 検出、決定、突合履歴を `.claude/.smith.local.md` に書き出す。
 
-Steps 3 and 4 are one inspector invocation per file × lens: the inspector emits the verdict and, when `NG`, the draft + `patch_content` in a single JSON payload. See [`docs/design.md`](./docs/design.md#finding-schema) for the schema.
+ステップ 3 と 4 は「ファイル × レンズ」あたり 1 回のインスペクター呼び出しで完結する。インスペクターは判定を出し、`NG` の場合はドラフト + `patch_content` も同じ JSON ペイロードに含めて返す。スキーマ詳細は [`docs/design.md`](./docs/design.md#finding-schema) 参照。
 
-### Exception flows
+### 例外フロー
 
-- **Target unidentifiable** (the user does not provide a target after 2 rounds): report and exit. Never fabricate a target.
-- **All proposals rejected**: persist records and exit.
-- **Self-inspection** (target resolves under `agents-in-your-area/.claude/plugins/smith/`): extra confirmation before Apply; iteration cap drops from 3 to 1 to prevent prompt-mutation mid-loop.
-- **Write error mid-apply**: halt, report partial state, direct the user to `git status`. No auto-rollback — git owns revert.
-- **Loop cap hit**: report residual findings and exit. No completion claim while `NG` remain.
+- **対象が特定できない**（2 ラウンド尋ねても出てこない）: 報告して終了。対象を捏造しない。
+- **すべての提案が却下された**: 記録を保存して終了。
+- **自己検査**（対象が `agents-in-your-area/.claude/plugins/smith/` 配下に解決される場合）: 適用前に追加確認。反復上限を 3 から 1 に下げ、ループ中に smith 自身のプロンプトが書き換わらないようにする。
+- **適用中の書き込みエラー**: 停止し、部分状態を報告し、ユーザーに `git status` を案内する。自動ロールバックはしない — リバートは git の責務。
+- **反復上限到達**: 残った検出を報告して終了。`NG` が残る間は完了宣言しない。
 
-## Architecture
+## アーキテクチャ
 
-Hybrid plugin ([Archetype C](./docs/concepts.md#archetype-c-hybrid-toolkit)) at `agents-in-your-area/.claude/plugins/smith/`.
+ハイブリッドプラグイン（[Archetype C](./docs/concepts.md#archetype-c-hybrid-toolkit)）として `agents-in-your-area/.claude/plugins/smith/` に配置。
 
-### Components
+### 構成要素
 
-| Part | Model | Role | Pipeline steps |
+| Part | Model | 役割 | パイプラインステップ |
 |---|---|---|---|
-| `/smith` command | inherit | Orchestrator: dialogue, approval gates, dependency sort, writes, persistence | 1, 2, 5 (dispatch evaluator), 6, 7, 8, 10 |
-| `smith-inspector-conventions` agent | Opus | Applies `checklists.md` per component type. Parallel per file. | 3, 4, 9 |
-| `smith-inspector-patterns` agent | Opus | Matches anti-patterns from `patterns.md`. Parallel per file. | 3, 4, 9 |
-| `smith-inspector-architecture` agent | Opus | Whole-view: dependencies, roles, responsibilities, wiring. Single pass per Feature. | 3, 4, 9 |
-| `smith-knowhow` skill | — | Progressive disclosure: SKILL.md (taxonomy + common FP + index + load heuristic) + `references/` (per-component checklists and pattern excerpts) | supports 3, 4, 9 |
-| `scripts/smith-autocheck.sh` | — | `[auto]`-tagged mechanical checks; emits Finding schema | 3 |
-| `scripts/smith-evaluate.sh` | — | Merge findings → convergence score → threshold filter → rank; reconcile predicted vs actual at step 9 | 5, 9 |
-| `scripts/smith-state.sh` | — | `.smith.local.md` front-matter I/O | 10 |
+| `/smith` command | inherit | オーケストレーター：対話、承認ゲート、依存ソート、書き込み、永続化 | 1, 2, 5（評価器ディスパッチ）, 6, 7, 8, 10 |
+| `smith-inspector-conventions` agent | Opus | コンポーネント種別ごとに `checklists.md` を適用。ファイルごとに並列。 | 3, 4, 9 |
+| `smith-inspector-patterns` agent | Opus | `patterns.md` のアンチパターンと照合。ファイルごとに並列。 | 3, 4, 9 |
+| `smith-inspector-architecture` agent | Opus | 全体ビュー：依存関係、役割、責務、配線。フィーチャー単位で 1 回。 | 3, 4, 9 |
+| `smith-knowhow` skill | — | プログレッシブディスクロージャー：SKILL.md（taxonomy + 共通 FP + index + ロード方針）+ `references/`（コンポーネント別チェックリスト + パターン抜粋） | 3, 4, 9 を支援 |
+| `scripts/smith-autocheck.sh` | — | `[auto]` タグ付き機械的チェック。Finding スキーマで出力。 | 3 |
+| `scripts/smith-evaluate.sh` | — | 検出マージ → 収束スコア → 閾値フィルタ → ランク付け。ステップ 9 では予測と実結果を突合。 | 5, 9 |
+| `scripts/smith-state.sh` | — | `.smith.local.md` のフロントマター I/O。 | 10 |
 
-### Key decisions
+### 主要な設計判断
 
-- **Inspectors = Opus.** smith writes files that affect production setups; false positives and missed issues both cost real remediation. Precedent: pr-review-toolkit uses Opus for its final code-reviewer agent for the same reason.
-- **Inspector combines inspection + drafting + patch synthesis.** Same file, same checklist — splitting would double file reads and fragment reasoning (project rule: collapse overlapping modes).
-- **Scoring / ranking / reconcile as a script, not an agent.** Once findings carry tags and `expected_effect` is a deterministic list of `checklist_item_id` values, every downstream step is deterministic. A script is faster, cheaper, reproducible, and removes agent-bias risk.
-- **Three parallel inspector lenses.** Independent judgments produce a convergence signal: findings caught by multiple lenses get higher confidence; single-lens findings are filtered out by the threshold.
-- **Architecture lens is singleton per Feature.** Its job is to see the whole (dependencies, responsibilities, wiring). Splitting by file would break its function; per-file parallelism only helps where judgments are meaningfully independent.
-- **`/smith` model = `inherit`.** Inspectors emit full `patch_content`, so `/smith` only orchestrates — dialogue, approval gates, dependency sort, Write/Edit, persistence. Assumes Sonnet-or-better caller; under Haiku, pre-image verification quality may degrade.
-- **No auto-rollback on write failure.** Silent reversal would hide the failure and violate the "ban false promises" principle. git owns revert; smith halts and reports.
+- **インスペクターは Opus**。smith は本番セットアップに影響するファイルを書く。誤検出も見落としも実コストになる。pr-review-toolkit が最終 code-reviewer エージェントに Opus を選んでいる前例と同じ理由（最重要判断には最高の推論モデル）。
+- **インスペクターは検査 + ドラフト + パッチ合成を 1 回でこなす**。同じファイル、同じチェックリスト — 分割すれば読み込みが倍になり推論も分断される（プロジェクト規約：重なるモードは畳む）。
+- **スコアリング / ランキング / 突合はエージェントではなくスクリプト**。検出にタグが付き `expected_effect` が確定的になれば、以降はすべて決定論的。スクリプトの方が速く安く再現可能で、エージェント由来のバイアスもない。
+- **3 レンズの並列インスペクター**。独立判断は収束シグナルを生む。複数レンズに引っかかった検出は信頼度が上がり、単一レンズの検出は閾値で落ちる。
+- **アーキテクチャレンズはフィーチャー単位で 1 回だけ**。役割は全体（依存、責務、配線）を見ること。ファイル単位に分割すると機能を失う。ファイル並列が効くのは判断が独立している場合だけ。
+- **`/smith` のモデルは `inherit`**。インスペクターが完全な `patch_content` を返すので、`/smith` はオーケストレーション（対話、承認ゲート、依存ソート、Write/Edit、永続化）のみ。Sonnet 以上の呼び出し元を前提とする。Haiku 下では pre-image 検証品質が低下しうる。
+- **書き込み失敗時の自動ロールバックはしない**。サイレントな巻き戻しは失敗を隠し、「偽りの完了宣言を禁ずる」原則に反する。リバートは git、smith は停止して報告。
 
-### `smith-knowhow` layout
+### `smith-knowhow` レイアウト
 
 ```
 smith-knowhow/
-├── SKILL.md                    # taxonomy + common false-positive list + index + load heuristic
+├── SKILL.md                    # taxonomy + 共通誤検出リスト + index + ロード方針
 └── references/
     ├── prompt.md
     ├── command.md
@@ -111,22 +111,21 @@ smith-knowhow/
     ├── hook.md
     ├── claude-md.md
     ├── plugin.md
-    └── patterns.md             # anti-pattern excerpts used across components
+    └── patterns.md             # コンポーネント横断のアンチパターン抜粋
 ```
 
-One file per component type, mirroring the sections of [`docs/checklists.md`](./docs/checklists.md); `patterns.md` holds anti-pattern excerpts that apply across components. `references/` stays one level deep.
+[`docs/checklists.md`](./docs/checklists.md) のセクション構成と対応する形で、コンポーネント種別ごとに 1 ファイル。`patterns.md` はコンポーネント横断のアンチパターン抜粋。`references/` は 1 階層に留める。
 
-The `references/` files are **derived from** `docs/checklists.md` and `docs/patterns.md`, not copies of the whole `docs/` set. `docs/*.md` remain the source of truth and evolve independently; `smith-knowhow/` is populated from them during implementation (`tasks.md` §Step 3).
+`references/` 配下のファイルは `docs/checklists.md` および `docs/patterns.md` から**派生**したものであり、`docs/` 全体のラッパーではない。`docs/*.md` が source of truth であり独立に進化する。`smith-knowhow/` は実装時にそこから生成される（`tasks.md` §Step 3）。
 
-## References
+## 参照
 
-- [`docs/design.md`](./docs/design.md) — internal data contracts: Finding schema, `finding_type` naming, `[auto]` pre-pass, `OOS` rule, `patch_content` format, data transport, convergence score, ranking, dependency ordering, state file schema, `allowed-tools`.
-- Knowhow consulted by smith at runtime:
-  - [`docs/concepts.md`](./docs/concepts.md) — three-layer model, plugin taxonomy.
-  - [`docs/components.md`](./docs/components.md) — per-component design recipes.
-  - [`docs/patterns.md`](./docs/patterns.md) — anti-patterns.
-  - [`docs/case-studies.md`](./docs/case-studies.md) — seven official plugins as traceable source.
-  - [`docs/checklists.md`](./docs/checklists.md) — per-component quality checklists.
-  - [`docs/taxonomy.md`](./docs/taxonomy.md) — 107-item knowhow index across five domains.
-- [`tasks.md`](./tasks.md) — original intent, active cross-cutting tasks, pivot history.
-
+- [`docs/design.md`](./docs/design.md) — 内部データ契約：Finding スキーマ、`finding_type` 命名、`[auto]` 前段パス、`OOS` ルール、`patch_content` 形式、データ転送、収束スコア、ランキング、依存順序、状態ファイルスキーマ、`allowed-tools`。
+- smith が実行時に参照する knowhow:
+  - [`docs/concepts.md`](./docs/concepts.md) — 三層モデル、プラグイン分類。
+  - [`docs/components.md`](./docs/components.md) — コンポーネント別の設計レシピ。
+  - [`docs/patterns.md`](./docs/patterns.md) — アンチパターン。
+  - [`docs/case-studies.md`](./docs/case-studies.md) — 公式 7 プラグインの事例（trace 元）。
+  - [`docs/checklists.md`](./docs/checklists.md) — コンポーネント別の品質チェックリスト。
+  - [`docs/taxonomy.md`](./docs/taxonomy.md) — 5 ドメインに整理された 107 項目のノウハウ索引。
+- [`tasks.md`](./tasks.md) — 当初意図、横断的アクティブタスク、Pivot 履歴。
