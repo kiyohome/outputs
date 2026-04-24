@@ -11,22 +11,26 @@
 - **Two-layer model**:
   - **Feature** = user-visible capability, the entry point (e.g., "PR review flow").
   - **Component** = inspection unit: Prompt / Command / Agent / Skill / Hook / CLAUDE.md / Plugin.
-- **Target scope**: inside `.claude/` of the aiya monorepo — plugins and project-level setup.
+- **Target scope**: inside `.claude/` of the aiya monorepo (smith's deployment target) — plugins and project-level setup.
 - **Out of scope**: MCP servers, statusline, output-style.
 - **Defaults**: dry-run; disk writes require explicit user approval.
 - **Dogfooded**: smith is run on aiya's own `.claude/` to refine itself.
 
 ## Usage
 
-### Invocation
-
 ```
 /smith [<scope>]
 ```
 
-`<scope>` is an optional positional hint — a file path, directory path, or capability phrase. If omitted, smith hears the target from the user (max 2 rounds; exits on failure).
+`<scope>` is an optional positional hint — a file path, directory path, or capability phrase. If omitted, smith asks the user for the target (max 2 rounds; exits on failure).
 
-### Pipeline
+Example:
+
+```
+/smith commands/pr-review.md
+```
+
+## Pipeline
 
 Fixed 10-step order. Approval gates at step 6 (adoption) and step 7 (preview). Step 9 may loop back to step 4, capped at 3 iterations (1 for self-inspection).
 
@@ -46,7 +50,7 @@ flowchart TD
     S9 -. loop up to 3 .-> S4
 ```
 
-1. **Identify target** — use `<scope>` if given; otherwise hear it.
+1. **Identify target** — use `<scope>` if given; otherwise ask the user.
 2. **Enumerate constituent files** — list the files composing the target and their call relationships (command→agent, hook→tool, skill reference, etc.).
 3. **Inspect** — `[auto]` pre-pass (deterministic mechanical checks) + 3-lens parallel inspection. Each finding is `OK` / `NG` / `OOS` with a comment.
 4. **Draft improvements** — for each `NG`, produce proposal + rationale + expected effect + patch content.
@@ -61,7 +65,7 @@ Steps 3 and 4 are one inspector invocation per file × lens: the inspector emits
 
 ### Exception flows
 
-- **Target unidentifiable** (hearing fails after 2 rounds): report and exit. Never fabricate a target.
+- **Target unidentifiable** (the user does not provide a target after 2 rounds): report and exit. Never fabricate a target.
 - **All proposals rejected**: persist records and exit.
 - **Self-inspection** (target resolves under `agents-in-your-area/.claude/plugins/smith/`): extra confirmation before Apply; iteration cap drops from 3 to 1 to prevent prompt-mutation mid-loop.
 - **Write error mid-apply**: halt, report partial state, direct the user to `git status`. No auto-rollback — git owns revert.
@@ -69,7 +73,7 @@ Steps 3 and 4 are one inspector invocation per file × lens: the inspector emits
 
 ## Architecture
 
-Hybrid plugin (Archetype C) at `agents-in-your-area/.claude/plugins/smith/`.
+Hybrid plugin ([Archetype C](./docs/concepts.md#archetype-c-hybrid-toolkit)) at `agents-in-your-area/.claude/plugins/smith/`.
 
 ### Components
 
@@ -88,7 +92,7 @@ Hybrid plugin (Archetype C) at `agents-in-your-area/.claude/plugins/smith/`.
 
 - **Inspectors = Opus.** smith writes files that affect production setups; false positives and missed issues both cost real remediation. Precedent: pr-review-toolkit uses Opus for its final code-reviewer agent for the same reason.
 - **Inspector combines inspection + drafting + patch synthesis.** Same file, same checklist — splitting would double file reads and fragment reasoning (project rule: collapse overlapping modes).
-- **Scoring / ranking / reconcile as a script, not an agent.** Once findings carry tags and `expected_effect` is numeric, every downstream step is deterministic. A script is faster, cheaper, reproducible, and removes agent-bias risk.
+- **Scoring / ranking / reconcile as a script, not an agent.** Once findings carry tags and `expected_effect` is a deterministic list of `checklist_item_id` values, every downstream step is deterministic. A script is faster, cheaper, reproducible, and removes agent-bias risk.
 - **Three parallel inspector lenses.** Independent judgments produce a convergence signal: findings caught by multiple lenses get higher confidence; single-lens findings are filtered out by the threshold.
 - **Architecture lens is singleton per Feature.** Its job is to see the whole (dependencies, responsibilities, wiring). Splitting by file would break its function; per-file parallelism only helps where judgments are meaningfully independent.
 - **`/smith` model = `inherit`.** Inspectors emit full `patch_content`, so `/smith` only orchestrates — dialogue, approval gates, dependency sort, Write/Edit, persistence. Assumes Sonnet-or-better caller; under Haiku, pre-image verification quality may degrade.
