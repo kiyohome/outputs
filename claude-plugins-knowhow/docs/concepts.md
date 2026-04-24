@@ -168,5 +168,5 @@ When a plugin is prone to over-reaching, restate the scope:
 
 ## TODO
 
-- Add an architecture diagram showing how plugin-smith's modes route through `concepts.md`, `components.md`, `patterns.md`, and `checklists.md`.
+- Add an architecture diagram showing how smith's inspectors consult `concepts.md`, `components.md`, `patterns.md`, and `checklists.md`.
 - Document the decision heuristic that maps user intent to archetype A/B/C.

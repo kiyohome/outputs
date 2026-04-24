@@ -1,6 +1,6 @@
 # Checklists
 
-> Self-check lists for plugin quality. These are the direct inputs to `plugin-smith`'s Improve mode (and its `--report-only` evaluation variant), and humans can apply them by hand as PR gates.
+> Self-check lists for plugin quality. These are the direct inputs to smith's inspection pipeline, and humans can apply them by hand as PR gates.
 
 ## How to Use
 
@@ -8,9 +8,8 @@
 
 | Timing | Checklists to run |
 |---|---|
-| During creation (Create mode) | Run all categories relevant to the components being generated. |
-| During improvement (Improve mode) | Run all applicable categories; prioritize Mandatory failures. |
-| Before PR / release (Improve `--report-only`) | Run everything; a Mandatory failure blocks the gate. |
+| During a smith inspection | Run all applicable categories; prioritize Mandatory failures. |
+| Before PR / release (by-hand gate) | Run everything; a Mandatory failure blocks the gate. |
 
 ### Severity tiers
 
@@ -20,7 +19,7 @@
 
 ### Automation stance
 
-Each item is tagged `[auto]` (machine-verifiable) or `[judgment]` (requires Claude / human judgment). The Improve mode automates `[auto]` items and synthesizes an opinion for `[judgment]` items; the latter require user confirmation before being acted on.
+Each item is tagged `[auto]` (machine-verifiable) or `[judgment]` (requires Claude / human judgment). smith runs `[auto]` items in its pre-pass and synthesizes an opinion for `[judgment]` items; the latter require user confirmation before being acted on.
 
 ## Prompt
 
@@ -213,5 +212,5 @@ Newly derived. Verifies the plugin as a whole rather than any single component.
 ## TODO
 
 - Cross-check this file against the original `claude-plugins-knowhow.md` §20 when it is removed, and dedupe any items that were duplicated during the migration.
-- Add automation notes for the `[auto]` items: the exact shell / Python check that Improve mode will run.
+- Add automation notes for the `[auto]` items: the exact shell / Python check that smith's `[auto]` pre-pass will run.
 - Extend the Plugin (overall) category with a "MCP integration sanity check" once `.mcp.json` design patterns are documented in `components.md`.

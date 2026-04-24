@@ -1,6 +1,6 @@
 # Patterns
 
-> Cross-cutting patterns that are not tied to a single component type: quality control, state management, security, and advanced techniques. These are the building blocks that `plugin-smith improve` matches against, and that `plugin-smith create` composes into new plugins.
+> Cross-cutting patterns that are not tied to a single component type: quality control, state management, security, and advanced techniques. smith's pattern inspector matches against them; plugin authors compose them into new plugins.
 
 ## Quality Control
 
@@ -254,6 +254,5 @@ The `+` prefix (worktree-attached branches) is handled; this is the detail that 
 
 ## TODO
 
-- Quantify how often each pattern appears across the official plugins, so `plugin-smith` can weight them when proposing candidate designs.
-- Collect anti-patterns paired with each pattern, as the Improve mode needs them as matching targets.
-- Document the boundary between "quality control" and "evaluation" — the line blurs when Improve's `--report-only` runs the same checks as a dedicated Evaluate mode would.
+- Quantify how often each pattern appears across the official plugins, so smith can weight them when ranking findings.
+- Collect anti-patterns paired with each pattern, as smith's pattern inspector needs them as matching targets.

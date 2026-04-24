@@ -342,4 +342,4 @@ Hard-coded absolute paths are forbidden. The variable is also available inside h
 
 - Document `.mcp.json` design patterns (not yet extracted from the sources).
 - Add explicit guidance for when to choose a command vs. an agent vs. a skill for a given responsibility.
-- Collect bad examples, not just good ones, so `plugin-smith improve` has concrete anti-patterns to match against.
+- Collect bad examples, not just good ones, so smith's pattern inspector has concrete anti-patterns to match against.

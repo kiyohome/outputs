@@ -1,18 +1,18 @@
 # Taxonomy
 
-> Canonical index of every knowhow item extracted from the plugin-smith knowledge base. Each item has a domain, a kebab-case name, and an abbreviated ID derived from the name's initials. Inspired by ESLint (kebab-case rule names), SpotBugs (`CATEGORY_ABBREV` pattern IDs), and TypeScript (stable numeric codes).
+> Canonical index of every knowhow item extracted from the smith knowledge base. Each item has a domain, a kebab-case name, and an abbreviated ID derived from the name's initials. Inspired by ESLint (kebab-case rule names), SpotBugs (`CATEGORY_ABBREV` pattern IDs), and TypeScript (stable numeric codes).
 
 ## Scope
 
-All 7 source documents (Stage 3 full audit):
+All 7 source documents audited during Stage 3 (`smith-design.md` has since been migrated into `../README.md` and `./design.md`):
 
 - `concepts.md` — plugin shape, archetypes, design principles.
 - `components.md` — per-component mechanics (commands / agents / skills / hooks).
 - `patterns.md` — cross-cutting quality / state / security / advanced patterns.
 - `case-studies.md` — seven official plugin deep-dives; independent knowhow extracted.
 - `checklists.md` — quality checklists; prompt/skill/hook/CLAUDE.md authoring rules extracted.
-- `README.md` — plugin-smith usage and architecture; flow patterns extracted.
-- `smith-design.md` — implementation spec; scoring, ranking, and pipeline patterns extracted.
+- `README.md` — smith usage and architecture; flow patterns extracted.
+- `smith-design.md` (retired) — implementation spec; scoring, ranking, and pipeline patterns extracted.
 
 ## Domains
 
