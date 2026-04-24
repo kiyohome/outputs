@@ -1,130 +1,131 @@
-# plugin-smith
+# smith
 
-> A meta-plugin for Claude Code that creates and improves other Claude Code plugins.
+> smith は Claude Code セットアップ向けの職人ツール。ファイルを検査し、改善をドラフトし、承認後に適用し、結果を検証する。
 
-**Status**: design-documentation stage. The plugin itself is not yet implemented; this directory contains the specification that the implementation will follow.
+**ステータス**: 設計ドキュメント段階。プラグイン実装はまだ着手していない。本リポジトリは `agents-in-your-area/.claude/plugins/smith/` に置かれる実装が従う仕様を保持する。
 
-## Overview
+## smith の役割
 
-Claude Code plugins are powerful but their design know-how is scattered across the official `anthropics/claude-plugins-official` repository and various independent projects. Quality varies widely. Developers building new plugins have to reverse-engineer the patterns from multiple examples, and developers improving existing plugins have no systematic way to audit them against what "good" looks like.
+- **アイデンティティ**: 職人。smith は変更を自分で適用する — 報告だけのコンサルタントではない。
+- **ループ**: 評価 → 提案 → 適用 を 1 本のパイプラインで回す。
+- **二層モデル**:
+  - **フィーチャー** = 利用者から見える機能。エントリポイント（例：「PR レビューフロー」）。
+  - **コンポーネント** = 検査単位：Prompt / Command / Agent / Skill / Hook / CLAUDE.md / Plugin。
+- **対象スコープ**: aiya モノレポ（smith のデプロイ先）の `.claude/` 配下 — プラグインおよびプロジェクトレベルのセットアップ。
+- **対象外**: MCP サーバー、statusline、output-style。
+- **既定動作**: dry-run。ディスクへの書き込みは明示的なユーザー承認が必要。
+- **ドッグフーディング**: smith は aiya 自身の `.claude/` に対して実行され、自己改善する。
 
-`plugin-smith` is a meta-plugin whose job is to **create new plugins and improve existing ones**. It is inspired by `skill-smith` (which targets individual skills) and extends the same mode-driven architecture up one level to target whole plugins.
-
-### What it is built from
-
-- **Observed design patterns** from official plugins — the three-layer separation of procedure / knowledge / execution, confidence-scored quality control, progressive disclosure in skills, the separation of reporter and evaluator. See [`docs/concepts.md`](./docs/concepts.md) and [`docs/patterns.md`](./docs/patterns.md).
-- **Component-level design recipes** for commands, agents, skills, and hooks. See [`docs/components.md`](./docs/components.md).
-- **Case studies** of seven official plugins that serve as traceable sources for the abstractions above. See [`docs/case-studies.md`](./docs/case-studies.md).
-- **Quality checklists** covering Prompt, Skill, Hook, CLAUDE.md, Command, Agent, and Plugin-overall categories. See [`docs/checklists.md`](./docs/checklists.md).
-
-### What it is not
-
-- Not an installer or registry.
-- Not a runtime profiler (that is `skill-smith`'s Profile mode; for plugins the analogue is left for later).
-- Not a review tool in the sense of passing judgment on a plugin for external consumption — though `--report-only` mode produces a scorecard, the main orientation is *improvement*, not *evaluation*.
-
-## Usage
-
-`plugin-smith` exposes two modes. Both are **proposal-driven**: the plugin leads with a concrete recommendation drawn from its own knowledge base and asks for confirmation, rather than interviewing the user to elicit requirements.
-
-### Create
-
-Purpose: generate a new plugin from a one-sentence intent.
+## 使い方
 
 ```
-/plugin-smith create "a plugin that reviews my SQL migrations"
+/smith [<scope>]
 ```
 
-Flow:
+`<scope>` はオプションの位置引数 — ファイルパス、ディレクトリパス、または機能を表す語句。省略すると smith はユーザーに対象を尋ねる（最大 2 ラウンド、特定できなければ終了）。
 
-1. Classify the intent as archetype A (command + agent), B (skill-only), or C (hybrid), per [`docs/concepts.md > Plugin Taxonomy`](./docs/concepts.md#plugin-taxonomy).
-2. Compose a concrete structure from [`docs/components.md`](./docs/components.md) — which commands, which agents, which skills, what front matter, what tool restrictions.
-3. Present **two or three candidate structures in parallel**, each with rationale and trade-offs. This mirrors the parallel-dispatch pattern from [`docs/components.md > Agents`](./docs/components.md#agents).
-4. Wait for user approval (`proceed` / `adjust` / `reject`). This is the only routine confirmation point.
-5. Scaffold the plugin on disk.
-6. Self-validate against [`docs/checklists.md`](./docs/checklists.md) and report any Mandatory failures.
-
-Claude asks clarifying questions only when the intent is missing a decisive piece of information that would change the proposal itself. Otherwise it proceeds with sensible defaults drawn from the knowledge base.
-
-### Improve
-
-Purpose: diagnose and improve an existing plugin, optionally targeted at a specific problem.
+例：
 
 ```
-# Broad sweep:
-/plugin-smith improve ~/.claude/plugins/my-plugin
-
-# Focused on a specific issue:
-/plugin-smith improve ~/.claude/plugins/my-plugin "hook crashes when editing .env files"
-
-# Scorecard only, no changes:
-/plugin-smith improve ~/.claude/plugins/my-plugin --report-only
+/smith commands/pr-review.md
 ```
 
-Flow:
+## パイプライン
 
-| Invocation | Behavior |
-|---|---|
-| Path only | Full scan. Runs every applicable checklist from `docs/checklists.md`. Presents findings sorted by severity (Critical / Important / Nice-to-have). |
-| Path + problem description | Focused scan. Starts from the named symptom, uses [`docs/patterns.md`](./docs/patterns.md) to match anti-patterns near the affected area, hypothesizes the root cause, then proposes a patch. |
-| `--report-only` | No mutations. Emits a scorecard with Mandatory pass/fail + Recommended counts. This is the "Evaluate" mode absorbed as a flag. |
+固定 10 ステップ。承認ゲートはステップ 6（採用選択）とステップ 7（プレビュー）。ステップ 9 はステップ 4 にループバック可能。最大 3 反復（自己検査時は 1 反復）。
 
-In all cases Improve defaults to **dry run**: patches are proposed and shown, but disk writes wait for user approval (`apply all` / `apply selected` / `reject`). After approval, the plugin re-validates and reports a before/after diff.
-
-### Shared principles
-
-- **Proposal-driven.** The plugin holds the expertise; it leads with concrete recommendations instead of asking the user to specify details up front.
-- **Minimal approval points.** Approval is requested at the meaningful forks (structure proposal, patch application), not at every intermediate step.
-- **Dry-run by default.** Nothing is written without explicit confirmation.
-- **Self-applicable.** `plugin-smith` can be run against itself.
-
-## Architecture
-
-### Component layout (planned)
-
-`plugin-smith` follows archetype C (hybrid) from [`docs/concepts.md`](./docs/concepts.md):
-
-```
-plugin-smith/
-├── .claude-plugin/plugin.json
-├── commands/
-│   └── plugin-smith.md        # Entry command dispatching to create / improve.
-├── agents/
-│   ├── plugin-proposer.md     # Dispatched in parallel for the Create mode candidate structures.
-│   ├── plugin-diagnoser.md    # Runs the scan in Improve mode.
-│   └── plugin-evaluator.md    # Scores findings. Kept separate from the diagnoser on purpose.
-├── skills/
-│   ├── concepts/              # Wraps docs/concepts.md as an on-demand reference.
-│   ├── components/            # Wraps docs/components.md.
-│   ├── patterns/              # Wraps docs/patterns.md.
-│   └── checklists/            # Wraps docs/checklists.md.
-└── README.md
+```mermaid
+flowchart TD
+    S1[1. 対象を特定]
+    S2[2. 構成ファイル列挙]
+    S3[3. 検査]
+    S4[4. 改善ドラフト]
+    S5[5. ランク付け]
+    S6[6. 採用選択]
+    S7[7. プレビュー]
+    S8[8. 適用]
+    S9[9. 再検査と突合]
+    S10[10. 永続化]
+    S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7 --> S8 --> S9 --> S10
+    S9 -. 最大3反復 .-> S4
 ```
 
-The `skills/` subdirectories are thin wrappers around the corresponding `docs/*.md` files in this repository. The design docs are the single source of truth; the skills simply expose them through the progressive-disclosure mechanism at runtime.
+1. **対象を特定** — `<scope>` が与えられていればそれを使う。なければユーザーに尋ねる。
+2. **構成ファイル列挙** — 対象を構成するファイルとその呼び出し関係（command→agent、hook→tool、skill 参照など）を列挙する。
+3. **検査** — `[auto]` 前段パス（決定論的な機械的チェック）+ 3 レンズ並列検査。各検出項目は `OK` / `NG` / `OOS` とコメントを持つ。
+4. **改善ドラフト** — 各 `NG` について、提案 + 根拠 + 期待効果 + パッチ内容 を出す。
+5. **ランク付け** — 期待効果のみで順序付け。重要度は内部化されており、コストは AI が適用するため無視。
+6. **採用選択** — 全採用 / 部分採用 / 全却下 から選ぶ。全却下なら検出を保存して終了。
+7. **プレビュー** — 採用された項目からパッチを合成し、差分を表示し、最終確認を取る。
+8. **適用** — 依存順（基盤 → 依存先）で書き込み。各書き込み直前に pre-image を再検証し、失敗時は停止。
+9. **再検査と突合** — 触ったファイルを再検査し、期待効果と実結果を突合する。`unmet` または `regressed` が残ればステップ 4 に戻る。
+10. **永続化** — 検出、決定、突合履歴を `.claude/.smith.local.md` に書き出す。
 
-### Mode → doc dependency
+ステップ 3 と 4 は「ファイル × レンズ」あたり 1 回のインスペクター呼び出しで完結する。インスペクターは判定を出し、`NG` の場合はドラフト + `patch_content` も同じ JSON ペイロードに含めて返す。スキーマ詳細は [`docs/design.md`](./docs/design.md#finding-schema) 参照。
 
-| Mode | Primary docs consulted |
-|---|---|
-| Create | `concepts.md` (archetype classification) → `components.md` (composition) → `checklists.md` (self-validation) |
-| Improve (path only) | `components.md` + `patterns.md` (matching) → `checklists.md` (scoring) |
-| Improve (with problem description) | `patterns.md` (anti-pattern match near the symptom) → `components.md` (patch synthesis) |
-| Improve (`--report-only`) | `checklists.md` only |
+### 例外フロー
 
-`case-studies.md` is not loaded at runtime. It exists so that any claim in the other docs can be traced back to its empirical source, which is useful for human maintainers but not for the plugin's execution path.
+- **対象が特定できない**（2 ラウンド尋ねても出てこない）: 報告して終了。対象を捏造しない。
+- **すべての提案が却下された**: 記録を保存して終了。
+- **自己検査**（対象が `agents-in-your-area/.claude/plugins/smith/` 配下に解決される場合）: 適用前に追加確認。反復上限を 3 から 1 に下げ、ループ中に smith 自身のプロンプトが書き換わらないようにする。
+- **適用中の書き込みエラー**: 停止し、部分状態を報告し、ユーザーに `git status` を案内する。自動ロールバックはしない — リバートは git の責務。
+- **反復上限到達**: 残った検出を報告して終了。`NG` が残る間は完了宣言しない。
 
-### Design principles built into the plugin itself
+## アーキテクチャ
 
-The plugin must exemplify the patterns it recommends. Specifically:
+ハイブリッドプラグイン（[Archetype C](./docs/concepts.md#archetype-c-hybrid-toolkit)）として `agents-in-your-area/.claude/plugins/smith/` に配置。
 
-- **Three-layer separation.** The entry command drives the procedure. Skills supply knowledge. Agents execute in isolation.
-- **Reporter / evaluator separation.** Improve uses a diagnoser agent to report findings and a separate evaluator agent to score them, avoiding the self-affirmation bias documented in `docs/patterns.md > Quality Control`.
-- **Confidence threshold of 80.** Consistent with `code-review` and `feature-dev`.
-- **`${CLAUDE_PLUGIN_ROOT}` everywhere.** No hard-coded paths.
-- **`allowed-tools` on the entry command.** Least privilege.
-- **User approval points only at meaningful forks.** Structure proposal in Create, patch application in Improve. Nothing else.
+### 構成要素
 
-### Open design questions
+| Part | Model | 役割 | パイプラインステップ |
+|---|---|---|---|
+| `/smith` command | inherit | オーケストレーター：対話、承認ゲート、依存ソート、書き込み、永続化 | 1, 2, 5（評価器ディスパッチ）, 6, 7, 8, 10 |
+| `smith-inspector-conventions` agent | Opus | コンポーネント種別ごとに `checklists.md` を適用。ファイルごとに並列。 | 3, 4, 9 |
+| `smith-inspector-patterns` agent | Opus | `patterns.md` のアンチパターンと照合。ファイルごとに並列。 | 3, 4, 9 |
+| `smith-inspector-architecture` agent | Opus | 全体ビュー：依存関係、役割、責務、配線。フィーチャー単位で 1 回。 | 3, 4, 9 |
+| `smith-knowhow` skill | — | プログレッシブディスクロージャー：SKILL.md（taxonomy + 共通 FP + index + ロード方針）+ `references/`（コンポーネント別チェックリスト + パターン抜粋） | 3, 4, 9 を支援 |
+| `scripts/smith-autocheck.sh` | — | `[auto]` タグ付き機械的チェック。Finding スキーマで出力。 | 3 |
+| `scripts/smith-evaluate.sh` | — | 検出マージ → 収束スコア → 閾値フィルタ → ランク付け。ステップ 9 では予測と実結果を突合。 | 5, 9 |
+| `scripts/smith-state.sh` | — | `.smith.local.md` のフロントマター I/O。 | 10 |
 
-See the TODO section of each `docs/*.md` file for document-specific open items. The cross-cutting ones are tracked in [`progress.md`](./progress.md) and include: the architecture diagram format, state management for interruption and resume, the algorithm for problem-description-focused diagnosis, the scorecard output format, and finalization of the plugin name (`plugin-smith` is a placeholder).
+### 主要な設計判断
+
+- **インスペクターは Opus**。smith は本番セットアップに影響するファイルを書く。誤検出も見落としも実コストになる。pr-review-toolkit が最終 code-reviewer エージェントに Opus を選んでいる前例と同じ理由（最重要判断には最高の推論モデル）。
+- **インスペクターは検査 + ドラフト + パッチ合成を 1 回でこなす**。同じファイル、同じチェックリスト — 分割すれば読み込みが倍になり推論も分断される（プロジェクト規約：重なるモードは畳む）。
+- **スコアリング / ランキング / 突合はエージェントではなくスクリプト**。検出にタグが付き `expected_effect` が確定的になれば、以降はすべて決定論的。スクリプトの方が速く安く再現可能で、エージェント由来のバイアスもない。
+- **3 レンズの並列インスペクター**。独立判断は収束シグナルを生む。複数レンズに引っかかった検出は信頼度が上がり、単一レンズの検出は閾値で落ちる。
+- **アーキテクチャレンズはフィーチャー単位で 1 回だけ**。役割は全体（依存、責務、配線）を見ること。ファイル単位に分割すると機能を失う。ファイル並列が効くのは判断が独立している場合だけ。
+- **`/smith` のモデルは `inherit`**。インスペクターが完全な `patch_content` を返すので、`/smith` はオーケストレーション（対話、承認ゲート、依存ソート、Write/Edit、永続化）のみ。Sonnet 以上の呼び出し元を前提とする。Haiku 下では pre-image 検証品質が低下しうる。
+- **書き込み失敗時の自動ロールバックはしない**。サイレントな巻き戻しは失敗を隠し、「偽りの完了宣言を禁ずる」原則に反する。リバートは git、smith は停止して報告。
+
+### `smith-knowhow` レイアウト
+
+```
+smith-knowhow/
+├── SKILL.md                    # taxonomy + 共通誤検出リスト + index + ロード方針
+└── references/
+    ├── prompt.md
+    ├── command.md
+    ├── agent.md
+    ├── skill.md
+    ├── hook.md
+    ├── claude-md.md
+    ├── plugin.md
+    └── patterns.md             # コンポーネント横断のアンチパターン抜粋
+```
+
+[`docs/checklists.md`](./docs/checklists.md) のセクション構成と対応する形で、コンポーネント種別ごとに 1 ファイル。`patterns.md` はコンポーネント横断のアンチパターン抜粋。`references/` は 1 階層に留める。
+
+`references/` 配下のファイルは `docs/checklists.md` および `docs/patterns.md` から**派生**したものであり、`docs/` 全体のラッパーではない。`docs/*.md` が source of truth であり独立に進化する。`smith-knowhow/` は実装時にそこから生成される（`tasks.md` §Step 3）。
+
+## 参照
+
+- [`docs/design.md`](./docs/design.md) — 内部データ契約：Finding スキーマ、`finding_type` 命名、`[auto]` 前段パス、`OOS` ルール、`patch_content` 形式、データ転送、収束スコア、ランキング、依存順序、状態ファイルスキーマ、`allowed-tools`。
+- smith が実行時に参照する knowhow:
+  - [`docs/concepts.md`](./docs/concepts.md) — 三層モデル、プラグイン分類。
+  - [`docs/components.md`](./docs/components.md) — コンポーネント別の設計レシピ。
+  - [`docs/patterns.md`](./docs/patterns.md) — アンチパターン。
+  - [`docs/case-studies.md`](./docs/case-studies.md) — 公式 7 プラグインの事例（trace 元）。
+  - [`docs/checklists.md`](./docs/checklists.md) — コンポーネント別の品質チェックリスト。
+  - [`docs/taxonomy.md`](./docs/taxonomy.md) — 5 ドメインに整理された 107 項目のノウハウ索引。
+- [`tasks.md`](./tasks.md) — 当初意図、横断的アクティブタスク、Pivot 履歴。

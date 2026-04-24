@@ -1,12 +1,17 @@
-# Components
+# コンポーネント
 
-> Design patterns for the four component types that make up a Claude Code plugin: commands, agents, skills, and hooks. Derived from the official plugin repository.
+> Claude Code プラグインを構成する 4 種類のコンポーネント (コマンド、エージェント、スキル、フック) の設計パターン。公式プラグインリポジトリから抽出。
 
-## Commands
+**TODO**:
+- `.mcp.json` の設計パターンをドキュメント化する (まだソースから抽出できていない)。対応する `## MCP` セクションを追加する。
+- ある責務に対してコマンド/エージェント/スキルのいずれを選ぶべきかについての明示的なガイダンスを追加する。
+- 良い例だけでなく悪い例も収集し、smith のパターンインスペクターが照合できる具体的なアンチパターンを揃える。
 
-A slash command is a Markdown file under `commands/`. Its body is the instruction Claude executes when the user invokes the command.
+## コマンド
 
-### Write commands as instructions, not documentation
+スラッシュコマンドは `commands/` 配下の Markdown ファイルである。その本文は、ユーザーがコマンドを呼び出したときに Claude が実行する命令である。
+
+### コマンドはドキュメントではなく命令として書く
 
 ```markdown
 <!-- GOOD: imperative, addressed to Claude -->
@@ -18,9 +23,9 @@ Review this code for security vulnerabilities including:
 This command will review your code for security issues.
 ```
 
-### Restrict tools with `allowed-tools`
+### `allowed-tools` でツールを制限する
 
-Front-matter can limit which tools the command may call. This prevents Claude from drifting into adjacent work.
+フロントマターでコマンドが呼び出せるツールを制限できる。これにより Claude が隣接した作業へ逸脱するのを防げる。
 
 ```yaml
 ---
@@ -28,11 +33,11 @@ allowed-tools: Bash(git add:*), Bash(git status:*), Bash(git commit:*)
 ---
 ```
 
-`commit-commands` locks down to git-only; `code-review` locks down to `gh` CLI invocations. The principle is least privilege: if the command does not need Write access, do not grant it.
+`commit-commands` は git のみに限定し、`code-review` は `gh` CLI の呼び出しのみに限定している。原則は最小権限である: コマンドが Write アクセスを必要としないなら付与しない。
 
-### "Single-message completion" pattern
+### 「単一メッセージ完了」パターン
 
-Claude has a habit of adding explanatory prose around tool calls. Some commands must complete in a single turn with no extra text:
+Claude にはツール呼び出しの周りに説明的な文章を加える癖がある。一部のコマンドは余計なテキストなしで 1 ターンで完了させる必要がある。
 
 ```markdown
 You have the capability to call multiple tools in a single response.
@@ -41,11 +46,11 @@ Do not use any other tools or do anything else.
 Do not send any other text or messages besides these tool calls.
 ```
 
-Used by `commit-commands` `/commit` and `/commit-push-pr`.
+`commit-commands` の `/commit` および `/commit-push-pr` で使用されている。
 
-### Inline execution with `` !`command` ``
+### `` !`command` ``によるインライン実行
 
-Backtick-prefixed commands execute at invocation time, and their output is embedded into the prompt. This lets a command build dynamic context before Claude sees the instructions.
+バッククォートで前置されたコマンドは呼び出し時点で実行され、その出力がプロンプトに埋め込まれる。これによりコマンドは、Claude が命令を見る前に動的なコンテキストを構築できる。
 
 ```markdown
 ## Context
@@ -55,7 +60,7 @@ Backtick-prefixed commands execute at invocation time, and their output is embed
 - Recent commits: !`git log --oneline -10`
 ```
 
-### Argument expansion
+### 引数の展開
 
 ```markdown
 ---
@@ -65,18 +70,18 @@ argument-hint: [pr-number] [priority] [assignee]
 Review PR #$1 with priority $2. Assign to $3.
 ```
 
-- `$ARGUMENTS` — the full argument string.
-- `$1`, `$2`, `$3` — positional arguments.
-- `@$1` — tell Claude to read that path as a file.
-- `@${CLAUDE_PLUGIN_ROOT}/templates/report.md` — reference a file inside the plugin itself.
+- `$ARGUMENTS` — 引数文字列全体。
+- `$1`、`$2`、`$3` — 位置引数。
+- `@$1` — そのパスをファイルとして読むよう Claude に指示する。
+- `@${CLAUDE_PLUGIN_ROOT}/templates/report.md` — プラグイン内部のファイルを参照する。
 
-### Phase control pattern
+### フェーズ制御パターン
 
-Used by `feature-dev` and `plugin-dev`. A command declares multiple phases, each with:
+`feature-dev` と `plugin-dev` で使用。コマンドが複数のフェーズを宣言し、それぞれに次の要素を持つ。
 
-- **Goal**: what this phase is for.
-- **Actions**: concrete steps, including which subagents to dispatch.
-- **User confirmation point**: explicit approval gates.
+- **Goal**: このフェーズの目的。
+- **Actions**: 具体的なステップ。ディスパッチするサブエージェントも含む。
+- **User confirmation point**: 明示的な承認ゲート。
 
 ```markdown
 ## Phase 3: Clarifying Questions
@@ -87,13 +92,13 @@ Used by `feature-dev` and `plugin-dev`. A command declares multiple phases, each
 **DO NOT START WITHOUT USER APPROVAL**
 ```
 
-Strong markers such as "DO NOT SKIP" and "DO NOT START WITHOUT APPROVAL" counter Claude's tendency to collapse phases.
+「DO NOT SKIP」「DO NOT START WITHOUT APPROVAL」のような強いマーカーが、フェーズを統合してしまう Claude の傾向に対抗する。
 
-## Agents
+## エージェント
 
-A subagent is a Markdown file under `agents/` with front-matter plus a persona/instruction body.
+サブエージェントは `agents/` 配下の Markdown ファイルで、フロントマターとペルソナ/命令本文から成る。
 
-### Front matter
+### フロントマター
 
 ```markdown
 ---
@@ -107,15 +112,15 @@ tools: ["Read", "Grep", "Glob"]
 You are an expert code reviewer...
 ```
 
-| Field | Required | Notes |
+| フィールド | 必須 | 備考 |
 |---|---|---|
-| `name` | yes | kebab-case, 3–50 characters. |
-| `description` | yes | Trigger phrasing plus 2–4 `<example>` blocks. |
-| `model` | yes | `inherit` / `sonnet` / `opus` / `haiku`. |
-| `color` | yes | `blue` / `cyan` / `green` / `yellow` / `magenta` / `red`. |
-| `tools` | no | Omit for full tool access; specify to restrict. |
+| `name` | はい | kebab-case、3〜50 文字。 |
+| `description` | はい | トリガー表現と 2〜4 個の `<example>` ブロック。 |
+| `model` | はい | `inherit` / `sonnet` / `opus` / `haiku`。 |
+| `color` | はい | `blue` / `cyan` / `green` / `yellow` / `magenta` / `red`。 |
+| `tools` | いいえ | 省略すると全ツールアクセス。指定すると制限する。 |
 
-### Trigger definition via `<example>` blocks
+### `<example>` ブロックによるトリガー定義
 
 ```markdown
 description: Use this agent when... Examples:
@@ -130,11 +135,11 @@ Since the user is asking about test thoroughness in a PR, use the Task tool to l
 </example>
 ```
 
-Include both explicit-request examples ("review my PR") and proactive-dispatch examples (Claude chooses the agent without being named). The assistant line names the agent concretely; the commentary explains why the agent is appropriate.
+明示的リクエスト例 (「PR をレビューして」) と能動的ディスパッチ例 (Claude が名指しされずにそのエージェントを選ぶ) の両方を含めること。assistant 行ではエージェントを具体的に名指しし、commentary でそのエージェントが適切である理由を説明する。
 
-### Model tiering
+### モデルの階層化
 
-`code-review` uses a four-tier pipeline:
+`code-review` は 4 段のパイプラインを使用する。
 
 ```
 Haiku → eligibility, file listing, summary
@@ -143,54 +148,54 @@ Haiku → confidence scoring per finding
 Haiku → re-eligibility check
 ```
 
-Sonnet is spent only where judgment is required. Haiku handles the deterministic wrapping work.
+Sonnet は判断が必要なところにのみ使う。Haiku は決定論的なラッピング作業を担当する。
 
-`pr-review-toolkit` promotes `code-reviewer` and `code-simplifier` to Opus for deep judgment; the other four agents stay at `inherit`.
+`pr-review-toolkit` は `code-reviewer` と `code-simplifier` を深い判断のために Opus に昇格させ、他の 4 エージェントは `inherit` のままにしている。
 
-### Parallel dispatch
+### 並列ディスパッチ
 
-| Plugin | Phase | Agents | Count | Perspective split |
+| プラグイン | フェーズ | エージェント | 数 | 観点の分担 |
 |---|---|---|---|---|
-| feature-dev | Phase 2 | code-explorer | 2–3 | similar features / architecture / UX |
-| feature-dev | Phase 4 | code-architect | 2–3 | minimal change / clean design / pragmatic |
-| feature-dev | Phase 6 | code-reviewer | 3 | brevity–DRY / bugs–correctness / conventions |
+| feature-dev | Phase 2 | code-explorer | 2〜3 | 類似フィーチャー / アーキテクチャ / UX |
+| feature-dev | Phase 4 | code-architect | 2〜3 | 最小変更 / 綺麗な設計 / 実用主義 |
+| feature-dev | Phase 6 | code-reviewer | 3 | 簡潔さ・DRY / バグ・正しさ / 規約 |
 
-`code-review` uses five parallel Sonnet reviewers:
+`code-review` は 5 つの並列 Sonnet レビュアーを使う。
 
-| # | Lens |
+| # | レンズ |
 |---|---|
-| 1 | CLAUDE.md compliance |
-| 2 | Shallow bug scan (changed lines only) |
-| 3 | Bugs inferred from git blame and history |
-| 4 | Cross-reference with past PR comments |
-| 5 | Consistency with in-file comments |
+| 1 | CLAUDE.md 準拠 |
+| 2 | 浅いバグスキャン (変更行のみ) |
+| 3 | git blame と履歴から推測されるバグ |
+| 4 | 過去の PR コメントとの突合 |
+| 5 | ファイル内コメントとの整合性 |
 
-### Separation of reporter and evaluator
+### レポーターと評価器の分離
 
-The most important design principle in `code-review`: the Sonnet reviewer produces findings, and a **separate Haiku agent** scores them. When a single agent produces and grades its own findings, it is biased toward affirming them. Splitting the roles removes that bias structurally.
+`code-review` における最も重要な設計原則: Sonnet レビュアーが検出を生成し、**別の Haiku エージェント**がそれをスコア付けする。単一のエージェントが自分自身の検出を生成し評定すると、それを肯定する方向にバイアスがかかる。役割を分割することで、そのバイアスを構造的に排除する。
 
-### Color assignment
+### 色の割り当て
 
-| Plugin | Colors |
+| プラグイン | 色 |
 |---|---|
 | feature-dev | explorer=yellow, architect=green, reviewer=red |
-| pr-review-toolkit | one color per agent (6 distinct) |
+| pr-review-toolkit | エージェントごとに 1 色 (6 色) |
 | hookify | analyzer=yellow |
 | plugin-dev | creator=magenta, validator=yellow, reviewer=cyan |
 
-In tmux-based parallel workflows, colors make it obvious which agent is active.
+tmux ベースの並列ワークフローでは、色によってどのエージェントがアクティブかが一目で分かる。
 
-### Representative specialized agents
+### 代表的な専門エージェント
 
-- **silent-failure-hunter** (`pr-review-toolkit`): persona is "zero tolerance for silent failures". Detects empty catch blocks, log-and-continue patterns, implicit fallbacks. Each finding carries CRITICAL/HIGH/MEDIUM severity and a list of error types that might be hidden.
-- **type-design-analyzer** (`pr-review-toolkit`): scores type encapsulation, invariant expressiveness, usefulness, and enforcement on 1–10 scales. Principle: "make invalid states unrepresentable". Anti-patterns (anemic domain models, exposed mutable internals) are enumerated explicitly.
-- **code-simplifier** (Opus): operates only on recently modified code. Balances brevity against readability. Bans nested ternaries in favor of `switch`/`if-else`.
+- **silent-failure-hunter** (`pr-review-toolkit`): ペルソナは「サイレント失敗ゼロトレランス」。空の catch ブロック、ログ・アンド・コンティニューパターン、暗黙のフォールバックを検出する。各検出には CRITICAL/HIGH/MEDIUM の重大度と、隠れている可能性のあるエラー型のリストが付く。
+- **type-design-analyzer** (`pr-review-toolkit`): 型のカプセル化、不変条件の表現力、有用性、強制力を 1〜10 のスケールでスコア付けする。原則は「不正な状態を表現不可能にする」。アンチパターン (貧血ドメインモデル、可変な内部状態の露出) を明示的に列挙する。
+- **code-simplifier** (Opus): 最近変更されたコードのみを対象とする。簡潔さと可読性のバランスを取る。ネストされた三項演算子を禁じ、`switch`/`if-else` を推奨する。
 
-## Skills
+## スキル
 
-A skill lives under `skills/<skill-name>/` with a `SKILL.md` and optional `references/`, `examples/`, and `scripts/` subdirectories.
+スキルは `skills/<skill-name>/` 配下に存在し、`SKILL.md` と任意の `references/`、`examples/`、`scripts/` サブディレクトリを持つ。
 
-### Front matter
+### フロントマター
 
 ```yaml
 ---
@@ -201,16 +206,16 @@ version: 0.1.0
 ---
 ```
 
-- **Third person**: "This skill should be used when...". The description is injected into the system prompt, so first/second person does not make sense.
-- **Concrete trigger phrases**: quote the exact words users will say.
-- **Lean forward**: Claude tends to *under*-trigger skills. Write the description aggressively so that tangential but related requests still activate it.
+- **三人称**: 「This skill should be used when...」。description はシステムプロンプトに注入されるため、一人称・二人称は意味をなさない。
+- **具体的なトリガーフレーズ**: ユーザーが実際に発する言葉をそのまま引用する。
+- **前のめりに書く**: Claude はスキルを*過小*にトリガーする傾向がある。description は積極的に書き、関連が薄いリクエストでも発火するようにする。
 
-### Body style
+### 本文のスタイル
 
-- **Imperative / infinitive**: "To create a hook, define...". The body is an execution-layer prompt.
-- **Avoid second person**: do not write "You should...".
-- **1,500–2,000 words**: beyond that, split into `references/`.
-- **Explicitly mention `references/`** so Claude knows additional material exists:
+- **命令形/不定詞**: 「To create a hook, define...」。本文は実行層のプロンプトである。
+- **二人称を避ける**: 「You should...」と書かない。
+- **1,500〜2,000 語**: それを超えるなら `references/` に分割する。
+- **`references/` を明示的に言及**して、Claude が追加資料の存在を知るようにする。
 
 ```markdown
 ## Additional Resources
@@ -223,52 +228,52 @@ version: 0.1.0
 - **`scripts/validate-hook-schema.sh`** — Validate hooks.json structure
 ```
 
-### Description optimization (skill-creator methodology)
+### description の最適化 (skill-creator の方法論)
 
-1. Create 20 test queries: 10 should-trigger and 10 should-not-trigger.
-2. Make the should-not-trigger queries "close but wrong" — obviously unrelated queries are useless as tests.
-3. Split 60% train / 40% test.
-4. Run each query three times to get a reliable trigger rate.
-5. Use extended thinking to generate description-improvement candidates.
-6. Evaluate on both train and test, but select by test score (avoid overfitting).
-7. Iterate up to five rounds.
+1. テストクエリを 20 件作成する: トリガーすべきものを 10 件、トリガーすべきでないものを 10 件。
+2. トリガーすべきでないクエリは「惜しいが違う」ものにする — 明らかに無関係なクエリはテストとして役に立たない。
+3. 60% を train、40% を test に分割する。
+4. 各クエリを 3 回実行し、信頼できるトリガー率を得る。
+5. 拡張思考を用いて description 改善候補を生成する。
+6. train と test の両方で評価するが、選択は test スコアで行う (過学習を避ける)。
+7. 最大 5 ラウンドまでイテレーションする。
 
-Quality criteria for test queries:
+テストクエリの品質基準:
 
-- Concrete and detailed (include file paths, personal context, company names, URLs).
-- Varied length (short to long).
-- Casual phrasing, abbreviations, typos.
-- No obviously unrelated queries — they do not test selection.
+- 具体的で詳細であること (ファイルパス、個人的な文脈、会社名、URL を含める)。
+- 長さに変化を持たせる (短いものから長いものまで)。
+- カジュアルな言い回し、略語、タイポを含める。
+- 明らかに無関係なクエリは含めない — それは選択をテストしない。
 
-### Three roles a SKILL.md can play
+### SKILL.md が果たし得る 3 つの役割
 
-| Role | When | Example |
+| 役割 | 場面 | 例 |
 |---|---|---|
-| Auto-triggered knowledge injection | The skill's description matches Claude's intent resolution | frontend-design, playground |
-| On-demand reference | A command or agent loads it explicitly via the Skill tool | plugin-dev's 7 skills |
-| Long-form workflow | The SKILL.md body *is* the entire procedure | skill-creator (exceptional) |
+| 自動トリガー型の知識注入 | スキルの description が Claude の意図解決にマッチする | frontend-design, playground |
+| オンデマンド参照 | コマンドやエージェントが Skill ツール経由で明示的に読み込む | plugin-dev の 7 つのスキル |
+| 長尺ワークフロー | SKILL.md の本文*そのもの*が手順全体である | skill-creator (例外的) |
 
-## Hooks
+## フック
 
-Hooks execute at specific lifecycle events. They are defined in `hooks/hooks.json`.
+フックは特定のライフサイクルイベントで実行される。`hooks/hooks.json` で定義する。
 
-### Events
+### イベント
 
-| Event | Timing | Use |
+| イベント | タイミング | 用途 |
 |---|---|---|
-| PreToolUse | Before a tool runs | Validate, rewrite, block. |
-| PostToolUse | After a tool runs | Feed back, log. |
-| Stop | When an agent wants to stop | Completeness check. |
-| SubagentStop | When a subagent wants to stop | Task verification. |
-| SessionStart | Session start | Context loading. |
-| SessionEnd | Session end | Cleanup. |
-| UserPromptSubmit | User input received | Context injection, validation. |
-| PreCompact | Before context compaction | Save critical information. |
-| Notification | On a notification | React. |
+| PreToolUse | ツール実行前 | 検証、書き換え、ブロック。 |
+| PostToolUse | ツール実行後 | フィードバック、ログ。 |
+| Stop | エージェントが停止しようとするとき | 完了性のチェック。 |
+| SubagentStop | サブエージェントが停止しようとするとき | タスクの検証。 |
+| SessionStart | セッション開始 | コンテキストの読み込み。 |
+| SessionEnd | セッション終了 | クリーンアップ。 |
+| UserPromptSubmit | ユーザー入力受信時 | コンテキスト注入、検証。 |
+| PreCompact | コンテキスト圧縮前 | 重要情報の保存。 |
+| Notification | 通知時 | 反応する。 |
 
-### Two hook types
+### 2 種類のフック
 
-**`prompt` type (preferred)**:
+**`prompt` 型 (推奨)**:
 
 ```json
 {
@@ -278,11 +283,11 @@ Hooks execute at specific lifecycle events. They are defined in `hooks/hooks.jso
 }
 ```
 
-- LLM-based, context-aware judgment.
-- Flexible.
-- Handles edge cases.
+- LLM ベースで、コンテキストを踏まえた判断が可能。
+- 柔軟。
+- エッジケースを扱える。
 
-**`command` type**:
+**`command` 型**:
 
 ```json
 {
@@ -292,11 +297,11 @@ Hooks execute at specific lifecycle events. They are defined in `hooks/hooks.jso
 }
 ```
 
-- Deterministic.
-- Fast.
-- Integrates with external tools.
+- 決定論的。
+- 高速。
+- 外部ツールと統合できる。
 
-### `hooks.json` format
+### `hooks.json` のフォーマット
 
 ```json
 {
@@ -317,29 +322,23 @@ Hooks execute at specific lifecycle events. They are defined in `hooks/hooks.jso
 }
 ```
 
-- `description` is optional.
-- The `hooks` wrapper is required (this differs from `settings.json`).
-- `matcher` is a tool-name pattern: `*` for all tools, `|` for OR, regex supported.
-- Multiple hooks run in parallel with no ordering guarantee.
+- `description` は任意。
+- `hooks` ラッパーは必須 (`settings.json` とはここが異なる)。
+- `matcher` はツール名のパターン: 全ツール対象は `*`、OR は `|`、正規表現対応。
+- 複数のフックは並列に実行され、順序保証はない。
 
-### Use `${CLAUDE_PLUGIN_ROOT}` for portability
+### 移植性のために `${CLAUDE_PLUGIN_ROOT}` を使う
 
-Every plugin-internal path must use this variable:
+プラグイン内部のパスはすべてこの変数を使うこと。
 
 ```json
 "command": "bash ${CLAUDE_PLUGIN_ROOT}/scripts/validate.sh"
 ```
 
-Hard-coded absolute paths are forbidden. The variable is also available inside hook scripts as an environment variable.
+ハードコードされた絶対パスは禁止。この変数はフックスクリプト内でも環境変数として利用できる。
 
-### Representative hook patterns
+### 代表的なフックパターン
 
-- **SessionStart context injection** (`explanatory-output-style`): a Bash script emits JSON that adds text to the system prompt on session start. Changes the output style without touching any plugin code.
-- **Stop-based loop control** (`ralph-loop`): a Stop hook reads `.claude/ralph-loop.local.md`, increments an iteration counter, and re-injects the prompt unless the completion promise is detected. Claude "sees" prior iterations via files and git history.
-- **PreToolUse two-layer design**: `security-guidance` hardcodes nine patterns in Python (static, deterministic); `hookify` reads `.local.md` rules dynamically (extensible). Both are PreToolUse, but the first is a fixed policy and the second is a user-authored rule set.
-
-## TODO
-
-- Document `.mcp.json` design patterns (not yet extracted from the sources).
-- Add explicit guidance for when to choose a command vs. an agent vs. a skill for a given responsibility.
-- Collect bad examples, not just good ones, so `plugin-smith improve` has concrete anti-patterns to match against.
+- **SessionStart コンテキスト注入** (`explanatory-output-style`): Bash スクリプトが JSON を出力し、セッション開始時にシステムプロンプトへテキストを追加する。プラグインのコードに触れずに出力スタイルを変える。
+- **Stop ベースのループ制御** (`ralph-loop`): Stop フックが `.claude/ralph-loop.local.md` を読み、イテレーションカウンタをインクリメントし、完了の宣言が検出されない限りプロンプトを再注入する。Claude はファイルと git 履歴を通じて過去のイテレーションを「見る」。
+- **PreToolUse の二層設計**: `security-guidance` は 9 つのパターンを Python にハードコードする (静的、決定論的)。`hookify` は `.local.md` のルールを動的に読み込む (拡張可能)。どちらも PreToolUse だが、前者は固定ポリシー、後者はユーザー記述のルールセットである。

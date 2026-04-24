@@ -1,24 +1,28 @@
-# Workflow
+# ワークフロー
 
-## Proposal-based progression
+## 提案ベースで進める
 
-- The user wants to work **through hearing and proposals**. Do not jump straight to execution.
-- Present options as **A / B / C**, with the **recommendation and the reasoning** stated explicitly.
-- Limit questions per turn to **three to five**. Do not demand immediate answers to everything.
-- When the user replies with "k", treat it as approval and proceed.
-- When the user says "進めて" (go ahead), execute several steps autonomously.
+- ユーザーは**ヒアリングと提案を経て**進めたい。いきなり実行に移らない。
+- 選択肢は **A / B / C** の形で提示し、**推奨案と根拠**を明示する。
+- 1 ターンの質問数は **3〜5 個まで**。すべてに即答を強要しない。
+- ユーザーが "k" と返した場合は承認とみなし、進める。
+- ユーザーが「進めて」と言った場合は、複数ステップを自律的に実行する。
 
-## Multi-session progress tracking
+## 複数セッションの進捗管理
 
-- When work spans multiple sessions, place a **`progress.md`** directly under the working directory.
-- Contents: **original intent (verbatim quote from the user's first message)** / current phase / completed items / next tasks (in priority order) / session context / document layout.
-- Preserve the original intent verbatim — in the user's language, even when the rest of the file is English — so the goal cannot drift while the surrounding work refactors itself.
-- When completing work, cross-check against the original intent before claiming "done". Groundwork is not the goal.
-- Do not duplicate detailed tasks in the PR body; point the PR at `progress.md` instead (DRY).
-- Start the next session by reading `progress.md` first to resume.
+- 作業が複数セッションにまたがる場合は、作業ディレクトリ直下に **`tasks.md`** を置く。
+- `tasks.md` は最小限に保つ — 成果物ではなくセッション継続のためのログ：
+  - **Original intent**（ユーザーの最初のメッセージの verbatim 引用）。
+  - **Active tasks** — 単一成果物の inline TODO に収まらない横断的作業項目。
+  - **Pivots** — 方向転換とその理由。
+- 成果物ごとのステータスは、その成果物内の inline TODO マーカーとして持つ（[`artifact.md`](./artifact.md) 参照）。`tasks.md` で再掲しない。
+- Original intent は verbatim で保持する — ユーザーの言語（周囲の本文が他言語であっても変えない）。周辺がリファクタされてもゴールがドリフトしないようにするため。
+- 作業を完了と称する前に、Original intent との突合を行う。下準備は目的そのものではない。
+- PR 本文に詳細タスクを重複させない。PR は `tasks.md` と変更ファイルの inline TODO を指せばよい。
+- 次のセッションは `tasks.md` を最初に読んで再開する。
 
-## Git operations
+## Git 操作
 
-- When the stop hook warns about uncommitted changes, **commit immediately at that point**. Do not accumulate.
-- Commit at logical boundaries in small increments.
-- The working branch is specified at the start of the session. Do not change it on your own judgment.
+- stop hook が未コミット変更を警告したら、**その時点で即コミット**する。溜めない。
+- コミットは論理的な区切りで小刻みに行う。
+- 作業ブランチはセッション開始時に指定される。自己判断で変更しない。

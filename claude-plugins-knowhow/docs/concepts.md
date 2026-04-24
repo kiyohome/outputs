@@ -1,172 +1,169 @@
-# Concepts
+# コンセプト
 
-> Foundational concepts and design principles for Claude Code plugins, distilled from the official `anthropics/claude-plugins-official` repository.
+> Claude Code プラグインの基礎概念と設計原則。公式リポジトリ `anthropics/claude-plugins-official` から抽出したもの。
 
-## What is a Plugin
+## プラグインとは
 
-A Claude Code plugin is a self-contained bundle that extends Claude Code's behavior. A plugin may contain any combination of slash commands, subagents, skills, hooks, and MCP servers, packaged so that Claude Code can install, load, and invoke them uniformly.
+Claude Code のプラグインとは、Claude Code の振る舞いを拡張する自己完結型のバンドルである。プラグインにはスラッシュコマンド、サブエージェント、スキル、フック、MCP サーバーを任意に組み合わせて含めることができ、Claude Code が統一的にインストール・ロード・呼び出しできるようパッケージ化されている。
 
-### Standard directory layout
+### 標準ディレクトリ構成
 
 ```
 plugin-name/
 ├── .claude-plugin/
-│   └── plugin.json          # Metadata. Only `name` is required.
-├── commands/                 # Slash commands (.md files).
-├── agents/                   # Subagent definitions (.md files).
-├── skills/                   # Skills, one subdirectory per skill.
+│   └── plugin.json          # メタデータ。`name` のみ必須。
+├── commands/                 # スラッシュコマンド (.md ファイル)。
+├── agents/                   # サブエージェント定義 (.md ファイル)。
+├── skills/                   # スキル。スキルごとに 1 サブディレクトリ。
 │   └── skill-name/
 │       ├── SKILL.md
-│       ├── references/       # Detailed reference material.
-│       ├── examples/         # Concrete examples.
-│       └── scripts/          # Utility scripts.
+│       ├── references/       # 詳細なリファレンス資料。
+│       ├── examples/         # 具体例。
+│       └── scripts/          # ユーティリティスクリプト。
 ├── hooks/
-│   └── hooks.json            # Hook definitions.
-├── hooks-handlers/           # Hook handler scripts.
-├── .mcp.json                 # MCP server definitions.
-├── scripts/                  # Shared utilities.
+│   └── hooks.json            # フック定義。
+├── hooks-handlers/           # フックハンドラスクリプト。
+├── .mcp.json                 # MCP サーバー定義。
+├── scripts/                  # 共有ユーティリティ。
 ├── README.md
 └── LICENSE
 ```
 
-Only `plugin.json` with a `name` field is strictly required. Everything else is optional and added as the plugin grows.
+厳密に必須なのは `name` フィールドを持つ `plugin.json` のみ。それ以外はすべてオプションで、プラグインの成長に応じて追加していく。
 
-## Plugin Taxonomy
+## プラグインの分類
 
-The official plugins span three structural archetypes. Understanding which archetype you are building is the first decision when creating a new plugin.
+公式プラグインは 3 つの構造的なアーキタイプにまたがる。新しいプラグインを作るとき、自分がどのアーキタイプを構築しているかを理解することが最初の決定事項となる。
 
-### Archetype A: Command + Agent (workflow-oriented)
+### アーキタイプ A: コマンド + エージェント (ワークフロー指向)
 
-- Representative plugins: `feature-dev`, `code-review`, `pr-review-toolkit`.
-- A slash command drives the procedure; subagents do the work in isolated contexts.
-- Skills are typically absent.
-- The user invokes the plugin explicitly via the slash command.
+- 代表的なプラグイン: `feature-dev`、`code-review`、`pr-review-toolkit`。
+- スラッシュコマンドが手順を駆動し、サブエージェントが分離されたコンテキストで作業を行う。
+- 通常スキルは存在しない。
+- ユーザーはスラッシュコマンドを通じて明示的にプラグインを呼び出す。
 
-### Archetype B: Skill-only (knowledge provider)
+### アーキタイプ B: スキル単独 (知識プロバイダ)
 
-- Representative plugins: `claude-code-setup`, `frontend-design`, `playground`.
-- No commands, no agents.
-- A knowledge base that Claude Code auto-triggers when the user's request matches the skill description.
-- Selection is governed by the skill's description matching the user's phrasing.
+- 代表的なプラグイン: `claude-code-setup`、`frontend-design`、`playground`。
+- コマンドもエージェントもなし。
+- ユーザーのリクエストがスキルの description にマッチしたとき、Claude Code が自動的に起動する知識ベース。
+- スキルの description がユーザーの言い回しとマッチするかどうかで選択が決まる。
 
-### Archetype C: Hybrid (toolkit)
+### アーキタイプ C: ハイブリッド (ツールキット)
 
-- Representative plugins: `plugin-dev`, `hookify`, `claude-md-management`.
-- Combines commands, agents, and skills.
-- Skills act as on-demand references that commands or agents load explicitly during specific phases.
+- 代表的なプラグイン: `plugin-dev`、`hookify`、`claude-md-management`。
+- コマンド、エージェント、スキルを組み合わせる。
+- スキルは特定のフェーズでコマンドやエージェントが明示的にロードするオンデマンドのリファレンスとして機能する。
 
-### Component inventory of official plugins
+### 公式プラグインのコンポーネント一覧
 
-| Plugin | commands | agents | skills | hooks | Role |
+| プラグイン | commands | agents | skills | hooks | 役割 |
 |---|---|---|---|---|---|
-| feature-dev | 1 | 3 | 0 | 0 | 7-phase structured feature development |
-| code-review | 1 | 0 | 0 | 0 | Automated PR code review |
-| pr-review-toolkit | 1 | 6 | 0 | 0 | Six specialized review agents |
-| commit-commands | 3 | 0 | 0 | 0 | Git workflow automation |
-| ralph-loop | 3 | 0 | 0 | 1 | Self-referential iterative development loop |
-| hookify | 4 | 1 | 1 | 1 | Dynamic hook-rule generation |
-| security-guidance | 0 | 0 | 0 | 1 | Security pattern detection |
-| code-simplifier | 0 | 1 | 0 | 0 | Autonomous code improvement |
-| claude-code-setup | 0 | 0 | 1 | 0 | Environment optimization suggestions |
-| claude-md-management | 1 | 0 | 1 | 0 | CLAUDE.md quality management |
-| skill-creator | 0 | 0 | 1 | 0 | Skill creation, evaluation, optimization |
-| plugin-dev | 1 | 3 | 7 | 0 | Plugin development toolkit |
-| explanatory-output-style | 0 | 0 | 0 | 1 | Educational insight output style |
-| learning-output-style | 0 | 0 | 0 | 1 | Interactive learning output style |
-| playground | 0 | 0 | 1 | 0 | HTML playground generator |
-| frontend-design | 0 | 0 | 1 | 0 | Frontend design knowledge |
-| agent-sdk-dev | 1 | 2 | 0 | 0 | Agent SDK development |
+| feature-dev | 1 | 3 | 0 | 0 | 7 フェーズ構造化フィーチャー開発 |
+| code-review | 1 | 0 | 0 | 0 | PR コードレビューの自動化 |
+| pr-review-toolkit | 1 | 6 | 0 | 0 | 6 種類の専門レビューエージェント |
+| commit-commands | 3 | 0 | 0 | 0 | Git ワークフロー自動化 |
+| ralph-loop | 3 | 0 | 0 | 1 | 自己参照型の反復開発ループ |
+| hookify | 4 | 1 | 1 | 1 | フックルールの動的生成 |
+| security-guidance | 0 | 0 | 0 | 1 | セキュリティパターン検出 |
+| code-simplifier | 0 | 1 | 0 | 0 | 自律的なコード改善 |
+| claude-code-setup | 0 | 0 | 1 | 0 | 環境最適化の提案 |
+| claude-md-management | 1 | 0 | 1 | 0 | CLAUDE.md の品質管理 |
+| skill-creator | 0 | 0 | 1 | 0 | スキルの作成・評価・最適化 |
+| plugin-dev | 1 | 3 | 7 | 0 | プラグイン開発ツールキット |
+| explanatory-output-style | 0 | 0 | 0 | 1 | 教育的洞察の出力スタイル |
+| learning-output-style | 0 | 0 | 0 | 1 | インタラクティブ学習の出力スタイル |
+| playground | 0 | 0 | 1 | 0 | HTML プレイグラウンド生成 |
+| frontend-design | 0 | 0 | 1 | 0 | フロントエンド設計知識 |
+| agent-sdk-dev | 1 | 2 | 0 | 0 | Agent SDK 開発 |
 
-## Core Design Patterns
+**TODO**: ユーザーの意図をアーキタイプ A/B/C にマッピングする判断ヒューリスティックを文書化する。
 
-### Three-layer separation
+## コア設計パターン
 
-Plugin responsibilities decompose into three layers: procedure, knowledge, and execution.
+### 3 層分離
 
-| Layer | Owner | Location | Role |
+プラグインの責務は手順、知識、実行の 3 層に分解される。
+
+| 層 | 担い手 | 配置場所 | 役割 |
 |---|---|---|---|
-| Procedure | Command | `commands/*.md` | What to do, in what order. Phase definitions, branching, user confirmation. |
-| Knowledge | Skill | `skills/*/SKILL.md` | How to do it. Domain knowledge loaded on demand. |
-| Execution | Agent | `agents/*.md` | Hands on the keyboard. Runs in an isolated context and returns a result. |
+| 手順 | コマンド | `commands/*.md` | 何を、どの順序で行うか。フェーズ定義、分岐、ユーザー確認。 |
+| 知識 | スキル | `skills/*/SKILL.md` | どうやるか。オンデマンドでロードされるドメイン知識。 |
+| 実行 | エージェント | `agents/*.md` | 実際の作業者。分離されたコンテキストで動き、結果を返す。 |
 
-`plugin-dev` embodies this separation most cleanly:
+`plugin-dev` がこの分離を最もきれいに体現している。
 
 ```
-create-plugin command (procedure: 8-phase workflow)
-  Phase 2 → Skill tool loads plugin-structure skill (knowledge)
-  Phase 5 → Skill tool loads hook-development skill (knowledge)
-           → agent-creator agent runs (execution)
-  Phase 6 → plugin-validator agent runs (execution)
+create-plugin command (手順: 8 フェーズワークフロー)
+  Phase 2 → Skill ツールが plugin-structure スキルをロード (知識)
+  Phase 5 → Skill ツールが hook-development スキルをロード (知識)
+           → agent-creator エージェントが実行 (実行)
+  Phase 6 → plugin-validator エージェントが実行 (実行)
 ```
 
-### Three roles of SKILL.md
+### SKILL.md の 3 つの役割
 
-| Role | Mechanism | Example |
+| 役割 | メカニズム | 例 |
 |---|---|---|
-| Auto-triggered knowledge injection | Loaded when the description matches the user request | frontend-design, playground |
-| On-demand reference | Explicitly loaded by a command or agent via the Skill tool | plugin-dev's 7 skills |
-| Long-form procedure | SKILL.md itself is the entire workflow | skill-creator (exceptional) |
+| 自動トリガーされる知識注入 | description がユーザーリクエストにマッチするとロードされる | frontend-design、playground |
+| オンデマンドリファレンス | コマンドやエージェントが Skill ツールで明示的にロード | plugin-dev の 7 つのスキル |
+| 長文の手順 | SKILL.md 自体がワークフロー全体 | skill-creator (例外的) |
 
-### Progressive disclosure
+### プログレッシブディスクロージャー
 
-Skills implement a three-tier loading system that keeps the context window lean.
+スキルはコンテキストウィンドウを軽く保つための 3 段階ロードシステムを実装する。
 
-| Tier | Loaded when | Size guideline |
+| 段階 | ロードされるタイミング | サイズ目安 |
 |---|---|---|
-| Metadata (name + description) | Always present in the system prompt | ~100 words |
-| SKILL.md body | When the skill is triggered | 1,500–2,000 words (hard cap 5,000) |
-| `references/`, `examples/`, `scripts/` | Only when Claude decides it needs them | Unlimited |
+| メタデータ (name + description) | 常にシステムプロンプトに存在 | 約 100 ワード |
+| SKILL.md 本体 | スキルがトリガーされたとき | 1,500〜2,000 ワード (上限 5,000) |
+| `references/`、`examples/`、`scripts/` | Claude が必要と判断したときのみ | 無制限 |
 
-This is the structural answer to context-window bloat. A monolithic command that inlines every procedural detail inflates the context for every invocation; a plugin that splits knowledge into skills loads only what the current phase needs.
+これがコンテキストウィンドウの肥大化に対する構造的な回答である。すべての手順詳細をインライン化したモノリシックなコマンドは呼び出しごとにコンテキストを膨張させるが、知識をスキルに分割したプラグインは現在のフェーズが必要とするものだけをロードする。
 
-## Design Principles
+## 設計原則
 
-### Prompts are instructions to Claude, not explanations for humans
+### プロンプトは Claude への指示であり、人間向けの説明ではない
 
-Every `.md` file inside a plugin (commands, agents, skills) is a prompt. Write it in the imperative, give Claude concrete steps, and avoid framing it as documentation for a reader.
+プラグイン内のすべての `.md` ファイル (コマンド、エージェント、スキル) はプロンプトである。命令形で書き、Claude に具体的なステップを与え、読み手向けのドキュメントとして書かないこと。
 
-### Emphasize critical phases
+### 重要なフェーズを強調する
 
-Claude tends to skip phases. Counter this with hard markers: `**CRITICAL**: This is one of the most important phases. DO NOT SKIP.` or `**DO NOT START WITHOUT USER APPROVAL**`. The stronger the phrasing, the more reliably Claude respects the phase boundary.
+Claude はフェーズをスキップしがちである。これに対抗するには強い目印を使う。`**CRITICAL**: This is one of the most important phases. DO NOT SKIP.` や `**DO NOT START WITHOUT USER APPROVAL**` のように。表現が強いほど、Claude はフェーズ境界を確実に守る。
 
-### Convert "whatever you think is best" into explicit approval
+### 「お任せします」を明示的な承認に変換する
 
-When the user delegates a decision, the plugin should still surface a concrete recommendation and obtain explicit confirmation before proceeding. Silent decisions accumulate into unreviewed divergence.
+ユーザーが判断を委ねた場合でも、プラグインは具体的な推奨を提示し、進める前に明示的な確認を得るべきである。サイレントな決定は積み重なってレビューされない乖離になる。
 
-### Ban false promises for loop escape
+### ループ脱出のための偽の宣言を禁止する
 
-Plugins that rely on a completion predicate (e.g., `ralph-loop`) must explicitly forbid Claude from emitting the completion token until the condition is actually true. Without this rule, Claude will synthesize a premature "done" to escape.
+完了述語に依存するプラグイン (例: `ralph-loop`) は、条件が実際に真になるまで Claude が完了トークンを発行することを明示的に禁じなければならない。このルールがないと、Claude は脱出のために早すぎる「done」を捏造する。
 
-### Control output shape
+### 出力の形を制御する
 
-Useful output directives:
+有用な出力指示の例。
 
-- `Do not send any other text or messages besides these tool calls.` — used by `commit-commands` to force single-turn completion.
-- `Keep your output brief. Avoid emojis. Link and cite relevant code.` — used by `code-review` for structured findings.
+- `Do not send any other text or messages besides these tool calls.` — `commit-commands` がシングルターン完了を強制するために使用。
+- `Keep your output brief. Avoid emojis. Link and cite relevant code.` — `code-review` が構造化された検出のために使用。
 
-### Constrain scope
+### スコープを制約する
 
-When a plugin is prone to over-reaching, restate the scope:
+プラグインがやりすぎる傾向にあるときは、スコープを再確認する。
 
 - `Only refine code that has been recently modified or touched in the current session, unless explicitly instructed otherwise.` (code-simplifier)
 - `Do not check build signal or attempt to build or typecheck the app. These will run separately.` (code-review)
 
-### Cost optimization: pick the right model tier
+### コスト最適化: 適切なモデル階層を選ぶ
 
-| Use case | Model | Rationale |
+| ユースケース | モデル | 根拠 |
 |---|---|---|
-| Pre/post-processing | Haiku | Routine checks, filtering. |
-| Analysis and review | Sonnet | Balance of judgment and speed. |
-| Deep reasoning | Opus | Complex quality judgments. |
-| Same as caller | `inherit` | Default unless there is a specific reason. |
+| 前処理・後処理 | Haiku | 定型的なチェック、フィルタリング。 |
+| 分析とレビュー | Sonnet | 判断と速度のバランス。 |
+| 深い推論 | Opus | 複雑な品質判断。 |
+| 呼び出し元と同じ | `inherit` | 特別な理由がない限りデフォルト。 |
 
-### Parallel vs sequential
+### 並列 vs 逐次
 
-- Parallel: independent analysis tasks where separation of perspectives matters (e.g., reviewers with distinct lenses).
-- Sequential: pipelines where the next step consumes the previous one's output (e.g., eligibility → review → scoring in `code-review`).
-- User-selectable: some plugins (`pr-review-toolkit`) expose the choice.
-
-## TODO
-
-- Add an architecture diagram showing how plugin-smith's modes route through `concepts.md`, `components.md`, `patterns.md`, and `checklists.md`.
-- Document the decision heuristic that maps user intent to archetype A/B/C.
+- 並列: 視点の分離が重要な独立した分析タスク (例: 異なるレンズを持つレビュー担当)。
+- 逐次: 次のステップが前のステップの出力を消費するパイプライン (例: `code-review` における適格性 → レビュー → スコアリング)。
+- ユーザー選択可能: 一部のプラグイン (`pr-review-toolkit`) は選択肢を公開する。

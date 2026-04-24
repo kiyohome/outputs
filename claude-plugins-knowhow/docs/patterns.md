@@ -1,40 +1,43 @@
-# Patterns
+# パターン
 
-> Cross-cutting patterns that are not tied to a single component type: quality control, state management, security, and advanced techniques. These are the building blocks that `plugin-smith improve` matches against, and that `plugin-smith create` composes into new plugins.
+> 単一のコンポーネント種別に紐づかない横断的なパターン。品質管理、状態管理、セキュリティ、上級テクニックを扱う。smith のパターンインスペクターはこれらと照合し、プラグイン作者はこれらを組み合わせて新しいプラグインを構成する。
 
-## Quality Control
+**TODO**: 各パターンが公式プラグイン全体でどの程度の頻度で出現するかを定量化し、smith が検出をランキングする際の重み付けに使えるようにする。
+**TODO**: 各パターンと対になるアンチパターンを収集する。smith のパターンインスペクターはそれらを照合対象として必要とする。
 
-### Confidence scoring and threshold filtering
+## 品質管理
 
-Findings are scored on a 0–100 scale and only those at or above a threshold are reported.
+### 自己信頼度のスコアリングと閾値フィルタリング
 
-| Score | Meaning |
+検出は 0〜100 のスケールでスコアリングされ、閾値以上のものだけが報告される。
+
+| Score | 意味 |
 |---|---|
-| 0 | False positive. Would be caught by a cursory review. Pre-existing issue. |
-| 25 | Somewhat confident. Might be real but not verified. Stylistic; not in CLAUDE.md. |
-| 50 | Medium confidence. Real but minor. Not important relative to the PR. |
-| 75 | High confidence. Double-checked. Actually impacts correctness. Existing approach is insufficient. |
-| 100 | Absolutely certain. Happens frequently. Evidence directly supports it. |
+| 0 | 誤検出。表面的なレビューでも捕捉される。既存の問題。 |
+| 25 | やや自信あり。実在するかもしれないが未検証。スタイル上のもので、CLAUDE.md にも記載なし。 |
+| 50 | 中程度の自信。実在するが軽微。PR との関係で重要ではない。 |
+| 75 | 高い自信。再確認済み。実際に正しさに影響する。既存のアプローチでは不十分。 |
+| 100 | 絶対的に確実。頻繁に起きる。証拠が直接これを支持する。 |
 
-**The shared threshold is 80.** Both `feature-dev`'s `code-reviewer` and the `code-review` plugin use it. Anything below 80 is dropped.
+**共通の閾値は 80。** `feature-dev` の `code-reviewer` と `code-review` プラグインの双方がこれを使う。80 未満のものはすべて捨てられる。
 
-### Explicit enumeration of false positives
+### 誤検出を明示的に列挙する
 
-`code-review` includes an explicit "these are false positives" list in its command:
+`code-review` はそのコマンド内で「これらは誤検出である」というリストを明示的に含めている:
 
-- Pre-existing issues (present before the change).
-- Issues that lint / typecheck / CI will catch.
-- Strict stylistic nitpicks.
-- Issues mentioned in CLAUDE.md but already lint-ignored in code.
-- Intentional feature changes.
-- Problems on lines that were not changed.
-- Generic code quality issues (unless explicitly specified in CLAUDE.md).
+- 既存の問題（変更前から存在するもの）。
+- lint / typecheck / CI が捕捉する問題。
+- 厳密なスタイル上の細かい指摘。
+- CLAUDE.md に記載があるが、コード上ですでに lint-ignore されている問題。
+- 意図的なフィーチャー変更。
+- 変更されていない行に関する問題。
+- 一般的なコード品質の問題（CLAUDE.md で明示的に指定されていない限り）。
 
-Stating what *not* to report raises precision more reliably than tuning the threshold.
+何を報告**しない**かを明言する方が、閾値を調整するよりも確実に精度を上げる。
 
-### Double eligibility check
+### 二重の適格性チェック
 
-`code-review` runs the same eligibility check both before starting the review and immediately before posting the comment:
+`code-review` はレビュー開始前と、コメント投稿の直前に同じ適格性チェックを実行する:
 
 ```
 Phase 1: Haiku eligibility check (closed? draft? automated PR? already reviewed?)
@@ -43,11 +46,11 @@ Phase 6: Haiku re-eligibility check (PR state may have changed during review)
 Phase 7: gh pr comment posts the result
 ```
 
-This is defensive design against state drift during long-running reviews.
+これは長時間実行されるレビュー中の状態ドリフトに対する防御的設計である。
 
-### Output format discipline
+### 出力形式の規律
 
-`code-review` mandates a rigid output format:
+`code-review` は厳格な出力形式を強制する:
 
 ```markdown
 ### Code review
@@ -61,19 +64,19 @@ Found 3 issues:
 <link to file with full sha1 + line range>
 ```
 
-- Brevity.
-- No emojis.
-- Every finding must link and cite the code.
-- Full git SHA is required (no short SHAs, no shell expansion).
-- Line ranges include one line of context on each side (e.g., `L4-L7`).
+- 簡潔さ。
+- 絵文字なし。
+- すべての検出はコードへリンクし、引用すること。
+- 完全な git SHA が必須（短縮 SHA やシェル展開は不可）。
+- 行範囲は前後 1 行のコンテキストを含む（例: `L4-L7`）。
 
-### Separation of reporter and evaluator
+### レポーターと評価器の分離
 
-Covered in detail under Components > Agents. Restated here because it belongs to the quality-control pattern family: a reviewer that also scores its own findings has a pro-finding bias. Splitting the roles (Sonnet reports, Haiku scores) removes it structurally.
+詳細は Components > Agents で扱う。品質管理パターン群に属するためここでも再掲する: 自分の検出を自分でスコアリングするレビュアーには検出寄りのバイアスが生じる。役割を分割する（Sonnet が報告し、Haiku がスコアリングする）ことで、構造的にバイアスを取り除ける。
 
-## State Management
+## 状態管理
 
-### `.local.md` pattern: YAML front matter + Markdown body
+### `.local.md` パターン: YAML フロントマター + Markdown 本文
 
 ```markdown
 ---
@@ -88,71 +91,71 @@ completion_promise: "All tests passing"
 Fix all the linting errors in the project.
 ```
 
-- Lives in `.claude/`.
-- `.local.md` extension is gitignored by convention.
-- Front matter = structured data (settings, state).
-- Body = free text (prompt, description).
-- Hook scripts read and write it with `sed` / `awk`.
+- `.claude/` 配下に置かれる。
+- `.local.md` 拡張子は慣例として gitignore される。
+- フロントマター = 構造化データ（設定、状態）。
+- 本文 = 自由テキスト（プロンプト、説明）。
+- フックスクリプトは `sed` / `awk` でこれを読み書きする。
 
-Examples in the wild:
+実際の例:
 
-- `ralph-loop`: loop state (iteration count, completion condition).
-- `hookify`: rule definitions (pattern, action).
-- `plugin-settings`: plugin settings (enabled/disabled, mode).
+- `ralph-loop`: ループ状態（イテレーション数、完了条件）。
+- `hookify`: ルール定義（パターン、アクション）。
+- `plugin-settings`: プラグイン設定（有効/無効、モード）。
 
-### Reading and writing front matter from shell
+### シェルからフロントマターを読み書きする
 
 ```bash
-# Extract front matter.
+# フロントマターを抽出する。
 FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE")
 
-# Read a field.
+# フィールドを読み取る。
 ENABLED=$(echo "$FRONTMATTER" | grep '^enabled:' | sed 's/enabled: *//' | sed 's/^"\(.*\)"$/\1/')
 
-# Extract body (everything after the second ---).
+# 本文を抽出する（2 つ目の --- 以降すべて）。
 BODY=$(awk '/^---$/{i++; next} i>=2' "$FILE")
 ```
 
-### `TodoWrite` for progress tracking
+### 進捗追跡のための `TodoWrite`
 
-`feature-dev` uses the built-in `TodoWrite` tool throughout all phases. As the context grows, the todo list remains a stable anchor for "where are we?" — Claude cannot lose its place because the state is externalized.
+`feature-dev` は全フェーズを通じて組み込みの `TodoWrite` ツールを使う。コンテキストが大きくなっても、TODO リストは「今どこにいるのか」を示す安定したアンカーとして残る。状態が外部化されているため、Claude が現在地を見失うことはない。
 
-## Security
+## セキュリティ
 
-Hooks run with user-level privileges and no sandbox. Treat every hook like privileged code.
+フックはユーザー権限で動作し、サンドボックスはない。すべてのフックを特権コードとして扱うこと。
 
-### Fixed patterns vs dynamic rules
+### 固定パターン vs 動的ルール
 
-| Plugin | Style | Character |
+| プラグイン | スタイル | 性格 |
 |---|---|---|
-| security-guidance | Python script with nine hardcoded patterns | Static, deterministic |
-| hookify | Python script reads `.local.md` rules at runtime | Dynamic, extensible |
+| security-guidance | 9 個のハードコードされたパターンを持つ Python スクリプト | 静的、決定論的 |
+| hookify | 実行時に `.local.md` のルールを読み込む Python スクリプト | 動的、拡張可能 |
 
-Both are PreToolUse. The separation of fixed policy (built into the plugin) from dynamic user rules (authored externally) is itself a design choice worth copying.
+両者とも PreToolUse である。固定ポリシー（プラグインに組み込まれる）と動的なユーザールール（外部で記述される）の分離自体が、模倣する価値のある設計上の選択である。
 
-### Representative security patterns
+### 代表的なセキュリティパターン
 
-`security-guidance` detects at minimum:
+`security-guidance` は最低限以下を検出する:
 
-- Command injection.
-- XSS.
-- `eval` usage.
-- Dangerous HTML.
-- Pickle deserialization.
-- `os.system` calls.
-- Plus three more internal patterns.
+- コマンドインジェクション。
+- XSS。
+- `eval` の使用。
+- 危険な HTML。
+- Pickle のデシリアライズ。
+- `os.system` 呼び出し。
+- さらに 3 つの内部パターン。
 
-`hookify` ships rules for:
+`hookify` は以下のルールを同梱する:
 
-- `rm\s+-rf` — dangerous deletion.
-- `chmod\s+777` — overly permissive modes.
-- `sudo\s+` — privilege escalation.
-- `\.env$` — editing environment files.
-- `eval\(` — `eval` usage.
+- `rm\s+-rf` — 危険な削除。
+- `chmod\s+777` — 過度に緩いモード。
+- `sudo\s+` — 権限昇格。
+- `\.env$` — 環境ファイルの編集。
+- `eval\(` — `eval` の使用。
 
-### Hook script input validation
+### フックスクリプトの入力検証
 
-Every hook script must validate the JSON data piped in on stdin. Do not trust the caller, even though the caller is Claude Code.
+すべてのフックスクリプトは stdin にパイプされる JSON データを検証しなければならない。呼び出し元が Claude Code であっても、信用してはならない。
 
 ```bash
 set -euo pipefail
@@ -160,13 +163,13 @@ set -euo pipefail
 input=$(cat)
 tool_name=$(echo "$input" | jq -r '.tool_name')
 
-# Validate tool name format.
+# ツール名の形式を検証する。
 if [[ ! "$tool_name" =~ ^[a-zA-Z0-9_]+$ ]]; then
   echo '{"decision": "deny", "reason": "Invalid tool name"}' >&2
   exit 2
 fi
 
-# Detect path traversal.
+# パストラバーサルを検出する。
 file_path=$(echo "$input" | jq -r '.tool_input.file_path')
 if [[ "$file_path" == *".."* ]]; then
   echo '{"decision": "deny", "reason": "Path traversal detected"}' >&2
@@ -174,74 +177,74 @@ if [[ "$file_path" == *".."* ]]; then
 fi
 ```
 
-Conventions:
+慣例:
 
-- `set -euo pipefail` is mandatory.
-- Quote every variable expansion.
-- `exit 0` means success; `exit 2` means block.
-- Emit structured JSON for decisions.
+- `set -euo pipefail` は必須。
+- すべての変数展開を引用符で囲む。
+- `exit 0` は成功、`exit 2` はブロックを意味する。
+- 判断には構造化された JSON を出力する。
 
-## Advanced Patterns
+## 上級パターン
 
-### Conversation pattern mining (hookify)
+### 会話パターンマイニング (hookify)
 
-`hookify` ships a `conversation-analyzer` agent that walks back through past conversations and extracts:
+`hookify` は `conversation-analyzer` エージェントを同梱する。これは過去の会話を遡り、以下を抽出する:
 
-- Explicit correction requests ("don't do X", "stop doing Y").
-- Expressions of dissatisfaction ("why did you do X?", "I didn't ask for that").
-- User corrections and rollbacks of Claude's work.
-- Recurring problems.
+- 明示的な訂正要求（「X するな」「Y を止めろ」）。
+- 不満の表明（「なぜ X したのか」「それを頼んだ覚えはない」）。
+- ユーザーによる訂正と Claude の作業のロールバック。
+- 繰り返される問題。
 
-The agent then synthesizes hook rules automatically. **Rules grow out of the history of mistakes.** The plugin is not just a rule runner; it learns from the developer's frustration.
+エージェントはその後、フックルールを自動的に合成する。**ルールは過去の失敗の歴史から育つ。** このプラグインは単なるルール実行器ではなく、開発者の苛立ちから学習する。
 
-### Self-referential loop (ralph-loop)
+### 自己参照ループ (ralph-loop)
 
-"Self-referential" here does not mean reflection over output. The mechanism is:
+ここでの「自己参照」とは、出力に対するリフレクションを意味するわけではない。仕組みは以下のとおり:
 
-1. The same prompt is re-injected on each iteration.
-2. Claude's prior work persists as files and git history.
-3. On the next iteration, Claude "sees" what it did last time by reading those files.
-4. The feedback channel is not introspection over output; it is the filesystem.
+1. 各イテレーションで同じプロンプトが再注入される。
+2. Claude の以前の作業はファイルと git 履歴として永続化される。
+3. 次のイテレーションで、Claude はそれらのファイルを読むことで前回何をしたかを「見る」。
+4. フィードバックチャネルは出力に対する内省ではなく、ファイルシステムである。
 
-The underlying philosophy: "deterministically bad in an undeterministic world". Each iteration fails in a predictable way, and because the failures are predictable, prompt tuning can systematically improve them.
+根底にある哲学は「非決定論的な世界における決定論的な悪さ」。各イテレーションは予測可能な形で失敗し、失敗が予測可能であるからこそ、プロンプトのチューニングがそれを体系的に改善できる。
 
-### Blind A/B comparison (skill-creator)
+### ブラインド A/B 比較 (skill-creator)
 
-When `skill-creator` compares two versions of a skill, it hands both to an evaluator agent *without telling it which is which*. The evaluator cannot favor version A over version B based on identity, only on observable quality. This removes both human bias and Claude's own bias toward previously-seen variants.
+`skill-creator` がスキルの 2 つのバージョンを比較するとき、*どちらがどちらかを伝えずに*両方を評価器エージェントに渡す。評価器は識別情報に基づいてバージョン A をバージョン B より優遇することができず、観測可能な品質に基づいてのみ評価できる。これにより、人間のバイアスと、以前見たバリアントへの Claude 自身のバイアスの両方が取り除かれる。
 
-The architecture is two stages: a `comparator` agent that makes the blind verdict, followed by an `analyzer` agent that explains why the winning version won.
+アーキテクチャは 2 段構成: ブラインドな判定を下す `comparator` エージェントと、その後に勝者がなぜ勝ったかを説明する `analyzer` エージェント。
 
-### Double eligibility in long-running reviews
+### 長時間レビューにおける二重の適格性
 
-`code-review` checks eligibility both before starting the review and immediately before posting the result. Over the course of the review, the PR may be closed, merged, or receive new commits. Checking twice prevents posting stale feedback.
+`code-review` はレビュー開始前と結果投稿の直前に適格性をチェックする。レビューの最中に PR がクローズされたり、マージされたり、新しいコミットを受け取ったりする可能性がある。二度チェックすることで、古くなったフィードバックの投稿を防げる。
 
-### Code delegation (learning-output-style)
+### コードの委任 (learning-output-style)
 
-`learning-output-style` decides which pieces of code are worth asking the user to write by hand:
+`learning-output-style` は、ユーザーに手書きで書いてもらう価値があるコードがどれかを判断する:
 
-**Delegate to the user**:
+**ユーザーに委任する**:
 
-- Business logic with multiple reasonable approaches.
-- Error handling strategy.
-- Algorithm choice.
-- Data structure decisions.
+- 妥当なアプローチが複数あるビジネスロジック。
+- エラーハンドリング戦略。
+- アルゴリズムの選択。
+- データ構造の判断。
 
-**Do not delegate**:
+**委任しない**:
 
-- Boilerplate.
-- Obvious implementations.
-- Configuration code.
-- Simple CRUD.
+- ボイラープレート。
+- 自明な実装。
+- 設定コード。
+- 単純な CRUD。
 
-Only 5–10 lines of the genuinely important code are asked of the user per interaction.
+1 回のやり取りで、本当に重要なコードのうち 5〜10 行だけがユーザーに求められる。
 
-### `clean_gone` for git worktrees (commit-commands)
+### git worktree のための `clean_gone` (commit-commands)
 
-Parallel development with git worktrees accumulates "gone" branches. `commit-commands` bulk-cleans them:
+git worktree を使った並列開発では「gone」状態のブランチが蓄積する。`commit-commands` はそれらを一括クリーンアップする:
 
 ```bash
 git branch -v | grep '\[gone\]' | sed 's/^[+* ]//' | awk '{print $1}' | while read branch; do
-  # Remove any worktree attached to this branch first.
+  # まずこのブランチに紐づく worktree を削除する。
   worktree=$(git worktree list | grep "\\[$branch\\]" | awk '{print $1}')
   if [ ! -z "$worktree" ] && [ "$worktree" != "$(git rev-parse --show-toplevel)" ]; then
     git worktree remove --force "$worktree"
@@ -250,10 +253,4 @@ git branch -v | grep '\[gone\]' | sed 's/^[+* ]//' | awk '{print $1}' | while re
 done
 ```
 
-The `+` prefix (worktree-attached branches) is handled; this is the detail that distinguishes a correct implementation.
-
-## TODO
-
-- Quantify how often each pattern appears across the official plugins, so `plugin-smith` can weight them when proposing candidate designs.
-- Collect anti-patterns paired with each pattern, as the Improve mode needs them as matching targets.
-- Document the boundary between "quality control" and "evaluation" — the line blurs when Improve's `--report-only` runs the same checks as a dedicated Evaluate mode would.
+`+` プレフィックス（worktree に紐づくブランチ）が処理されている。これが正しい実装と区別される細部である。

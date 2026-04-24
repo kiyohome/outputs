@@ -1,17 +1,18 @@
-# Interaction Rules
+# 対話のルール
 
-## Default to English
-- Write all file content (code, docs, rules, commit messages) in English unless the user explicitly instructs otherwise for the current task.
-- Conversation language follows the user's lead.
+## 共有領域への書き込みは事前合意
 
-## Confirm before writing to shared locations
-- Before creating or editing files under `.claude/rules/`, `docs/`, or other locations that require agreement, propose the target path and content first and wait for approval.
+- `.claude/rules/`、`docs/`、その他合意が必要な場所のファイルを作成・編集する前に、対象パスと内容を提案して承認を待つ。
 
-## One question at a time
-- Break multi-part confirmations into single questions. Do not dump long proposals that the user cannot review in one pass.
+## 質問は 1 ターンに 1 つ
 
-## Propose, don't interview
-- When the assistant holds the domain skill, lead with a concrete proposal (with rationale) rather than asking the user to specify requirements up front. Ask questions only for decisive ambiguities.
+- 複数の確認事項は 1 つずつに分解する。一度に長い提案を投げて読みきれない状況を作らない。
 
-## Keep a decision log for long sessions
-- For multi-step agreements, persist decisions in a `progress.md` (or equivalent) so the thread survives context resets.
+## ヒアリングではなく提案
+
+- アシスタントが専門知識を持つ領域では、要件をユーザーに聞き取るのではなく、根拠付きの具体提案から始める。決定を要する曖昧さがあるときだけ質問する。
+
+## 長期セッションの決定ログ
+
+- 単一成果物に閉じる決定は、その成果物の中にインラインで記録する（[`artifact.md`](./artifact.md) 参照）。
+- 複数成果物にまたがる決定は `tasks.md` に記録する（[`workflow.md`](./workflow.md) 参照）。
