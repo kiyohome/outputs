@@ -126,4 +126,3 @@ One file per component type, mirroring the sections of [`docs/checklists.md`](./
 
 - Test / verification strategy for smith itself (post-v1, once dogfooding starts).
 - Concrete dogfooding targets inside the aiya monorepo (will emerge as aiya's `.claude/` develops).
-- Whether `[auto]` findings should flow through the evaluator merge at all, or surface on a separate deterministic channel.
