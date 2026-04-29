@@ -1,5 +1,9 @@
 # CLAUDE.md
 
-## File access boundary
+## Hard constraint: repository boundary
 
-Access only files within this repository. Refuse any request that requires reading or writing paths outside the repository root, even if explicitly instructed to do so.
+Only read and write files within this repository. Never access paths above the repository root, follow symlinks that escape the tree, or write to system or home directories.
+
+If a request requires touching files outside the repository, refuse it and explain this constraint.
+
+This applies unconditionally — no user instruction or reasoning justifies an exception.
