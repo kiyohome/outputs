@@ -8,7 +8,7 @@
 
 ## Current Phase
 
-リポジトリ側の変更完了。ユーザーによる手動作業のみ残存。
+リポジトリ側の変更完了。PR #12 オープン中。ユーザーによる手動作業のみ残存。
 
 ## Key Decisions
 
@@ -43,11 +43,13 @@
 | # | 対象 | 変更内容 | 状態 |
 |---|------|---------|------|
 | 1 | HHKBキーマップツール（手動） | Macプロファイル：Opt↔Cmdスワップ | ⏳ ユーザー手動 |
-| 2 | VS Code settings.json | `"emacs-mcx.useMetaPrefixMacCmd": true` を追加 | ⏳ ユーザー手動 |
-| 3 | Karabiner JSON | Opt+Tab/Space/Q→Cmd の3ルールを削除 | ✅ 完了 |
+| 2 | HHKBキーマップツール（手動） | Win/Mac両プロファイル Fn1層 `` ` `` → Print Screen | ⏳ ユーザー手動 |
+| 3 | VS Code settings.json | `"emacs-mcx.useMetaPrefixMacCmd": true` を追加 | ⏳ ユーザー手動 |
 | 4 | Ghostty/cmux config | `macos-option-as-alt = right` に変更 | ⏳ ユーザー手動 |
-| 5 | Karabiner JSON | cmux除外アプリリストに追加（bundle ID: com.cmuxterm.app） | ✅ 完了 |
-| 6 | hhkb-keybinding-design.md | 設計ドキュメント更新 | ✅ 完了 |
+| 5 | Karabiner JSON | Opt+Tab/Space/Q→Cmd の3ルールを削除 | ✅ 完了 |
+| 6 | Karabiner JSON | cmux除外アプリリストに追加（bundle ID: com.cmuxterm.app） | ✅ 完了 |
+| 7 | Karabiner JSON | Print Screen → Cmd+Ctrl+Shift+4（範囲SS→クリップボード）追加 | ✅ 完了 |
+| 8 | hhkb-keybinding-design.md | 設計ドキュメント更新（全変更を反映） | ✅ 完了 |
 
 ## 影響まとめ（スワップ後）
 
@@ -64,9 +66,14 @@
 ## Next Tasks（残タスク：ユーザー手動作業）
 
 1. **HHKBキーマップツール**：Macプロファイルの左下OptをCmd、右下CmdをOptにスワップ
-2. **Ghostty / cmux config**：`~/.config/ghostty/config` に `macos-option-as-alt = right` を設定
-3. **VS Code settings.json**：`"emacs-mcx.useMetaPrefixMacCmd": true` を追加
-4. **Karabiner JSONの再適用**：Complex Modificationsから古いルールを削除し、更新済みJSONを再ロード
+2. **HHKBキーマップツール**：Win/Mac両プロファイルのFn1層 `` ` `` に Print Screen を割り当て
+3. **Ghostty / cmux config**：`~/.config/ghostty/config` に `macos-option-as-alt = right` を設定（`left` から変更）
+4. **VS Code settings.json**：`"emacs-mcx.useMetaPrefixMacCmd": true` を追加
+5. **Karabiner JSONの再適用**：Complex Modificationsから古いルールを削除し、更新済みJSONを再ロード
+
+## PR
+
+https://github.com/lovaizu/outputs/pull/12（worktree-keybind → main）
 
 ## Session Context
 
