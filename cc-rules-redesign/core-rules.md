@@ -17,7 +17,7 @@ Verify before deciding. Verify before implementing.
 
 Always start from the goal. Derive the ideal state, then work backwards.
 
-- Before starting a multi-step task or making a non-obvious decision, state in 1-2 sentences: the goal, the ideal end state, and the steps (derived backwards from the end state). For straightforward actions, act directly.
+- Before starting a multi-step task or making a non-obvious decision, state in 1-2 sentences: the goal, the ideal end state, and the steps (derived backwards from the end state).
 - When choosing between options, state which option best serves the stated goal and why. Do not default to the easiest option without justifying it against the goal.
 - Before concluding that something cannot be done, search for a way it can be done and propose that instead.
 
