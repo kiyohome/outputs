@@ -2,6 +2,39 @@
     "title": "HHKB Studio Emacs Keybindings",
     "rules": [
         {
+            "description": "スクリーンショット: Print Screen → 範囲選択してクリップボードにコピー（HHKB接続時）",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "print_screen"
+                    },
+                    "to": [
+                        {
+                            "key_code": "4",
+                            "modifiers": [
+                                "command",
+                                "control",
+                                "shift"
+                            ]
+                        }
+                    ],
+                    "conditions": [
+                        {
+                            "type": "device_if",
+                            "identifiers": [
+                                {
+                                    "description": "HHKB Studio",
+                                    "vendor_id": 1278,
+                                    "product_id": 22
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "description": "Chrome: Ctrl+T → Cmd+T（HHKB接続時、Chromeのみ）",
             "manipulators": [
                 {
