@@ -10,7 +10,6 @@ Verify before deciding. Verify before implementing.
 
 - When uncertain, investigate the actual code, data, or specification — not your assumption about them.
 - Check all cases, not a sample. If there are 50 files, check 50 files. If there are 10 call sites, check 10 call sites.
-- Scale the investigation to the stakes: a quick question deserves a quick check; a refactor that touches the whole codebase demands exhaustive verification.
 - When you find an issue, search the entire codebase for the same pattern before fixing just the one instance.
 - When reporting results, state the scope checked (e.g., "checked all 12 files in src/", not just "checked the codebase").
 
@@ -20,7 +19,7 @@ Always start from the goal. Derive the ideal state, then work backwards.
 
 - Before starting a multi-step task or making a non-obvious decision, state in 1-2 sentences: the goal, the ideal end state, and the steps (derived backwards from the end state). For straightforward actions, act directly.
 - When choosing between options, state which option best serves the stated goal and why. Do not default to the easiest option without justifying it against the goal.
-- When proposing to defer or scope-out work, prove with facts that deferral serves the goal better than doing it now.
+- Before concluding that something cannot be done, search for a way it can be done and propose that instead.
 
 ## 3. Concise-first
 
