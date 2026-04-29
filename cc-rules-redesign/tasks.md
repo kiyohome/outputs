@@ -36,7 +36,7 @@ Core rules finalized. Next: restructure rules directory, then create slash comma
 
 ## Next tasks (in order)
 
-1. [ ] Archive existing `.claude/rules/` files → `cc-rules-redesign/rules-backup/`; move `core-rules.md` → `.claude/rules/core-rules.md`
+1. [x] Archive existing `.claude/rules/` files → `cc-rules-redesign/rules-backup/`; move `core-rules.md` → `.claude/rules/core-rules.md`
 2. [ ] Create `wf-rev` sub-agent (workflow reviewer — checks each command's workflow against core-rules)
 3. [ ] Create `/hi` workflow (hear and file a new issue)
 4. [ ] Create `/go` workflow (begin or resume work on issue N)
