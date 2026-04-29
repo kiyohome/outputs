@@ -8,7 +8,7 @@
 
 ## Current Phase
 
-設計確定。実装待ち。
+リポジトリ側の変更完了。ユーザーによる手動作業のみ残存。
 
 ## Key Decisions
 
@@ -38,16 +38,16 @@
 - tmuxではないのでtmux copy modeはなし
 - Karabiner除外リストに追加が必要（bundle IDは要確認）
 
-## 変更内容（未実施）
+## 変更内容
 
-| # | 対象 | 変更内容 |
-|---|------|---------|
-| 1 | HHKBキーマップツール（手動） | Macプロファイル：Opt↔Cmdスワップ |
-| 2 | VS Code settings.json | `"emacs-mcx.useMetaPrefixMacCmd": true` を追加 |
-| 3 | Karabiner JSON | Opt+Tab→Cmd+Tab / Opt+Space→Cmd+Space / Opt+Q→Cmd+Q の3ルールを削除 |
-| 4 | Ghostty/cmux config | `macos-option-as-alt = left` → `right` に変更 |
-| 5 | Karabiner JSON | cmuxをEmacs除外アプリリストに追加（bundle ID要調査） |
-| 6 | hhkb-keybinding-design.md | 設計ドキュメント更新 |
+| # | 対象 | 変更内容 | 状態 |
+|---|------|---------|------|
+| 1 | HHKBキーマップツール（手動） | Macプロファイル：Opt↔Cmdスワップ | ⏳ ユーザー手動 |
+| 2 | VS Code settings.json | `"emacs-mcx.useMetaPrefixMacCmd": true` を追加 | ⏳ ユーザー手動 |
+| 3 | Karabiner JSON | Opt+Tab/Space/Q→Cmd の3ルールを削除 | ✅ 完了 |
+| 4 | Ghostty/cmux config | `macos-option-as-alt = right` に変更 | ⏳ ユーザー手動 |
+| 5 | Karabiner JSON | cmux除外アプリリストに追加（bundle ID: com.cmuxterm.app） | ✅ 完了 |
+| 6 | hhkb-keybinding-design.md | 設計ドキュメント更新 | ✅ 完了 |
 
 ## 影響まとめ（スワップ後）
 
@@ -61,14 +61,12 @@
 | VS Code検索 | Ctrl+S (isearch)。Cmd+Fは使えなくなる | Windows同様で問題なし |
 | VS Code保存 | Ctrl+X Ctrl+S。Cmd+Sは使えなくなる | Windows同様 |
 
-## Next Tasks（優先順）
+## Next Tasks（残タスク：ユーザー手動作業）
 
-1. cmuxのbundle IDを調べる
-2. Karabiner JSONを更新（3ルール削除 + cmux除外追加）
-3. Ghostty/cmux config更新（`macos-option-as-alt = right`）
-4. VS Code settings.json更新（useMetaPrefixMacCmd: true）
-5. HHKBキーマップツールでMacプロファイルを手動変更（ユーザーが実施）
-6. hhkb-keybinding-design.md更新
+1. **HHKBキーマップツール**：Macプロファイルの左下OptをCmd、右下CmdをOptにスワップ
+2. **Ghostty / cmux config**：`~/.config/ghostty/config` に `macos-option-as-alt = right` を設定
+3. **VS Code settings.json**：`"emacs-mcx.useMetaPrefixMacCmd": true` を追加
+4. **Karabiner JSONの再適用**：Complex Modificationsから古いルールを削除し、更新済みJSONを再ロード
 
 ## Session Context
 
