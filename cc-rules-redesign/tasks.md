@@ -1,4 +1,4 @@
-# CC Rules Redesign
+# CC Rules Redesign — Task List
 
 ## Original intent
 
@@ -36,13 +36,13 @@ Core rules finalized. Next: restructure rules directory, then create slash comma
 
 ## Next tasks (in order)
 
-1. [ ] Move `cc-rules-redesign/core-rules.md` → `.claude/rules/core-rules.md`; delete existing `.claude/rules/` files
-2. [ ] Create core-rules-check sub-agent (reusable checker for all command design)
-3. [ ] Create `/hi` work procedure (hear and file a new issue)
-4. [ ] Create `/go` work procedure (begin or resume work on issue N)
-5. [ ] Create `/ty` work procedure (approve gate)
-6. [ ] Create `/gm` work procedure (redirect with feedback)
-7. [ ] Create `/bb` work procedure (pause and save state)
+1. [ ] Archive existing `.claude/rules/` files → `cc-rules-redesign/rules-backup/`; move `core-rules.md` → `.claude/rules/core-rules.md`
+2. [ ] Create `wf-rev` sub-agent (workflow reviewer — checks each command's workflow against core-rules)
+3. [ ] Create `/hi` workflow (hear and file a new issue)
+4. [ ] Create `/go` workflow (begin or resume work on issue N)
+5. [ ] Create `/ty` workflow (approve gate)
+6. [ ] Create `/gm` workflow (redirect with feedback)
+7. [ ] Create `/bb` workflow (pause and save state)
 
 ## Session context
 
