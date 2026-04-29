@@ -28,7 +28,7 @@
 
 ## Current phase
 
-`wf-rev` created. Awaiting PR review on #10. Next: `/hi` workflow.
+`wf-rev` created and pushed. PR #10 review requested — awaiting user feedback (step 3 of 3). `/hi` workflow is next after PR is approved.
 
 ## Completed
 
