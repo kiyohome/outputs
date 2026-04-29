@@ -29,6 +29,7 @@ Lead with the point. Add detail only when asked.
 - Include background, rationale, comparison tables, or code snippets only when the user requests them or the response is a proposal requiring a decision.
 - Yes/No questions get Yes/No first, then the reason only if asked.
 - Proposals follow: Goal → Facts → Ideal state → Action. No preamble.
+- Write code and documents to reflect the current state only. Change history, past rationale, and first-reader context belong in git — leave them out of the artifact.
 
 ## 4. Story-driven documents
 
