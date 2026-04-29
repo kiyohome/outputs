@@ -2,114 +2,6 @@
     "title": "HHKB Studio Emacs Keybindings",
     "rules": [
         {
-            "description": "アプリ切り替え: Opt+Tab → Cmd+Tab（HHKB接続時）",
-            "manipulators": [
-                {
-                    "type": "basic",
-                    "from": {
-                        "key_code": "tab",
-                        "modifiers": {
-                            "mandatory": [
-                                "option"
-                            ]
-                        }
-                    },
-                    "to": [
-                        {
-                            "key_code": "tab",
-                            "modifiers": [
-                                "command"
-                            ]
-                        }
-                    ],
-                    "conditions": [
-                        {
-                            "type": "device_if",
-                            "identifiers": [
-                                {
-                                    "description": "HHKB Studio",
-                                    "vendor_id": 1278,
-                                    "product_id": 22
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "description": "アプリ起動: Opt+Space → Cmd+Space（HHKB接続時）",
-            "manipulators": [
-                {
-                    "type": "basic",
-                    "from": {
-                        "key_code": "spacebar",
-                        "modifiers": {
-                            "mandatory": [
-                                "option"
-                            ]
-                        }
-                    },
-                    "to": [
-                        {
-                            "key_code": "spacebar",
-                            "modifiers": [
-                                "command"
-                            ]
-                        }
-                    ],
-                    "conditions": [
-                        {
-                            "type": "device_if",
-                            "identifiers": [
-                                {
-                                    "description": "HHKB Studio",
-                                    "vendor_id": 1278,
-                                    "product_id": 22
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "description": "アプリ終了: Opt+Q → Cmd+Q（HHKB接続時）",
-            "manipulators": [
-                {
-                    "type": "basic",
-                    "from": {
-                        "key_code": "q",
-                        "modifiers": {
-                            "mandatory": [
-                                "option"
-                            ]
-                        }
-                    },
-                    "to": [
-                        {
-                            "key_code": "q",
-                            "modifiers": [
-                                "command"
-                            ]
-                        }
-                    ],
-                    "conditions": [
-                        {
-                            "type": "device_if",
-                            "identifiers": [
-                                {
-                                    "description": "HHKB Studio",
-                                    "vendor_id": 1278,
-                                    "product_id": 22
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
             "description": "Chrome: Ctrl+T → Cmd+T（HHKB接続時、Chromeのみ）",
             "manipulators": [
                 {
@@ -404,6 +296,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
@@ -449,6 +342,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
@@ -500,6 +394,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
@@ -551,6 +446,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
@@ -593,6 +489,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
@@ -638,6 +535,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
@@ -686,6 +584,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
@@ -736,6 +635,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
@@ -781,6 +681,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
@@ -826,6 +727,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
@@ -871,6 +773,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
@@ -916,6 +819,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
@@ -961,6 +865,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
@@ -1017,6 +922,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
@@ -1070,6 +976,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
@@ -1116,6 +1023,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
@@ -1161,6 +1069,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
@@ -1202,6 +1111,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
@@ -1247,6 +1157,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
@@ -1296,6 +1207,7 @@
                             "bundle_identifiers": [
                                 "^com\\.microsoft\\.VSCode$",
                                 "^com\\.mitchellh\\.ghostty$",
+                                "^com\\.cmuxterm\\.app$",
                                 "^com\\.apple\\.Terminal$",
                                 "^com\\.microsoft\\.windows-terminal$"
                             ]
