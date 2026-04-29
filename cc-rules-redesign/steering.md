@@ -28,7 +28,11 @@
 
 ## Current phase
 
-`wf-rev` created and pushed. PR #10 review requested — awaiting user feedback (step 3 of 3). `/hi` workflow is next after PR is approved.
+PR #10 open — awaiting user approval. Two rounds of changes pushed since original PR:
+1. wf-rev prompt engineering fixes (blockquote example, Rule 1 clarity, Rule 4 scope, quote format)
+2. core-rules Rule 3 new bullet (artifact hygiene: write current state only, git carries history)
+
+User has not yet approved PR #10. `/hi` workflow draft exists at `.claude/commands/hi.md` but was created before PR approval — needs wf-rev review and possible revision after PR merges.
 
 ## Completed
 
