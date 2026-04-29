@@ -1,51 +1,53 @@
-# CC Rules Redesign — Task List
+# CC Rules Redesign — Steering
 
 ## Original intent
 
-> CCのルールをゼロベースで考える。既存のルールは参考にするが引きづられない。
+> Rethink CC rules from scratch. Existing rules may be referenced but must not constrain the design.
 
 ## Pain points (raw input from user)
 
 ### Thinking quality
 
-1. 事実でなく推測で判断・実装する
-2. サンプリングで済ませ全量を確認しない
-3. 目的から常にあるべき姿を考えない
-4. 目的から逆算して計画しない
+1. Judges and implements based on assumptions, not facts
+2. Samples rather than checking exhaustively
+3. Does not always derive the ideal state from the goal
+4. Does not plan by working backwards from the goal
 
 ### Communication quality
 
-5. 説明が初めから詳細過ぎて認知負荷が高い、まずは簡潔にポイントを教えて欲しい
-6. ドキュメントも認知負荷が高い割にストーリーになっていない、上から読んでも理解できない
+5. Explanations start too detailed — high cognitive load; lead with the point first
+6. Documents have high cognitive load yet lack narrative flow — unreadable top-to-bottom
 
 ## Design decisions
 
-- Core rules alone won't be followed. Work procedures operationalize the rules.
-- Core rules serve as a checklist when designing work procedures (not converted into procedures themselves).
-- Each work procedure is a custom slash command for aiya.
+- Core rules alone won't be followed. Workflows operationalize the rules.
+- Core rules serve as a checklist when designing workflows (not converted into workflows themselves).
+- Each workflow is a custom slash command for aiya.
+- Sub-agent for workflow review: `wf-rev` (checks each command's workflow against core-rules).
+- File naming: this file is `steering.md`; slash command definitions go under `.claude/agents/`.
 
 ## Current phase
 
-Core rules finalized. Next: restructure rules directory, then create slash commands one by one.
+`wf-rev` created. Awaiting PR review on #10. Next: `/hi` workflow.
 
 ## Completed
 
 - [x] Collect pain points
 - [x] Draft core rules (4 rules: Fact-first, Purpose-driven, Concise-first, Story-driven)
-- [x] Finalize core rules → `cc-rules-redesign/core-rules.md`
+- [x] Finalize core rules → `.claude/rules/core-rules.md`
+- [x] Archive existing `.claude/rules/` files → `cc-rules-redesign/rules-backup/`
+- [x] Create `wf-rev` sub-agent → `.claude/agents/wf-rev.md`
 
 ## Next tasks (in order)
 
-1. [x] Archive existing `.claude/rules/` files → `cc-rules-redesign/rules-backup/`; move `core-rules.md` → `.claude/rules/core-rules.md`
-2. [x] Create `wf-rev` sub-agent (workflow reviewer — checks each command's workflow against core-rules)
-3. [ ] Create `/hi` workflow (hear and file a new issue)
-4. [ ] Create `/go` workflow (begin or resume work on issue N)
-5. [ ] Create `/ty` workflow (approve gate)
-6. [ ] Create `/gm` workflow (redirect with feedback)
-7. [ ] Create `/bb` workflow (pause and save state)
+1. [ ] Create `/hi` workflow (hear and file a new issue)
+2. [ ] Create `/go` workflow (begin or resume work on issue N)
+3. [ ] Create `/ty` workflow (approve gate)
+4. [ ] Create `/gm` workflow (redirect with feedback)
+5. [ ] Create `/bb` workflow (pause and save state)
 
 ## Session context
 
 - Branch: `cc-rules-redesign`
 - Worktree: `/Users/kiyo/work/lovaizu/outputs/.claude/worktrees/rules/`
-- aiya commands: /hi, /go, /ty, /gm, /bb (defined in agents-in-your-area/docs/aiya-jam.md)
+- aiya commands: /hi, /go, /ty, /gm, /bb (defined in `agents-in-your-area/docs/aiya-jam.md`)
