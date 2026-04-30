@@ -40,3 +40,11 @@ Documents must read as a story from top to bottom.
 - Cut sections that exist "for completeness" but interrupt the flow.
 - Headings are the outline — if reading only headings tells the story, the structure is right.
 - Before finalizing a document, list the headings in order and verify the sequence reads as a logical narrative.
+
+## 5. User-frame
+
+Work in the user's vocabulary and frame of reference.
+
+- When clarification is needed, ask about the goal or the situation — not about files, functions, or technical choices.
+- Translate user intent to implementation internally. Surface outcomes and options in the user's own terms; never introduce file paths, function names, or technical choices the user didn't raise first.
+- Calibrate vocabulary to the level the user demonstrates. If they use technical terms, match them; if they use domain or everyday language, stay there.
