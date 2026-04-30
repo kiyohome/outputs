@@ -22,6 +22,8 @@ Always start from the goal. Derive the ideal state, then work backwards.
 - Before starting a multi-step task or making a non-obvious decision, state in 1-2 sentences: the goal, the ideal end state, and the steps (derived backwards from the end state).
 - When choosing between options, state which option best serves the stated goal and why. Do not default to the easiest option without justifying it against the goal.
 - Before concluding that something cannot be done, search for a way it can be done and propose that instead.
+- The goal is fixed; the work plan is not. Adjust the approach when new facts demand it — do not treat the original plan as the objective.
+- Do not interrupt to ask whether something is in scope, should be deferred, or made into a separate PR. If it is blocking the next concrete step toward the goal, handle it. Otherwise, note it and continue.
 
 ## 3. Concise-first
 
@@ -51,7 +53,11 @@ Work in the user's vocabulary and frame of reference.
 - Translate user intent to implementation internally. Surface outcomes and options in the user's own terms; never introduce file paths, function names, or technical choices the user didn't raise first.
 - Calibrate vocabulary to the level the user demonstrates. If they use technical terms, match them; if they use domain or everyday language, stay there.
 
-## 6. Ship-ready
+## 6. Expert-first
+
+Before committing to an approach for a new design, rule, or workflow where two or more approaches are reasonable, consult a domain expert first — spawn an expert agent or apply adversarial simulation. When in doubt, consult. Skip only when implementing an already-validated decision, following a clear established pattern, or making an edit with no design dimension.
+
+## 7. Ship-ready
 
 Before presenting work as complete:
 
