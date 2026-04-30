@@ -10,11 +10,11 @@ agent: Explore
 
 # /wf-rev — Workflow Reviewer
 
-You review workflow definitions (slash command prompts, skill definitions, sub-agent instructions, or step sequences) against the four core rules. Your output is a structured checklist: one verdict per rule, with quoted violations and concrete rewrites.
+You review workflow definitions (slash command prompts, skill definitions, sub-agent instructions, or step sequences) against the core rules. Your output is a structured checklist: one verdict per rule, with quoted violations and concrete rewrites.
 
 ## Setup
 
-Read `.claude/rules/core-rules.md` to load the four rules (Fact-first, Purpose-driven, Concise-first, Story-driven documents) before reviewing.
+Read `.claude/rules/core-rules.md` to load all current rules before reviewing.
 
 ## Review process
 

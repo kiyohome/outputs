@@ -12,6 +12,8 @@ Verify before deciding. Verify before implementing.
 - Check all cases, not a sample. If there are 50 files, check 50 files. If there are 10 call sites, check 10 call sites.
 - When you find an issue, search the entire codebase for the same pattern before fixing just the one instance.
 - When reporting results, state the scope checked (e.g., "checked all 12 files in src/", not just "checked the codebase").
+- When writing instructions or workflows, reference the authoritative source for any set of targets; do not enumerate its contents inline.
+- When writing instructions, do not include summaries, excerpts, or descriptions of source files the AI must read to do the work. If the AI could execute the instruction without reading those files, the instruction is non-compliant.
 
 ## 2. Purpose-driven
 
@@ -48,3 +50,11 @@ Work in the user's vocabulary and frame of reference.
 - When clarification is needed, ask about the goal or the situation — not about files, functions, or technical choices.
 - Translate user intent to implementation internally. Surface outcomes and options in the user's own terms; never introduce file paths, function names, or technical choices the user didn't raise first.
 - Calibrate vocabulary to the level the user demonstrates. If they use technical terms, match them; if they use domain or everyday language, stay there.
+
+## 6. Ship-ready
+
+Before presenting work as complete:
+
+1. Self-test — exercise the artifact as its intended user would; fix what fails immediately.
+2. External review — submit the artifact to a tool, agent, or process separate from the one that produced it (e.g., a workflow reviewer, a domain expert agent, or adversarial simulation). Re-reading your own output does not qualify. If no external tool or agent is available, adversarial simulation is the minimum substitute.
+3. Iterate — after each external review, evaluate findings against the stated goal (neither blindly apply nor dismiss) and revise. Repeat the self-test and external review cycle until external review returns no new issues.
