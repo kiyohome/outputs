@@ -245,48 +245,6 @@
             ]
         },
         {
-            "description": "Chrome: Ctrl+Click → Cmd+Click（HHKB接続時、Chromeのみ）",
-            "manipulators": [
-                {
-                    "type": "basic",
-                    "from": {
-                        "pointing_button": "button1",
-                        "modifiers": {
-                            "mandatory": [
-                                "control"
-                            ]
-                        }
-                    },
-                    "to": [
-                        {
-                            "pointing_button": "button1",
-                            "modifiers": [
-                                "command"
-                            ]
-                        }
-                    ],
-                    "conditions": [
-                        {
-                            "type": "device_if",
-                            "identifiers": [
-                                {
-                                    "description": "HHKB Studio",
-                                    "vendor_id": 1278,
-                                    "product_id": 22
-                                }
-                            ]
-                        },
-                        {
-                            "type": "frontmost_application_if",
-                            "bundle_identifiers": [
-                                "^com\\.google\\.Chrome$"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
             "description": "Emacs: Opt+W → Cmd+C コピー（HHKB接続時、Emacs対応アプリ除外）",
             "manipulators": [
                 {
