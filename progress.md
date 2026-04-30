@@ -6,70 +6,121 @@
 > MacだとCmdを色々使うので、現状の一部Opt->Cmd切り替えでは不便でした。
 > 影響範囲を調べて、どうするか検討したい。
 
+## 方針転換（仕切り直し）
+
+Cmd/Opt スワップの検討を経て、根本から再設計することに決定。
+
+**新方針：Ctrl/Alt で全操作を統一し、Karabiner（Mac）/AHK（Win）で OS ネイティブに変換する。**
+
+- Karabiner は全アプリに適用（除外なし）
+- Win/Mac でできるだけ同一のキー操作を実現する
+- Cmd/Opt スワップは行わない（HHKB Mac プロファイルは標準配置）
+
 ## Current Phase
 
-PR #12 オープン中。レビューコメント対応中（設計ドキュメントの改善）。ユーザーによる手動作業のみ残存。
+**要件整理中**（ゼロベース）
 
-## Key Decisions
+---
 
-### 方針：HHKBのMacプロファイルはOptをスペース左に配置する（標準配置）
+## 要件整理
 
-**根拠：**
-- M-w（コピー）はブラウザ/一般アプリで頻繁に使う → Opt が左にあることが必須
-- Cmd/Opt スワップを試みたが、M-w が右 Opt+W になり実用上不便
-- Opt を左（標準位置）に戻すことで、M-key 操作がすべて左親指で自然に行える
+### 対象操作カテゴリ
 
-### VS Code：追加設定不要
+#### 1. Emacs テキスト操作
 
-Awesome Emacs Keymap はデフォルトで Opt を Meta として使用。
+現在の設計にあるもの：
 
-### ブラウザ操作：Ctrl統一を維持
+| 操作 | キー |
+|------|------|
+| 移動 | C-a / C-e / C-f / C-b / C-n / C-p |
+| 単語移動 | M-f / M-b |
+| マーク | C-Space |
+| マーク解除 | C-g |
+| コピー | M-w |
+| ペースト | C-y |
+| カット | C-w |
+| kill-line | C-k |
+| 文字削除 | C-d |
+| 単語削除(fwd) | M-d |
+| 単語削除(back) | M-DEL |
+| undo | C-/ |
+| redo | C-Shift-/ |
 
-- Win/Mac共通でCtrlベースのショートカット（Karabiner でCtrl→Cmd変換）
-- Ctrl+Click → Cmd+Click はmacOSのOS制約で実現不可。Mac では Cmd+Click を使用
-- 該当KarabinerルールはJSONから削除済み
+追加検討中：
 
-## 変更内容
+| 操作 | キー | 備考 |
+|------|------|------|
+| isearch forward | C-s | Emacs 標準。OS の保存と衝突 |
+| isearch backward | C-r | |
+| recenter / scroll | C-l | |
+| page down | C-v | |
+| page up | M-v | |
+| その他 | ? | ユーザーが普段使うもの |
 
-| # | 対象 | 変更内容 | 状態 |
-|---|------|---------|------|
-| 1 | HHKBキーマップツール（手動） | Macプロファイル：左下Opt、右下Cmd（標準配置に戻す） | ⏳ ユーザー手動 |
-| 2 | HHKBキーマップツール（手動） | Win/Mac両プロファイル Fn1層 `` ` `` → Print Screen | ⏳ ユーザー手動 |
-| 3 | VS Code settings.json | 追加設定不要（Awesome Emacs Keymap がデフォルトで Opt を Meta として使用） | ✅ 不要 |
-| 4 | Ghostty/cmux config | `macos-option-as-alt = left` に設定 | ⏳ ユーザー手動 |
-| 5 | Karabiner JSON | Opt+Tab/Space/Q→Cmd の3ルールを削除 | ✅ 完了 |
-| 6 | Karabiner JSON | cmux除外アプリリストに追加（bundle ID: com.cmuxterm.app） | ✅ 完了 |
-| 7 | Karabiner JSON | Print Screen → Cmd+Ctrl+Shift+4（範囲SS→クリップボード）追加 | ✅ 完了 |
-| 8 | Karabiner JSON | Ctrl+Click → Cmd+Click ルール削除（OS制約で動作不可のため） | ✅ 完了 |
-| 9 | hhkb-keybinding-design.md | 設計ドキュメント全面改訂（変更履歴排除・まっさら前提・構造整理） | ✅ 完了 |
+#### 2. ブラウザ操作
 
-## ドキュメント改訂の主な内容（このセッションで実施）
+現在の設計にあるもの（Chrome）：
 
-- 「追加変更」「スワップ」等の変更履歴的表現をすべて排除
-- セクション1.5「HHKBキーマップ設定」を背景から設計（3.4）へ移動
-- Win/Macプロファイルのキー配置を並列表示（before/after表を廃止）
-- 「現在の」「済み」等の表現を現在形・ゼロベース表現に統一
-- 1.3に HHKBプロファイル列を追加（なぜHHKBが2行あるかを明示）
-- MacBook Air M4 → M5 修正
-- Ctrl+Clickの制約を表内注記に整理
+| 操作 | キー |
+|------|------|
+| 新タブ | C-t |
+| タブを閉じる | C-j（C-w は Emacs カットと衝突） |
+| URL バー | C-l（Emacs C-l と衝突？） |
+| ページ更新 | C-r（Emacs C-r と衝突？） |
+| ブックマーク | C-i |
+| タブ切り替え | C-Tab |
 
-## Next Tasks（残タスク：ユーザー手動作業）
+追加検討中：
 
-1. **HHKBキーマップツール**：Macプロファイルの左下をOpt、右下をCmdに設定（標準配置に戻す）
-2. **HHKBキーマップツール**：Win/Mac両プロファイルのFn1層 `` ` `` に Print Screen を割り当て
-3. **Ghostty / cmux config**：`~/.config/ghostty/config` に `macos-option-as-alt = left` を設定
+| 操作 | キー | 備考 |
+|------|------|------|
+| 新ウィンドウ | C-n？ | Emacs C-n（次行）と衝突 |
+| 戻る/進む | ? | |
 
-## PR
+#### 3. アプリ操作
 
-https://github.com/lovaizu/outputs/pull/12（worktree-keybind → main）
+現在の設計にあるもの：
 
-レビューコメントへの対応中。追加コメントがあれば対応してマージ待ち。
+| 操作 | Win | Mac |
+|------|-----|-----|
+| アプリ切り替え | Alt+Tab | Cmd+Tab |
+| アプリ起動 | Alt+Space | Cmd+Space |
+| アプリ終了 | Alt+Q | Cmd+Q |
+
+追加検討中：
+
+| 操作 | キー候補 | 備考 |
+|------|---------|------|
+| ウィンドウを閉じる | C-w？ | Emacs C-w（カット）と衝突 |
+| 新規 | C-n？ | Emacs C-n（次行）と衝突 |
+
+---
+
+## 衝突マップ（整理が必要な箇所）
+
+| キー | Emacs の意味 | ブラウザ/アプリでの意味 |
+|------|-------------|----------------------|
+| C-s | isearch forward | 保存（Save） |
+| C-r | isearch backward | ページ更新（Reload） |
+| C-l | recenter | URL バー選択 |
+| C-v | page down | ペースト（一般アプリ） |
+| C-n | next line | 新規（New） |
+| C-w | kill/cut | ウィンドウ/タブを閉じる |
+| C-t | ? | 新タブ（New Tab） |
+
+---
+
+## Next Tasks
+
+1. **要件確定**：追加したい操作のリストアップ、衝突の解消方針を決定
+2. **設計**：全アプリ統一の Karabiner/AHK ルール設計
+3. **実装**：JSON/AHK スクリプト更新
+4. **ドキュメント**：設計書全面改訂
 
 ## Session Context
 
-- 作業ブランチ: worktree-keybind（worktree: /Users/kiyo/work/lovaizu/outputs/.claude/worktrees/keybind）
+- 作業ブランチ: worktree-keybind
 - 対象ファイル:
   - `cross-platform-key-bindings-with-hhkb/hhkb-keybinding-design.md`
   - `cross-platform-key-bindings-with-hhkb/hhkb-emacs-keybindings.json`
   - `cross-platform-key-bindings-with-hhkb/emacs-keybind.ahk`
-- cmux bundle ID: `com.cmuxterm.app`
