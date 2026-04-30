@@ -18,94 +18,29 @@ Cmd/Opt スワップの検討を経て、根本から再設計することに決
 
 ## Current Phase
 
-**要件洗い出し中**（次セッション開始地点）
+**要件定義レビュー待ち** — PR #12 で `requirements.md` をレビュー中
 
-### 進め方
+### 全体の進め方（このPRで完結）
 
-1. **要件を洗い出す**（実現方法は考えない）
-2. 実現方法を検討する
-3. 相談して決定する
-
----
-
-## 次セッションでやること：要件洗い出し
-
-以下の5カテゴリについて、「何をしたいか」を網羅する。実現方法は考えない。
-
-### カテゴリ1：Emacs テキスト操作
-
-「普段 Emacs / readline でよく使う操作を全部列挙する」
-
-叩き台（現設計から）：
-- 移動: C-a / C-e / C-f / C-b / C-n / C-p
-- 単語移動: M-f / M-b
-- マーク: C-Space / C-g（解除）
-- コピペ: M-w（コピー）/ C-y（ペースト）/ C-w（カット）
-- 削除: C-d / C-k / M-d / M-DEL
-- undo/redo: C-/ / C-Shift-/
-
-追加候補（ユーザーに確認）：
-- C-s（isearch forward）/ C-r（isearch backward）
-- C-v（page down）/ M-v（page up）
-- C-l（recenter）
-- その他、普段 Emacs で使っているもの
-
-### カテゴリ2：ブラウザ操作
-
-「ブラウザで統一したいショートカットを列挙する」
-
-叩き台（現設計から）：
-- 新タブ / タブを閉じる / タブ切り替え
-- URL バー / ページ更新 / ブックマーク
-
-追加候補（ユーザーに確認）：
-- 新ウィンドウ / 戻る / 進む
-- その他
-
-### カテゴリ3：アプリ操作
-
-「OS レベルのアプリ操作で統一したいものを列挙する」
-
-叩き台（現設計から）：
-- アプリ切り替え / アプリ起動（ランチャー）/ アプリ終了
-
-追加候補（ユーザーに確認）：
-- ウィンドウを閉じる / 新規作成
-- その他
-
-### カテゴリ4：スクリーンショット
-
-「スクリーンショットで統一したい操作を列挙する」
-
-叩き台（現設計から）：
-- 範囲選択→クリップボードにコピー: Fn+`
-
-追加候補（ユーザーに確認）：
-- ファイル保存 / 全画面 / ウィンドウ指定
-- その他
-
-### カテゴリ5：IME切り替え
-
-「IME切り替えで統一したい操作を列挙する」
-
-叩き台（現設計から）：
-- かな／英数キーで切り替え（Ctrl+Space には割り当てない）
-
-追加候補（ユーザーに確認）：
-- その他の切り替え方法
+1. **要件定義** — `requirements.md` の各項目を ✅/❌/❓ で確定（PR レビュー）
+2. **設計** — 実現方法（AHK / Karabiner / HHKB キーマップ）を決定し設計書を作成
+3. **セットアップ手順** — 設定ファイル（`.ahk`, `.json`）と手順書を作成
 
 ---
 
 ## Next Tasks
 
-1. **要件洗い出し**：上記5カテゴリをユーザーと一緒に確定する
-2. 実現方法の検討（要件確定後）
-3. 設計・実装（検討後）
+1. **要件定義レビュー**：PR #12 で `requirements.md` を確定する
+2. **設計**：要件確定後、設計書を作成（実現方法・キー割り当て）
+3. **設定ファイル作成**：`emacs-keybind.ahk`、`hhkb-emacs-keybindings.json`
+4. **手順書作成**：セットアップ手順を `hhkb-keybinding-design.md` に記述
 
 ## Session Context
 
 - 作業ブランチ: worktree-keybind
-- 対象ファイル:
+- PR: https://github.com/lovaizu/outputs/pull/12
+- 要件ファイル: `cross-platform-key-bindings-with-hhkb/requirements.md`
+- 成果物（作成予定）:
   - `cross-platform-key-bindings-with-hhkb/hhkb-keybinding-design.md`
   - `cross-platform-key-bindings-with-hhkb/hhkb-emacs-keybindings.json`
   - `cross-platform-key-bindings-with-hhkb/emacs-keybind.ahk`
