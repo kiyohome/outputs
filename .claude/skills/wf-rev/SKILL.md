@@ -1,6 +1,11 @@
 ---
-description: Review a workflow definition (slash command, skill, sub-agent, or step sequence) against core-rules. Use when the user asks to review, check, or validate a workflow or command against the rules. Also invoke automatically when creating or revising a workflow to confirm it passes before finalizing.
+description: Review a workflow definition (slash command, skill, sub-agent, or step sequence) against core-rules. Use when the user asks to review, check, or validate a workflow or command against the rules.
+when_to_use: Also invoke automatically when creating or revising a workflow to confirm it passes before finalizing.
+argument-hint: "[workflow-definition-or-path]"
+effort: high
+allowed-tools: Read
 context: fork
+agent: Explore
 ---
 
 # /wf-rev — Workflow Reviewer
