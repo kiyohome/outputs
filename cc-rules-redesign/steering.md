@@ -49,7 +49,9 @@ PR #10 is complete when all five commands are created and wf-rev approved.
 
 ## Next tasks (in order)
 
-1. [ ] Create `/hi` workflow (hear and file a new issue)
+1. [ ] User reviews PR #10 and provides feedback
+2. [ ] Address PR feedback
+3. [ ] Create `/hi` workflow (hear and file a new issue)
 2. [ ] Create `/go` workflow (begin or resume work on issue N)
 3. [ ] Create `/ty` workflow (approve gate)
 4. [ ] Create `/gm` workflow (redirect with feedback)
