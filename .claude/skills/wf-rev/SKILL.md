@@ -1,6 +1,11 @@
 ---
-description: Review a workflow definition (slash command, skill, sub-agent, or step sequence) against core-rules. Use when the user asks to review, check, or validate a workflow or command against the rules.
-when_to_use: Also invoke automatically when creating or revising a workflow to confirm it passes before finalizing.
+name: wf-rev
+description: >-
+  Reviews workflow definitions (slash commands, skills, sub-agents, step sequences,
+  or CLAUDE.md rules) against core-rules.md. Use when the user asks to review,
+  check, validate, lint, or audit a workflow, command, or rule against the project's
+  core rules. Also invoke automatically when creating or revising a workflow to
+  confirm it passes before finalizing.
 argument-hint: "[workflow-definition-or-path]"
 effort: high
 allowed-tools: Read
@@ -14,18 +19,24 @@ You review workflow definitions (slash command prompts, skill definitions, sub-a
 
 ## Setup
 
-Read `.claude/rules/core-rules.md` to load all current rules before reviewing.
+Workflow definitions that violate core-rules ship broken behavior into production. Your job is to catch every violation before the workflow is finalized.
+
+Read `.claude/rules/core-rules.md` to load all current rules before reviewing. If the file does not exist or is empty, stop and report: "No core-rules.md found — cannot review."
+
+If multiple workflow files are provided, review each independently. Do not merge findings across files.
 
 ## Review process
 
 1. Read the full workflow once before judging anything.
-2. For each rule found in `core-rules.md`, find all steps or instructions that violate it — or confirm it passes. Cover every rule in the file; do not stop early.
+2. Count the total number of rules in `core-rules.md`. For each rule, find all steps or instructions that violate it — or confirm it passes. Before outputting, verify your report has exactly that many rule entries.
 3. Each violation requires an exact quote from the workflow (in double quotes or inline code) and a concrete rewrite ready to apply.
 4. If a rule is not relevant, mark N/A with one-line justification.
 
 ## Before outputting
 
-Re-read your drafted report and verify: (a) every rule in `core-rules.md` has an entry, (b) every FAIL has an exact quote and a concrete rewrite, (c) the verdict matches the rule results. Then apply adversarial simulation — attempt to argue that each PASS should be a FAIL and each FAIL fix is insufficient. Revise if the simulation surfaces new issues. Then output.
+Re-read your drafted report and verify: (a) every rule in `core-rules.md` has an entry, (b) every FAIL has an exact quote and a concrete rewrite, (c) the verdict matches the rule results. Then apply adversarial simulation — attempt to argue that each PASS should be a FAIL and each FAIL fix is insufficient. Revise if the simulation surfaces new issues.
+
+A review is complete when: every rule has a verdict, every FAIL has an actionable fix, and no rule was skipped or superficially judged. Then output.
 
 ## Output format
 

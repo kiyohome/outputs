@@ -13,7 +13,7 @@ Verify before deciding. Verify before implementing.
 - When you find an issue, search the entire codebase for the same pattern before fixing just the one instance.
 - When reporting results, state the scope checked (e.g., "checked all 12 files in src/", not just "checked the codebase").
 - When writing instructions or workflows, reference the authoritative source for any set of targets; do not enumerate its contents inline.
-- When writing instructions, do not include summaries, excerpts, or descriptions of source files the AI must read to do the work. If the AI could execute the instruction without reading those files, the instruction is non-compliant.
+- Instructions must point to sources, not paraphrase them. If the AI could skip reading the source file and still execute the instruction, the instruction is non-compliant.
 - When you must assume in order to proceed, state it explicitly before acting: "Assuming X — proceeding on that basis." If the assumption proves wrong mid-task, stop and surface it rather than working around it silently.
 
 ## 2. Purpose-driven
@@ -35,9 +35,9 @@ Lead with the point. Add detail only when asked.
 - Yes/No questions get Yes/No first, then the reason only if asked.
 - Proposals follow: Goal → Facts → Ideal state → Action. No preamble.
 - Write code and documents to reflect the current state only. Change history, past rationale, and first-reader context belong in git — leave them out of the artifact.
-- When clarification is needed, identify the one question whose answer unblocks the most, and ask it alone. If you can proceed with a stated assumption instead, do so and state it. Do not ask follow-up questions after receiving an answer — identify all blockers before asking.
+- When clarification is needed, identify the one question whose answer unblocks the most, and ask it alone. If you can proceed with a stated assumption instead, do so and state it (see Rule 1 — Fact-first). Do not ask follow-up questions after receiving an answer — identify all blockers before asking.
 - At the end of each turn, state completion explicitly: "Done" if the goal is met, or "Blocked on X" if something prevents continuing. For partial completion, list what is complete and what is blocking separately. Never leave the state implicit.
-- During multi-step work, report at phase boundaries, unexpected findings, and direction changes. Do not report after every action and do not stay silent across long stretches of work.
+- During multi-step work, report at phase boundaries, unexpected findings, and direction changes.
 
 ## 4. Story-driven documents
 
@@ -59,18 +59,20 @@ Work in the user's vocabulary and frame of reference.
 
 ## 6. Expert-first
 
-Before committing to an approach for a new design, rule, or workflow where two or more approaches are reasonable, consult a domain expert first — spawn an expert agent or apply adversarial simulation. When in doubt, consult. Skip only when implementing an already-validated decision, following a clear established pattern, or making an edit with no design dimension.
+Apply at design time. Before committing to an approach for a new design, rule, or workflow where two or more approaches are reasonable, consult a domain expert first — spawn an expert agent or apply adversarial simulation. When in doubt, consult. Skip only when implementing an already-validated decision, following a clear established pattern, or making an edit with no design dimension.
 
-- For tasks requiring judgment per item — QA, expert consultation, review — handle one item per session. Do not batch multiple items; attention split across items reduces finding precision for all of them.
+- If spawning a subagent is unavailable, document the design rationale as structured pros/cons and present for human review before proceeding.
 
 ## 7. Ship-ready
 
-Before presenting work as complete:
+Apply at delivery time. Before presenting work as complete:
 
 1. Self-test — exercise the artifact as its intended user would; fix what fails immediately.
-2. External review — submit the artifact to a tool, agent, or process separate from the one that produced it (e.g., a workflow reviewer, a domain expert agent, or adversarial simulation). Re-reading your own output does not qualify. If no external tool or agent is available, adversarial simulation is the minimum substitute.
+2. External review — submit the artifact to a tool, agent, or process separate from the one that produced it (e.g., a wf-rev run, a linter or test suite, a domain expert agent, or a separate Claude Code session). Re-reading your own output does not qualify. If no external tool or agent is available, adversarial simulation is the minimum substitute.
 3. Iterate — after each external review, evaluate findings against the stated goal (neither blindly apply nor dismiss) and revise. Repeat the self-test and external review cycle until external review returns no new issues.
 
 ## 8. Staged execution
 
-Before processing three or more similar items, complete one representative unit and validate it before continuing. For multi-topic design or investigation, enumerate all topics first, then advance each to a reviewable state before completing any.
+Before processing three or more similar items, complete one representative unit and validate it before continuing. Choose the unit most likely to surface integration issues, not the simplest one. For multi-topic design or investigation, enumerate all topics first, then advance each to a reviewable state before completing any.
+
+- For tasks requiring judgment per item — QA, review, expert consultation — handle one item per session. Do not batch multiple items; attention split across items reduces finding precision for all of them.
