@@ -118,31 +118,31 @@ Mark each operation with one of:
 | ✅ | `Ctrl+R` | Reload page |
 | ✅ | `Ctrl+D` | Bookmark current page |
 | ✅ | `Ctrl+Click` | Open link in new tab |
-| ✅ | Back / Forward | Navigate back / forward |
-| ✅ | New window | Open new window |
+| ✅ | `Alt+←` / `Alt+→` | Navigate back / forward |
+| ✅ | `Ctrl+N` | Open new window |
 
 ---
 
 ## Category 3: App Operations (OS level)
 
-| Status | Operation |
-|--------|-----------|
-| ✅ | Switch app |
-| ✅ | Launch app (Spotlight / Search) |
-| ✅ | Quit app |
-| ✅ | Close window |
-| ✅ | New window / document |
+| Status | Key (Win) | Key (Mac) | Operation |
+|--------|-----------|-----------|-----------|
+| ✅ | `Alt+Tab` | `Cmd+Tab` | Switch app |
+| ✅ | `Alt+Space` | `Cmd+Space` | Launch app (Search / Spotlight) |
+| ✅ | `Alt+F4` | `Cmd+Q` | Quit app |
+| ✅ | `Alt+F4` | `Cmd+W` | Close window |
+| ✅ | `Ctrl+N` | `Cmd+N` | New window / document |
 
 ---
 
 ## Category 4: Screenshot
 
-| Status | Operation |
-|--------|-----------|
-| ✅ | Capture region → clipboard |
-| ✅ | Capture full screen → clipboard |
-| ✅ | Capture window → clipboard |
-| ❌ | Capture region → file — clipboard is sufficient |
+| Status | Key (Win) | Key (Mac) | Operation |
+|--------|-----------|-----------|-----------|
+| ✅ | `Win+Shift+S` | `Cmd+Ctrl+Shift+4` | Capture region → clipboard |
+| ✅ | `Print Screen` | `Cmd+Ctrl+Shift+3` | Capture full screen → clipboard |
+| ✅ | `Alt+Print Screen` | `Cmd+Ctrl+Shift+4` then `Space` | Capture window → clipboard |
+| ❌ | — | — | Capture region → file |
 
 ---
 
@@ -151,4 +151,3 @@ Mark each operation with one of:
 | Status | Key | Operation |
 |--------|-----|-----------|
 | ✅ | `英数` / `かな` | Toggle IME (En ↔ JP) |
-| ❓ | `Ctrl+Space` | IME toggle — conflicts with `C-Space` (mark); which takes priority? |
