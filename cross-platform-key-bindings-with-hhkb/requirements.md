@@ -99,9 +99,9 @@ Mark each operation with one of:
 
 | Status | Key | Operation |
 |--------|-----|-----------|
-| ✅ | `RET` / `C-m` | Newline (passthrough) |
+| ❌ | `RET` / `C-m` | Newline (passthrough) |
 | ❌ | `C-o` | Open line — niche |
-| ✅ | `TAB` / `C-i` | Indent (passthrough) |
+| ❌ | `TAB` / `C-i` | Indent (passthrough) |
 
 ---
 
