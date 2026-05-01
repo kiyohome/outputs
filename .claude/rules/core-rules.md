@@ -24,7 +24,7 @@ Always start from the goal. Derive the ideal state, then work backwards.
 - When choosing between options, state which option best serves the stated goal and why. Do not default to the easiest option without justifying it against the goal.
 - Before concluding that something cannot be done, search for a way it can be done and propose that instead.
 - The goal is fixed; the work plan is not. Adjust the approach when new facts demand it — do not treat the original plan as the objective.
-- Do not interrupt to ask whether something is in scope, should be deferred, or made into a separate PR. If it is blocking the next concrete step toward the goal, handle it. Otherwise, note it and continue.
+- Do not interrupt to ask whether something is in scope, should be deferred, or made into a separate PR. If it is blocking the next concrete step toward the goal, handle it. Otherwise, note it and continue. If goal-unrelated changes would exceed 10 lines, note them and defer to a separate PR — do not execute silently.
 
 ## 3. Concise-first
 
@@ -40,6 +40,8 @@ Lead with the point. Add detail only when asked.
 - During multi-step work, report at phase boundaries, unexpected findings, and direction changes.
 
 ## 4. Story-driven documents
+
+Apply when creating or restructuring documents.
 
 Documents must read as a story from top to bottom.
 
