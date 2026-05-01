@@ -8,7 +8,7 @@ description: >-
   confirm it passes before finalizing.
 argument-hint: "[workflow-definition-or-path]"
 effort: high
-allowed-tools: Read, Write
+allowed-tools: Read
 context: fork
 agent: Explore
 ---
@@ -23,35 +23,29 @@ Workflow definitions that violate core-rules ship broken behavior into productio
 
 Read `.claude/rules/core-rules.md` to load all current rules before reviewing. If the file does not exist or is empty, stop and report: "No core-rules.md found — cannot review."
 
-If multiple workflow files are provided, review each independently. Do not merge findings across files.
-
-Write access is granted solely for saving review results to `.claude/reviews/`. Do not modify the workflow under review or any other file.
+If multiple workflow files are provided, review each sequentially in the order given. Complete the full review cycle for each file before starting the next. Do not merge findings across files. Output one complete report per file.
 
 ## Review process
 
 1. Read the full workflow once before judging anything.
-2. Count the total number of rules in `core-rules.md`. For each rule, find all steps or instructions that violate it — or confirm it passes. Before outputting, verify your report has exactly that many rule entries.
+2. Count the total number of rules in `core-rules.md`. List every numbered step, sub-bullet, and instruction in the workflow. Then evaluate each listed item against each rule — or confirm the rule passes. Before outputting, verify your report has exactly that many rule entries.
 3. Each violation requires: an exact quote from the workflow (in double quotes or inline code), a confidence score (0–100), and a concrete rewrite ready to apply. Score guide:
    - 90–100: Certain violation. The rule text directly contradicts the workflow instruction.
    - 70–89: Probable violation. The workflow does not explicitly contradict the rule but will likely cause rule-breaking behavior at runtime.
    - Below 70: Do not report. Mark the rule as PASS with a one-line note if the concern is worth mentioning.
 4. If a rule is not relevant, mark N/A with one-line justification.
 
-## Before outputting
-
-Re-read your drafted report and verify: (a) every rule in `core-rules.md` has an entry, (b) every FAIL has an exact quote and a concrete rewrite, (c) the verdict matches the rule results. Then apply adversarial simulation — attempt to argue that each PASS should be a FAIL and each FAIL fix is insufficient. Revise if the simulation surfaces new issues.
-
-A review is complete when: every rule has a verdict, every FAIL has an actionable fix, and no rule was skipped or superficially judged. Then output.
-
 ## Output format
 
-Write the report as plain markdown. Do not add text before the `## wf-rev report` heading or after `Done`. Omit **Top fix** when Verdict is PASS.
+Plain markdown. Start with `## wf-rev report`, end with `Done`. Omit **Top fix** when Verdict is PASS. See example below for exact structure.
 
-For each rule: write the verdict on one line. If FAIL, list violations as numbered items directly beneath — each with an exact quote, a confidence score, and a ready-to-apply rewrite. Only report violations with confidence ≥ 70. If PASS or N/A, the verdict line alone is sufficient. End the report with `Done` on its own line.
+For each rule: write the verdict on one line. If FAIL, list violations as numbered items directly beneath — each with an exact quote, a confidence score, and a ready-to-apply rewrite. Only report violations with confidence ≥ 70. If PASS or N/A, the verdict line alone is sufficient.
 
-## Persistence
+## Self-test before outputting
 
-After outputting the report, write it to `.claude/reviews/{workflow-filename}.wf-rev.md` (create the directory if absent). If a previous review exists at that path, prepend a `## Previous review` section with the old content, then write the new report as the main body. This enables diff-based re-review.
+Re-read your drafted report and verify: (a) every rule in `core-rules.md` has an entry, (b) every FAIL has an exact quote and a concrete rewrite, (c) the verdict matches the rule results. Then apply adversarial simulation (mandatory — do not skip): attempt to argue that each PASS should be a FAIL and each FAIL fix is insufficient. Revise if the simulation surfaces any new issue.
+
+A review is complete when: every rule has a verdict, every FAIL has an actionable fix, and no rule was skipped or superficially judged. Then output.
 
 ## Example output
 
