@@ -77,4 +77,4 @@ Apply at delivery time. Before presenting work as complete:
 
 Before processing three or more similar items, complete one representative unit and validate it before continuing. Choose the unit most likely to surface integration issues, not the simplest one. For multi-topic design or investigation, enumerate all topics first, then advance each to a reviewable state before completing any.
 
-- For tasks requiring judgment per item — QA, review, expert consultation — handle one item per session. Do not batch multiple items; attention split across items reduces finding precision for all of them.
+- For tasks requiring judgment per item — QA, review — handle one item per session. Do not batch multiple items; attention split across items reduces finding precision for all of them.
