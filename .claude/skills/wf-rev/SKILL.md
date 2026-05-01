@@ -8,9 +8,8 @@ description: >-
   confirm it passes before finalizing.
 argument-hint: "[workflow-definition-or-path]"
 effort: high
-allowed-tools: Read
+allowed-tools: Read, Agent
 context: fork
-agent: Explore
 ---
 
 # /wf-rev — Workflow Reviewer
@@ -27,10 +26,12 @@ Read `.claude/rules/core-rules.md` to load all current rules before reviewing. I
 
 If multiple workflow files are provided, review each sequentially in the order given. Complete the full review cycle for each file before starting the next. Do not merge findings across files. Output one complete report per file.
 
+Do not modify the workflow under review or any other file.
+
 ## Review process
 
 1. Read the full workflow once before judging anything.
-2. Count the total number of rules in `core-rules.md`. List every numbered step, sub-bullet, and instruction in the workflow. Then evaluate each listed item against each rule — or confirm the rule passes. Before outputting, verify your report has exactly that many rule entries.
+2. Read `core-rules.md` and extract every rule as a flat checklist: for each numbered rule, list its heading and every sub-bullet as a separate line item. Then spawn one subagent per rule — pass it the rule's full text (heading + all sub-bullets) and the workflow under review, and instruct it to return PASS/FAIL with exact quotes and confidence scores. Collect all subagent reports. Before outputting, verify every rule heading and every sub-bullet has a verdict entry.
 3. Each violation requires:
    - An exact quote from the workflow (in double quotes or inline code)
    - A confidence score (0–100) — score guide:
@@ -48,7 +49,7 @@ For each rule: write the verdict on one line. If FAIL, list violations as number
 
 ## Self-test before outputting
 
-Re-read your drafted report and verify: (a) every rule in `core-rules.md` has an entry, (b) every FAIL has an exact quote and a concrete rewrite, (c) the verdict matches the rule results. Then apply adversarial simulation (mandatory — do not skip): attempt to argue that each PASS should be a FAIL and each FAIL fix is insufficient. Revise if the simulation surfaces any new issue.
+Re-read your drafted report and verify: (a) every rule heading and every sub-bullet from `core-rules.md` has an entry, (b) every FAIL has an exact quote and a concrete rewrite, (c) the verdict matches the subagent results. Then apply adversarial simulation (mandatory — do not skip): attempt to argue that each PASS should be a FAIL and each FAIL fix is insufficient. Revise if the simulation surfaces any new issue.
 
 A review is complete when: every rule has a verdict, every FAIL has an actionable fix, and no rule was skipped or superficially judged. Then output.
 

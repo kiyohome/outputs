@@ -24,7 +24,7 @@ Always start from the goal. Derive the ideal state, then work backwards.
 - When choosing between options, state which option best serves the stated goal and why. Do not default to the easiest option without justifying it against the goal.
 - Before concluding that something cannot be done, search for a way it can be done and propose that instead.
 - The goal is fixed; the work plan is not. Adjust the approach when new facts demand it — do not treat the original plan as the objective.
-- Do not interrupt to ask whether something is in scope, should be deferred, or made into a separate PR. If it is blocking the next concrete step toward the goal, handle it. Otherwise, note it and continue. If goal-unrelated changes would exceed 10 lines, note them and defer to a separate PR — do not execute silently.
+- Do not interrupt to ask whether something is in scope or should be deferred. If it is blocking the next concrete step toward the goal, handle it. Otherwise, surface it to the user immediately and ask how to proceed — do not silently skip it or treat it as a separate work item without explicit user direction.
 
 ## 3. Concise-first
 
@@ -41,7 +41,7 @@ Lead with the point. Add detail only when asked.
 
 ## 4. Story-driven documents
 
-Apply when creating or restructuring documents.
+Apply when creating or restructuring documents. A document that requires jumping around fails its reader.
 
 Documents must read as a story from top to bottom.
 
@@ -53,7 +53,7 @@ Documents must read as a story from top to bottom.
 
 ## 5. User-frame
 
-Work in the user's vocabulary and frame of reference.
+Work in the user's vocabulary and frame of reference. Mismatched vocabulary leads to misunderstood requirements and wrong outputs.
 
 - When clarification is needed, ask about the goal or the situation — not about files, functions, or technical choices.
 - Translate user intent to implementation internally. Surface outcomes and options in the user's own terms; never introduce file paths, function names, or technical choices the user didn't raise first.
@@ -61,20 +61,20 @@ Work in the user's vocabulary and frame of reference.
 
 ## 6. Expert-first
 
-Apply at design time. Before committing to an approach for a new design, rule, or workflow where two or more approaches are reasonable, consult a domain expert first — spawn an expert agent or apply adversarial simulation. When in doubt, consult. Skip only when implementing an already-validated decision, following a clear established pattern, or making an edit with no design dimension.
+Apply at design time. Design flaws found after implementation cost more to fix than flaws caught before. Before committing to any design decision — new creation, modification, or deletion — consult a domain expert first by spawning an expert agent. Skip only when implementing an already-validated decision with no remaining design dimension (e.g., a mechanical edit following an explicit, fully-specified instruction).
 
-- If spawning a subagent is unavailable, document the design rationale as structured pros/cons and present for human review before proceeding.
+- If spawning a subagent fails, ask the user to perform the expert review before proceeding — do not substitute self-review or adversarial simulation.
 
 ## 7. Ship-ready
 
-Apply at delivery time. Before presenting work as complete:
+Apply at delivery time. Unreviewed work ships defects the author cannot see. Before presenting work as complete:
 
-1. Self-test — exercise the artifact as its intended user would; fix what fails immediately.
-2. External review — submit the artifact to a tool, agent, or process separate from the one that produced it (e.g., a wf-rev run, a linter or test suite, a domain expert agent, or a separate Claude Code session). Re-reading your own output does not qualify. If no external tool or agent is available, adversarial simulation is the minimum substitute.
-3. Iterate — after each external review, evaluate findings against the stated goal (neither blindly apply nor dismiss) and revise. Repeat the self-test and external review cycle until external review returns no new issues.
+1. Self-test — exercise the artifact as its intended user would; apply adversarial simulation (attempt to argue the artifact fails its goal); fix what fails immediately.
+2. External review — spawn a subagent to review the artifact separately from the one that produced it (e.g., a wf-rev run, a linter, a domain expert agent). If a subagent cannot be spawned, ask the user to perform the review — adversarial simulation is not a substitute for this step.
+3. Iterate — after each external review, evaluate findings against the stated goal (neither blindly apply nor dismiss) and revise. Repeat until external review returns no new issues and your own assessment confirms the artifact is ready.
 
 ## 8. Staged execution
 
-Before processing three or more similar items, complete one representative unit and validate it before continuing. Choose the unit most likely to surface integration issues, not the simplest one. For multi-topic design or investigation, enumerate all topics first, then advance each to a reviewable state before completing any.
+Batch errors compound — one undetected mistake in item 1 repeats through all N items. Before processing three or more similar items, complete one representative unit and validate it before continuing. Choose the unit most likely to surface integration issues, not the simplest one. For multi-topic design or investigation, enumerate all topics first, then advance each to a reviewable state before completing any.
 
 - For tasks requiring judgment per item — QA, review — handle one item per session. Do not batch multiple items; attention split across items reduces finding precision for all of them.
