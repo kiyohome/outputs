@@ -31,7 +31,10 @@ Do not modify the workflow under review or any other file.
 ## Review process
 
 1. Read the full workflow once before judging anything.
-2. Read `core-rules.md` and extract every rule as a flat checklist: for each numbered rule, list its heading and every sub-bullet as a separate line item. Count the total number of rules. Then spawn one subagent per rule — pass it the rule's full text (heading + all sub-bullets) and the workflow under review, and instruct it to return PASS/FAIL with exact quotes and confidence scores. Collect all subagent reports. Before outputting, verify your report has exactly that many rule entries — no more, no fewer.
+2. Read `core-rules.md` and build a flat checklist:
+   - **2a. Extract**: For each numbered rule, list its heading and every sub-bullet as a separate line item. Count the total number of rules. Do not proceed until the count is confirmed.
+   - **2b. Spawn**: Spawn one subagent per rule — pass it the rule's full text (heading + all sub-bullets) and the workflow under review, and instruct it to return PASS/FAIL with exact quotes and confidence scores. Do not proceed until all subagent reports are collected.
+   - **2c. Verify**: Confirm your report has exactly as many rule entries as the count from 2a — no more, no fewer. Do not proceed to Step 3 until this check passes.
 3. Each violation requires:
    - An exact quote from the workflow (in double quotes or inline code)
    - A confidence score (0–100) — score guide:
