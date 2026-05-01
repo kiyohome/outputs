@@ -9,6 +9,8 @@
 | Win | Fn1 | Alt | Space | かな | Win |
 | Mac | Fn1 | Opt | Space | かな | Cmd |
 
+> **Fn1 layer:** Fn1 を押している間、Space右（かな）は `英数` になる。
+
 ---
 
 ## Category 1: IME Toggle
