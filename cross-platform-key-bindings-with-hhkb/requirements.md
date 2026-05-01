@@ -13,8 +13,8 @@
 
 ## HHKB Key Layout (Bottom Row)
 
-| OS  | SP2 (Space左2) | SL (Space左) | S (Space) | SR (Space右) | SR2 (Space右2) |
-|-----|---------------|-------------|----------|-------------|--------------|
+| OS  | SPL2 (Space左2) | SPL (Space左) | SP (Space) | SPR (Space右) | SPR2 (Space右2) |
+|-----|----------------|--------------|-----------|--------------|---------------|
 | Win | Fn1 | Alt | Space | かな | Win |
 | Mac | Fn1 | Opt | Space | かな | Cmd |
 
@@ -26,8 +26,8 @@
 
 | Operation | Key (Win) | Key (Mac) | Key(HHKB) |
 |-----------|-----------|-----------|-----------|
-| Switch to English | `英数` | `Ctrl+Space` (toggle) | `SP2+SR` |
-| Switch to Japanese | `かな` | `Ctrl+Space` (toggle) | `SR` |
+| Switch to English | `英数` | `Ctrl+Space` (toggle) | `SPL2+SPR` |
+| Switch to Japanese | `かな` | `Ctrl+Space` (toggle) | `SPR` |
 
 ---
 
@@ -35,11 +35,11 @@
 
 | Operation | Key (Win) | Key (Mac) | Key(HHKB) |
 |-----------|-----------|-----------|-----------|
-| Switch app | `Alt+Tab` | `Cmd+Tab` | `SL+Tab` |
-| Launch app (Search / Spotlight) | `Alt+Space` | `Cmd+Space` | `SL+S` |
-| Quit app | `Alt+F4` | `Cmd+Q` | `SL+Q` |
-| Close window | `Alt+F4` | `Cmd+W` | `SL+W` |
-| New window / document | `Ctrl+N` | `Cmd+N` | `SL+N` |
+| Switch app | `Alt+Tab` | `Cmd+Tab` | `SPL+Tab` |
+| Launch app (Search / Spotlight) | `Alt+Space` | `Cmd+Space` | `SPL+SP` |
+| Quit app | `Alt+F4` | `Cmd+Q` | `SPL+Q` |
+| Close window | `Alt+F4` | `Cmd+W` | `SPL+W` |
+| New window / document | `Ctrl+N` | `Cmd+N` | `SPL+N` |
 
 ---
 
@@ -47,9 +47,9 @@
 
 | Operation | Key (Win) | Key (Mac) | Key(HHKB) |
 |-----------|-----------|-----------|-----------|
-| Capture region → clipboard | `Win+Shift+S` | `Cmd+Ctrl+Shift+4` | `SP2+Shift+S` |
-| Capture full screen → clipboard | `Print Screen` | `Cmd+Ctrl+Shift+3` | `SP2+S` |
-| Capture window → clipboard | `Alt+Print Screen` | `Cmd+Ctrl+Shift+4` then `Space` | `SP2+Shift+W` |
+| Capture region → clipboard | `Win+Shift+S` | `Cmd+Ctrl+Shift+4` | `SPL2+PS+S` |
+| Capture full screen → clipboard | `Print Screen` | `Cmd+Ctrl+Shift+3` | `SPL2+PS` |
+| Capture window → clipboard | `Alt+Print Screen` | `Cmd+Ctrl+Shift+4` then `Space` | `SPL2+PS+W` |
 
 ---
 
@@ -70,14 +70,12 @@
 
 | Operation | Key (Emacs) | Key(HHKB) |
 |-----------|-------------|-----------|
-| Move forward one word | `M-f` | `SL+F` |
-| Move backward one word | `M-b` | `SL+B` |
+| Move forward one word | `M-f` | `SPL+F` |
+| Move backward one word | `M-b` | `SPL+B` |
 | Scroll down (page down) | `C-v` | `Ctrl+V` |
-| Scroll up (page up) | `M-v` | `SL+V` |
+| Scroll up (page up) | `M-v` | `SPL+V` |
 | Recenter | `C-l` | `Ctrl+L` |
-| Move to beginning of buffer | `M-<` | `SL+Shift+,` |
-| Move to end of buffer | `M->` | `SL+Shift+.` |
-| Go to line number | `M-g M-g` | `SL+G SL+G` |
+| Go to line number | `M-g M-g` | `SPL+G SPL+G` |
 
 ### 4.3 Deletion
 
@@ -85,8 +83,8 @@
 |-----------|-------------|-----------|
 | Delete character forward | `C-d` | `Ctrl+D` |
 | Delete character backward (Backspace — passthrough) | `DEL` | `DEL` |
-| Kill word forward | `M-d` | `SL+D` |
-| Kill word backward | `M-DEL` | `SL+DEL` |
+| Kill word forward | `M-d` | `SPL+D` |
+| Kill word backward | `M-DEL` | `SPL+DEL` |
 | Kill to end of line | `C-k` | `Ctrl+K` |
 
 ### 4.4 Mark / Region
@@ -101,10 +99,10 @@
 
 | Operation | Key (Emacs) | Key(HHKB) |
 |-----------|-------------|-----------|
-| Copy region to clipboard | `M-w` | `SL+W` |
+| Copy region to clipboard | `M-w` | `SPL+W` |
 | Cut region to clipboard | `C-w` | `Ctrl+W` |
 | Paste from clipboard | `C-y` | `Ctrl+Y` |
-| Cycle clipboard history (yank-pop) | `M-y` | `SL+Y` |
+| Cycle clipboard history (yank-pop) | `M-y` | `SPL+Y` |
 
 ### 4.6 Undo / Redo
 
@@ -119,7 +117,7 @@
 |-----------|-------------|-----------|
 | Search forward | `C-s` | `Ctrl+S` |
 | Search backward | `C-r` | `Ctrl+R` |
-| Query replace | `M-%` | `SL+Shift+5` |
+| Query replace | `M-%` | `SPL+Shift+5` |
 
 ---
 
@@ -136,4 +134,4 @@
 | Reload page | `Ctrl+R` | `Cmd+R` | `Ctrl+R` |
 | Bookmark current page | `Ctrl+D` | `Cmd+D` | `Ctrl+D` |
 | Open link in new tab | `Ctrl+Click` | `Cmd+Click` | `Ctrl+Click` |
-| Navigate back / forward | `Alt+←` / `Alt+→` | `Cmd+←` / `Cmd+→` | `SL+←` / `SL+→` |
+| Navigate back / forward | `Alt+←` / `Alt+→` | `Cmd+←` / `Cmd+→` | `SPL+←` / `SPL+→` |
