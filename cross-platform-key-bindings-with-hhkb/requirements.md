@@ -4,10 +4,10 @@
 
 ## HHKB Key Layout (Bottom Row)
 
-| OS  | | Fn1 | Space左 | Space | Space右 | |
-|-----|-|-----|---------|-------|---------|--|
-| Win | Ctrl | Fn1 | Alt | Space | かな | Win |
-| Mac | Ctrl | Fn1 | Opt | Space | かな | Cmd |
+| OS  | Space左2 | Space左 | Space | Space右 | Space右2 |
+|-----|---------|---------|-------|---------|---------|
+| Win | Fn1 | Alt | Space | かな | Win |
+| Mac | Fn1 | Opt | Space | かな | Cmd |
 
 ---
 
