@@ -15,9 +15,9 @@
 
 ## Category 1: IME Toggle
 
-| Operation | Key | Key(HHKB) |
-|-----------|-----|-----------|
-| Toggle IME (En ↔ JP) | `英数` / `かな` | `SR` / `SP2+SR` |
+| Operation | Key (Win) | Key (Mac) | Key(HHKB) |
+|-----------|-----------|-----------|-----------|
+| Toggle IME (En ↔ JP) | `英数` / `かな` | `英数` / `かな` | `SR` / `SP2+SR` |
 
 ---
 
