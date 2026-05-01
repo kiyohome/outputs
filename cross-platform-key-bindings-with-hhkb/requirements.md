@@ -17,7 +17,9 @@
 
 | Operation | Key (Win) | Key (Mac) | Key(HHKB) |
 |-----------|-----------|-----------|-----------|
-| Toggle IME (En ↔ JP) | `英数` / `かな` | `英数` / `かな` | `SR` / `SP2+SR` |
+| Toggle IME (En ↔ JP) | `半角/全角` | — | — |
+| Switch to English | — | `英数` | `SP2+SR` |
+| Switch to Japanese | — | `かな` | `SR` |
 
 ---
 
