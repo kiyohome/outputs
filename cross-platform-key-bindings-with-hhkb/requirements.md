@@ -10,9 +10,39 @@ Mark each operation with one of:
 
 ---
 
-## Category 1: Emacs Text Operations
+## Category 1: IME Toggle
 
-### 1.1 Cursor Movement — Character / Line
+| Status | Key | Operation |
+|--------|-----|-----------|
+| ✅ | `英数` / `かな` | Toggle IME (En ↔ JP) |
+
+---
+
+## Category 2: App Operations
+
+| Status | Key (Win) | Key (Mac) | Operation |
+|--------|-----------|-----------|-----------|
+| ✅ | `Alt+Tab` | `Cmd+Tab` | Switch app |
+| ✅ | `Alt+Space` | `Cmd+Space` | Launch app (Search / Spotlight) |
+| ✅ | `Alt+F4` | `Cmd+Q` | Quit app |
+| ✅ | `Alt+F4` | `Cmd+W` | Close window |
+| ✅ | `Ctrl+N` | `Cmd+N` | New window / document |
+
+---
+
+## Category 3: Screenshot
+
+| Status | Key (Win) | Key (Mac) | Operation |
+|--------|-----------|-----------|-----------|
+| ✅ | `Win+Shift+S` | `Cmd+Ctrl+Shift+4` | Capture region → clipboard |
+| ✅ | `Print Screen` | `Cmd+Ctrl+Shift+3` | Capture full screen → clipboard |
+| ✅ | `Alt+Print Screen` | `Cmd+Ctrl+Shift+4` then `Space` | Capture window → clipboard |
+
+---
+
+## Category 4: Text Operations
+
+### 4.1 Cursor Movement — Character / Line
 
 | Status | Key | Operation |
 |--------|-----|-----------|
@@ -23,7 +53,7 @@ Mark each operation with one of:
 | ✅ | `C-a` | Move to beginning of line |
 | ✅ | `C-e` | Move to end of line |
 
-### 1.2 Cursor Movement — Word / Page / Buffer
+### 4.2 Cursor Movement — Word / Page / Buffer
 
 | Status | Key | Operation |
 |--------|-----|-----------|
@@ -36,7 +66,7 @@ Mark each operation with one of:
 | ✅ | `M->` | Move to end of buffer |
 | ✅ | `M-g M-g` | Go to line number |
 
-### 1.3 Deletion
+### 4.3 Deletion
 
 | Status | Key | Operation |
 |--------|-----|-----------|
@@ -47,7 +77,7 @@ Mark each operation with one of:
 | ✅ | `C-k` | Kill to end of line |
 | ❌ | `C-S-Backspace` | Kill entire current line — rarely used even in Emacs |
 
-### 1.4 Mark / Region
+### 4.4 Mark / Region
 
 | Status | Key | Operation |
 |--------|-----|-----------|
@@ -56,7 +86,7 @@ Mark each operation with one of:
 | ❌ | `C-x C-x` | Exchange point and mark — niche |
 | ✅ | `C-x h` | Mark whole buffer (select all) |
 
-### 1.5 Kill / Yank (Copy / Paste / Cut)
+### 4.5 Kill / Yank (Copy / Paste / Cut)
 
 | Status | Key | Operation |
 |--------|-----|-----------|
@@ -65,14 +95,14 @@ Mark each operation with one of:
 | ✅ | `C-y` | Paste from clipboard |
 | ✅ | `M-y` | Cycle clipboard history (yank-pop) |
 
-### 1.6 Undo / Redo
+### 4.6 Undo / Redo
 
 | Status | Key | Operation |
 |--------|-----|-----------|
 | ✅ | `C-/` | Undo |
 | ✅ | `C-?` (`C-S-/`) | Redo |
 
-### 1.7 Search / Replace
+### 4.7 Search / Replace
 
 | Status | Key | Operation |
 |--------|-----|-----------|
@@ -80,14 +110,14 @@ Mark each operation with one of:
 | ✅ | `C-r` | Search backward |
 | ✅ | `M-%` | Query replace |
 
-### 1.8 Transpose
+### 4.8 Transpose
 
 | Status | Key | Operation |
 |--------|-----|-----------|
 | ❌ | `C-t` | Transpose characters — niche |
 | ❌ | `M-t` | Transpose words — niche |
 
-### 1.9 Case Conversion
+### 4.9 Case Conversion
 
 | Status | Key | Operation |
 |--------|-----|-----------|
@@ -95,7 +125,7 @@ Mark each operation with one of:
 | ❌ | `M-l` | Downcase word — niche |
 | ❌ | `M-c` | Capitalize word — niche |
 
-### 1.10 Newline / Indent
+### 4.10 Newline / Indent
 
 | Status | Key | Operation |
 |--------|-----|-----------|
@@ -105,7 +135,7 @@ Mark each operation with one of:
 
 ---
 
-## Category 2: Browser Operations (Chrome)
+## Category 5: Browser Operations (Chrome)
 
 | Status | Key (Win) | Key (Mac) | Operation |
 |--------|-----------|-----------|-----------|
@@ -119,33 +149,3 @@ Mark each operation with one of:
 | ✅ | `Ctrl+D` | `Cmd+D` | Bookmark current page |
 | ✅ | `Ctrl+Click` | `Cmd+Click` | Open link in new tab |
 | ✅ | `Alt+←` / `Alt+→` | `Cmd+←` / `Cmd+→` | Navigate back / forward |
-
----
-
-## Category 3: App Operations (OS level)
-
-| Status | Key (Win) | Key (Mac) | Operation |
-|--------|-----------|-----------|-----------|
-| ✅ | `Alt+Tab` | `Cmd+Tab` | Switch app |
-| ✅ | `Alt+Space` | `Cmd+Space` | Launch app (Search / Spotlight) |
-| ✅ | `Alt+F4` | `Cmd+Q` | Quit app |
-| ✅ | `Alt+F4` | `Cmd+W` | Close window |
-| ✅ | `Ctrl+N` | `Cmd+N` | New window / document |
-
----
-
-## Category 4: Screenshot
-
-| Status | Key (Win) | Key (Mac) | Operation |
-|--------|-----------|-----------|-----------|
-| ✅ | `Win+Shift+S` | `Cmd+Ctrl+Shift+4` | Capture region → clipboard |
-| ✅ | `Print Screen` | `Cmd+Ctrl+Shift+3` | Capture full screen → clipboard |
-| ✅ | `Alt+Print Screen` | `Cmd+Ctrl+Shift+4` then `Space` | Capture window → clipboard |
-
----
-
-## Category 5: IME Toggle
-
-| Status | Key | Operation |
-|--------|-----|-----------|
-| ✅ | `英数` / `かな` | Toggle IME (En ↔ JP) |
