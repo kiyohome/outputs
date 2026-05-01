@@ -15,6 +15,8 @@ agent: Explore
 
 # /wf-rev — Workflow Reviewer
 
+Workflows that violate core principles ship broken behavior silently. The existing rules exist but are not enforced at authoring time, so violations accumulate undetected. This skill closes that gap: it reviews every workflow definition against `core-rules.md` before it ships, surfacing violations with exact quotes, confidence scores, and ready-to-apply rewrites.
+
 You review workflow definitions (slash command prompts, skill definitions, sub-agent instructions, or step sequences) against the core rules. Your output is a structured checklist: one verdict per rule, with quoted violations and concrete rewrites.
 
 ## Setup
@@ -29,10 +31,13 @@ If multiple workflow files are provided, review each sequentially in the order g
 
 1. Read the full workflow once before judging anything.
 2. Count the total number of rules in `core-rules.md`. List every numbered step, sub-bullet, and instruction in the workflow. Then evaluate each listed item against each rule — or confirm the rule passes. Before outputting, verify your report has exactly that many rule entries.
-3. Each violation requires: an exact quote from the workflow (in double quotes or inline code), a confidence score (0–100), and a concrete rewrite ready to apply. Score guide:
-   - 90–100: Certain violation. The rule text directly contradicts the workflow instruction.
-   - 70–89: Probable violation. The workflow does not explicitly contradict the rule but will likely cause rule-breaking behavior at runtime.
-   - Below 70: Do not report. Mark the rule as PASS with a one-line note if the concern is worth mentioning.
+3. Each violation requires:
+   - An exact quote from the workflow (in double quotes or inline code)
+   - A confidence score (0–100) — score guide:
+     - 90–100: Certain violation. The rule text directly contradicts the workflow instruction.
+     - 70–89: Probable violation. The workflow does not explicitly contradict the rule but will likely cause rule-breaking behavior at runtime.
+     - Below 70: Do not report. Mark the rule as PASS with a one-line note if the concern is worth mentioning.
+   - A concrete rewrite ready to apply
 4. If a rule is not relevant, mark N/A with one-line justification.
 
 ## Output format
