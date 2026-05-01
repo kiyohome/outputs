@@ -107,19 +107,18 @@ Mark each operation with one of:
 
 ## Category 2: Browser Operations (Chrome)
 
-| Status | Key | Operation |
-|--------|-----|-----------|
-| ✅ | `Ctrl+T` | New tab |
-| ✅ | `Ctrl+Tab` | Switch to next tab |
-| ✅ | `Ctrl+Shift+Tab` | Switch to previous tab |
-| ✅ | `Ctrl+W` | Close current tab |
-| ✅ | `Ctrl+Shift+T` | Reopen closed tab |
-| ✅ | `Ctrl+L` | Focus URL bar |
-| ✅ | `Ctrl+R` | Reload page |
-| ✅ | `Ctrl+D` | Bookmark current page |
-| ✅ | `Ctrl+Click` | Open link in new tab |
-| ✅ | `Alt+←` / `Alt+→` | Navigate back / forward |
-| ✅ | `Ctrl+N` | Open new window |
+| Status | Key (Win) | Key (Mac) | Operation |
+|--------|-----------|-----------|-----------|
+| ✅ | `Ctrl+T` | `Cmd+T` | New tab |
+| ✅ | `Ctrl+Tab` | `Ctrl+Tab` | Switch to next tab |
+| ✅ | `Ctrl+Shift+Tab` | `Ctrl+Shift+Tab` | Switch to previous tab |
+| ✅ | `Ctrl+W` | `Cmd+W` | Close current tab |
+| ✅ | `Ctrl+Shift+T` | `Cmd+Shift+T` | Reopen closed tab |
+| ✅ | `Ctrl+L` | `Cmd+L` | Focus URL bar |
+| ✅ | `Ctrl+R` | `Cmd+R` | Reload page |
+| ✅ | `Ctrl+D` | `Cmd+D` | Bookmark current page |
+| ✅ | `Ctrl+Click` | `Cmd+Click` | Open link in new tab |
+| ✅ | `Alt+←` / `Alt+→` | `Cmd+←` / `Cmd+→` | Navigate back / forward |
 
 ---
 
@@ -142,7 +141,6 @@ Mark each operation with one of:
 | ✅ | `Win+Shift+S` | `Cmd+Ctrl+Shift+4` | Capture region → clipboard |
 | ✅ | `Print Screen` | `Cmd+Ctrl+Shift+3` | Capture full screen → clipboard |
 | ✅ | `Alt+Print Screen` | `Cmd+Ctrl+Shift+4` then `Space` | Capture window → clipboard |
-| ❌ | — | — | Capture region → file |
 
 ---
 
