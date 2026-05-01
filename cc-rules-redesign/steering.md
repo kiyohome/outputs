@@ -51,11 +51,11 @@ PR #10 is complete when all five commands are created and wf-rev approved.
 
 1. [ ] User reviews PR #10 and provides feedback
 2. [ ] Address PR feedback
-3. [ ] Create `/hi` workflow (hear and file a new issue)
-2. [ ] Create `/go` workflow (begin or resume work on issue N)
-3. [ ] Create `/ty` workflow (approve gate)
-4. [ ] Create `/gm` workflow (redirect with feedback)
-5. [ ] Create `/bb` workflow (pause and save state)
+3. [ ] Create `/hi` workflow → wf-rev → address findings → user review → address feedback
+4. [ ] Create `/go` workflow → wf-rev → address findings → user review → address feedback
+5. [ ] Create `/ty` workflow → wf-rev → address findings → user review → address feedback
+6. [ ] Create `/gm` workflow → wf-rev → address findings → user review → address feedback
+7. [ ] Create `/bb` workflow → wf-rev → address findings → user review → address feedback
 
 ## Session context
 
