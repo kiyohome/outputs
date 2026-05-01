@@ -2,6 +2,15 @@
 
 ---
 
+## Premises
+
+| Item | Win | Mac |
+|------|-----|-----|
+| Keyboard layout | 日本語配列 | 英語配列 |
+| Physical IME keys | 半角/全角・英数・かな あり | 英数・かな なし |
+
+---
+
 ## HHKB Key Layout (Bottom Row)
 
 | OS  | SP2 (Space左2) | SL (Space左) | S (Space) | SR (Space右) | SR2 (Space右2) |
@@ -17,9 +26,8 @@
 
 | Operation | Key (Win) | Key (Mac) | Key(HHKB) |
 |-----------|-----------|-----------|-----------|
-| Toggle IME (En ↔ JP) | `半角/全角` | — | — |
-| Switch to English | — | `英数` | `SP2+SR` |
-| Switch to Japanese | — | `かな` | `SR` |
+| Switch to English | `英数` | `Caps Lock` (toggle) | TBD |
+| Switch to Japanese | `かな` | `Caps Lock` (toggle) | TBD |
 
 ---
 
