@@ -24,23 +24,28 @@
 - Core rules serve as a checklist when designing workflows (not converted into workflows themselves).
 - Each workflow is a custom slash command for aiya.
 - Sub-agent for workflow review: `wf-rev` (checks each command's workflow against core-rules).
-- File naming: this file is `steering.md`; slash command definitions go under `.claude/agents/`.
+- File naming: this file is `steering.md`; slash command definitions go under `.claude/skills/`.
+- Scope agreement upfront (before autonomous execution) belongs in the `/go` workflow, not core rules.
 
 ## Current phase
 
-PR #10 open — awaiting user approval. Two rounds of changes pushed since original PR:
-1. wf-rev prompt engineering fixes (blockquote example, Rule 1 clarity, Rule 4 scope, quote format)
-2. core-rules Rule 3 new bullet (artifact hygiene: write current state only, git carries history)
+PR #10 open — core rules complete, command creation not yet started.
 
-User has not yet approved PR #10. `/hi` workflow draft exists at `.claude/commands/hi.md` but was created before PR approval — needs wf-rev review and possible revision after PR merges.
+Core rules grew from 4 to 8 rules during rule refinement:
+- Rules 1–5: original (Fact-first, Purpose-driven, Concise-first, Story-driven, User-frame)
+- Rule 6: Expert-first (design gate: consult expert before committing to approach)
+- Rule 7: Ship-ready (delivery gate: self-test → external review → iterate)
+- Rule 8: Staged execution (validate one unit before batch; enumerate before advancing)
+
+PR #10 is complete when all five commands are created and wf-rev approved.
 
 ## Completed
 
 - [x] Collect pain points
-- [x] Draft core rules (4 rules: Fact-first, Purpose-driven, Concise-first, Story-driven)
-- [x] Finalize core rules → `.claude/rules/core-rules.md`
+- [x] Draft core rules → `.claude/rules/core-rules.md`
 - [x] Archive existing `.claude/rules/` files → `cc-rules-redesign/rules-backup/`
-- [x] Create `wf-rev` sub-agent → `.claude/agents/wf-rev.md`
+- [x] Create `wf-rev` skill → `.claude/skills/wf-rev/`
+- [x] Extend core rules to cover all identified pain points (8 rules total)
 
 ## Next tasks (in order)
 
