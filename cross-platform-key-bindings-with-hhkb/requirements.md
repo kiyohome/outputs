@@ -15,31 +15,31 @@
 
 ## Category 1: IME Toggle
 
-| Key(HHKB) | Key | Operation |
+| Operation | Key | Key(HHKB) |
 |-----------|-----|-----------|
-| `SR` / `SP2+SR` | `英数` / `かな` | Toggle IME (En ↔ JP) |
+| Toggle IME (En ↔ JP) | `英数` / `かな` | `SR` / `SP2+SR` |
 
 ---
 
 ## Category 2: App Operations
 
-| Key(HHKB) | Key (Win) | Key (Mac) | Operation |
+| Operation | Key (Win) | Key (Mac) | Key(HHKB) |
 |-----------|-----------|-----------|-----------|
-| `SL+Tab` | `Alt+Tab` | `Cmd+Tab` | Switch app |
-| `SL+S` | `Alt+Space` | `Cmd+Space` | Launch app (Search / Spotlight) |
-| `SL+Q` | `Alt+F4` | `Cmd+Q` | Quit app |
-| `SL+W` | `Alt+F4` | `Cmd+W` | Close window |
-| `SL+N` | `Ctrl+N` | `Cmd+N` | New window / document |
+| Switch app | `Alt+Tab` | `Cmd+Tab` | `SL+Tab` |
+| Launch app (Search / Spotlight) | `Alt+Space` | `Cmd+Space` | `SL+S` |
+| Quit app | `Alt+F4` | `Cmd+Q` | `SL+Q` |
+| Close window | `Alt+F4` | `Cmd+W` | `SL+W` |
+| New window / document | `Ctrl+N` | `Cmd+N` | `SL+N` |
 
 ---
 
 ## Category 3: Screenshot
 
-| Key(HHKB) | Key (Win) | Key (Mac) | Operation |
+| Operation | Key (Win) | Key (Mac) | Key(HHKB) |
 |-----------|-----------|-----------|-----------|
-| `SP2+Shift+S` | `Win+Shift+S` | `Cmd+Ctrl+Shift+4` | Capture region → clipboard |
-| `SP2+S` | `Print Screen` | `Cmd+Ctrl+Shift+3` | Capture full screen → clipboard |
-| `SP2+Shift+W` | `Alt+Print Screen` | `Cmd+Ctrl+Shift+4` then `Space` | Capture window → clipboard |
+| Capture region → clipboard | `Win+Shift+S` | `Cmd+Ctrl+Shift+4` | `SP2+Shift+S` |
+| Capture full screen → clipboard | `Print Screen` | `Cmd+Ctrl+Shift+3` | `SP2+S` |
+| Capture window → clipboard | `Alt+Print Screen` | `Cmd+Ctrl+Shift+4` then `Space` | `SP2+Shift+W` |
 
 ---
 
@@ -47,83 +47,83 @@
 
 ### 4.1 Cursor Movement — Character / Line
 
-| Key(HHKB) | Key (Emacs) | Operation |
+| Operation | Key (Emacs) | Key(HHKB) |
 |-----------|-------------|-----------|
-| `Ctrl+F` | `C-f` | Move forward one character |
-| `Ctrl+B` | `C-b` | Move backward one character |
-| `Ctrl+N` | `C-n` | Move to next line |
-| `Ctrl+P` | `C-p` | Move to previous line |
-| `Ctrl+A` | `C-a` | Move to beginning of line |
-| `Ctrl+E` | `C-e` | Move to end of line |
+| Move forward one character | `C-f` | `Ctrl+F` |
+| Move backward one character | `C-b` | `Ctrl+B` |
+| Move to next line | `C-n` | `Ctrl+N` |
+| Move to previous line | `C-p` | `Ctrl+P` |
+| Move to beginning of line | `C-a` | `Ctrl+A` |
+| Move to end of line | `C-e` | `Ctrl+E` |
 
 ### 4.2 Cursor Movement — Word / Page / Buffer
 
-| Key(HHKB) | Key (Emacs) | Operation |
+| Operation | Key (Emacs) | Key(HHKB) |
 |-----------|-------------|-----------|
-| `SL+F` | `M-f` | Move forward one word |
-| `SL+B` | `M-b` | Move backward one word |
-| `Ctrl+V` | `C-v` | Scroll down (page down) |
-| `SL+V` | `M-v` | Scroll up (page up) |
-| `Ctrl+L` | `C-l` | Recenter |
-| `SL+Shift+,` | `M-<` | Move to beginning of buffer |
-| `SL+Shift+.` | `M->` | Move to end of buffer |
-| `SL+G SL+G` | `M-g M-g` | Go to line number |
+| Move forward one word | `M-f` | `SL+F` |
+| Move backward one word | `M-b` | `SL+B` |
+| Scroll down (page down) | `C-v` | `Ctrl+V` |
+| Scroll up (page up) | `M-v` | `SL+V` |
+| Recenter | `C-l` | `Ctrl+L` |
+| Move to beginning of buffer | `M-<` | `SL+Shift+,` |
+| Move to end of buffer | `M->` | `SL+Shift+.` |
+| Go to line number | `M-g M-g` | `SL+G SL+G` |
 
 ### 4.3 Deletion
 
-| Key(HHKB) | Key (Emacs) | Operation |
+| Operation | Key (Emacs) | Key(HHKB) |
 |-----------|-------------|-----------|
-| `Ctrl+D` | `C-d` | Delete character forward |
-| `DEL` | `DEL` | Delete character backward (Backspace — passthrough) |
-| `SL+D` | `M-d` | Kill word forward |
-| `SL+DEL` | `M-DEL` | Kill word backward |
-| `Ctrl+K` | `C-k` | Kill to end of line |
+| Delete character forward | `C-d` | `Ctrl+D` |
+| Delete character backward (Backspace — passthrough) | `DEL` | `DEL` |
+| Kill word forward | `M-d` | `SL+D` |
+| Kill word backward | `M-DEL` | `SL+DEL` |
+| Kill to end of line | `C-k` | `Ctrl+K` |
 
 ### 4.4 Mark / Region
 
-| Key(HHKB) | Key (Emacs) | Operation |
+| Operation | Key (Emacs) | Key(HHKB) |
 |-----------|-------------|-----------|
-| `Ctrl+Space` | `C-Space` | Set mark (start selection) |
-| `Ctrl+G` | `C-g` | Cancel mark / deselect |
-| `Ctrl+X H` | `C-x h` | Mark whole buffer (select all) |
+| Set mark (start selection) | `C-Space` | `Ctrl+Space` |
+| Cancel mark / deselect | `C-g` | `Ctrl+G` |
+| Mark whole buffer (select all) | `C-x h` | `Ctrl+X H` |
 
 ### 4.5 Kill / Yank (Copy / Paste / Cut)
 
-| Key(HHKB) | Key (Emacs) | Operation |
+| Operation | Key (Emacs) | Key(HHKB) |
 |-----------|-------------|-----------|
-| `SL+W` | `M-w` | Copy region to clipboard |
-| `Ctrl+W` | `C-w` | Cut region to clipboard |
-| `Ctrl+Y` | `C-y` | Paste from clipboard |
-| `SL+Y` | `M-y` | Cycle clipboard history (yank-pop) |
+| Copy region to clipboard | `M-w` | `SL+W` |
+| Cut region to clipboard | `C-w` | `Ctrl+W` |
+| Paste from clipboard | `C-y` | `Ctrl+Y` |
+| Cycle clipboard history (yank-pop) | `M-y` | `SL+Y` |
 
 ### 4.6 Undo / Redo
 
-| Key(HHKB) | Key (Emacs) | Operation |
+| Operation | Key (Emacs) | Key(HHKB) |
 |-----------|-------------|-----------|
-| `Ctrl+/` | `C-/` | Undo |
-| `Ctrl+Shift+/` | `C-?` (`C-S-/`) | Redo |
+| Undo | `C-/` | `Ctrl+/` |
+| Redo | `C-?` (`C-S-/`) | `Ctrl+Shift+/` |
 
 ### 4.7 Search / Replace
 
-| Key(HHKB) | Key (Emacs) | Operation |
+| Operation | Key (Emacs) | Key(HHKB) |
 |-----------|-------------|-----------|
-| `Ctrl+S` | `C-s` | Search forward |
-| `Ctrl+R` | `C-r` | Search backward |
-| `SL+Shift+5` | `M-%` | Query replace |
+| Search forward | `C-s` | `Ctrl+S` |
+| Search backward | `C-r` | `Ctrl+R` |
+| Query replace | `M-%` | `SL+Shift+5` |
 
 ---
 
 ## Category 5: Browser Operations (Chrome)
 
-| Key(HHKB) | Key (Win) | Key (Mac) | Operation |
+| Operation | Key (Win) | Key (Mac) | Key(HHKB) |
 |-----------|-----------|-----------|-----------|
-| `Ctrl+T` | `Ctrl+T` | `Cmd+T` | New tab |
-| `Ctrl+Tab` | `Ctrl+Tab` | `Ctrl+Tab` | Switch to next tab |
-| `Ctrl+Shift+Tab` | `Ctrl+Shift+Tab` | `Ctrl+Shift+Tab` | Switch to previous tab |
-| `Ctrl+W` | `Ctrl+W` | `Cmd+W` | Close current tab |
-| `Ctrl+Shift+T` | `Ctrl+Shift+T` | `Cmd+Shift+T` | Reopen closed tab |
-| `Ctrl+L` | `Ctrl+L` | `Cmd+L` | Focus URL bar |
-| `Ctrl+R` | `Ctrl+R` | `Cmd+R` | Reload page |
-| `Ctrl+D` | `Ctrl+D` | `Cmd+D` | Bookmark current page |
-| `Ctrl+Click` | `Ctrl+Click` | `Cmd+Click` | Open link in new tab |
-| `SL+←` / `SL+→` | `Alt+←` / `Alt+→` | `Cmd+←` / `Cmd+→` | Navigate back / forward |
+| New tab | `Ctrl+T` | `Cmd+T` | `Ctrl+T` |
+| Switch to next tab | `Ctrl+Tab` | `Ctrl+Tab` | `Ctrl+Tab` |
+| Switch to previous tab | `Ctrl+Shift+Tab` | `Ctrl+Shift+Tab` | `Ctrl+Shift+Tab` |
+| Close current tab | `Ctrl+W` | `Cmd+W` | `Ctrl+W` |
+| Reopen closed tab | `Ctrl+Shift+T` | `Cmd+Shift+T` | `Ctrl+Shift+T` |
+| Focus URL bar | `Ctrl+L` | `Cmd+L` | `Ctrl+L` |
+| Reload page | `Ctrl+R` | `Cmd+R` | `Ctrl+R` |
+| Bookmark current page | `Ctrl+D` | `Cmd+D` | `Ctrl+D` |
+| Open link in new tab | `Ctrl+Click` | `Cmd+Click` | `Ctrl+Click` |
+| Navigate back / forward | `Alt+←` / `Alt+→` | `Cmd+←` / `Cmd+→` | `SL+←` / `SL+→` |
