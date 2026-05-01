@@ -26,8 +26,8 @@
 
 | Operation | Key (Win) | Key (Mac) | Key(HHKB) |
 |-----------|-----------|-----------|-----------|
-| Switch to English | `英数` | `Ctrl+Space` (toggle) | TBD |
-| Switch to Japanese | `かな` | `Ctrl+Space` (toggle) | TBD |
+| Switch to English | `英数` | `Ctrl+Space` (toggle) | `SP2+SR` |
+| Switch to Japanese | `かな` | `Ctrl+Space` (toggle) | `SR` |
 
 ---
 
