@@ -49,13 +49,33 @@ PR #10 is complete when all five commands are created and wf-rev approved.
 
 ## Next tasks (in order)
 
-1. [ ] User reviews PR #10 and provides feedback
-2. [ ] Address PR feedback
-3. [ ] Create `/hi` workflow → wf-rev → address findings → user review → address feedback
-4. [ ] Create `/go` workflow → wf-rev → address findings → user review → address feedback
-5. [ ] Create `/ty` workflow → wf-rev → address findings → user review → address feedback
-6. [ ] Create `/gm` workflow → wf-rev → address findings → user review → address feedback
-7. [ ] Create `/bb` workflow → wf-rev → address findings → user review → address feedback
+1. [ ] User reviews PR #10
+2. [ ] Address PR #10 feedback
+3. [ ] Create `/hi` workflow
+4. [ ] wf-rev review of `/hi`
+5. [ ] Address wf-rev findings for `/hi`
+6. [ ] User reviews `/hi`
+7. [ ] Address user feedback for `/hi`
+8. [ ] Create `/go` workflow
+9. [ ] wf-rev review of `/go`
+10. [ ] Address wf-rev findings for `/go`
+11. [ ] User reviews `/go`
+12. [ ] Address user feedback for `/go`
+13. [ ] Create `/ty` workflow
+14. [ ] wf-rev review of `/ty`
+15. [ ] Address wf-rev findings for `/ty`
+16. [ ] User reviews `/ty`
+17. [ ] Address user feedback for `/ty`
+18. [ ] Create `/gm` workflow
+19. [ ] wf-rev review of `/gm`
+20. [ ] Address wf-rev findings for `/gm`
+21. [ ] User reviews `/gm`
+22. [ ] Address user feedback for `/gm`
+23. [ ] Create `/bb` workflow
+24. [ ] wf-rev review of `/bb`
+25. [ ] Address wf-rev findings for `/bb`
+26. [ ] User reviews `/bb`
+27. [ ] Address user feedback for `/bb`
 
 ## Session context
 
