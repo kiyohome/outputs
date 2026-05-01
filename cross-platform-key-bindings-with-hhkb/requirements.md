@@ -112,11 +112,11 @@ Mark each operation with one of:
 | ✅ | `Ctrl+T` | New tab |
 | ✅ | `Ctrl+Tab` | Switch to next tab |
 | ✅ | `Ctrl+Shift+Tab` | Switch to previous tab |
-| ❓ | Close current tab | Key TBD |
+| ✅ | `Ctrl+W` | Close current tab (Chrome default) |
 | ✅ | `Ctrl+Shift+T` | Reopen closed tab |
 | ✅ | `Ctrl+L` | Focus URL bar |
 | ✅ | `Ctrl+R` | Reload page |
-| ❓ | Bookmark current page | Key TBD |
+| ✅ | `Ctrl+D` | Bookmark current page (Chrome default) |
 | ✅ | `Ctrl+Click` | Open link in new tab |
 | ✅ | Back / Forward | Navigate back / forward |
 | ✅ | New window | Open new window |
