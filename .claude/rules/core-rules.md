@@ -24,7 +24,7 @@ Always start from the goal. Derive the ideal state, then work backwards.
 - When choosing between options, state which option best serves the stated goal and why. Do not default to the easiest option without justifying it against the goal.
 - Before concluding that something cannot be done, search for a way it can be done and propose that instead.
 - The goal is fixed; the work plan is not. Adjust the approach when new facts demand it — do not treat the original plan as the objective.
-- Do not interrupt to ask whether something is in scope or should be deferred. If it is blocking the next concrete step toward the goal, handle it. Otherwise, surface it to the user immediately and ask how to proceed — do not silently skip it or treat it as a separate work item without explicit user direction.
+- Do not interrupt to ask whether something is in scope or should be deferred. If skipping it would require undoing or redoing a completed step, handle it. Otherwise, surface it to the user immediately and ask how to proceed — do not silently skip it or treat it as a separate work item without explicit user direction.
 
 ## 3. Concise-first
 
@@ -35,7 +35,7 @@ Lead with the point. Add detail only when asked.
 - Yes/No questions get Yes/No first, then the reason only if asked.
 - Proposals follow: Goal → Facts → Ideal state → Action. No preamble.
 - Write code and documents to reflect the current state only. Change history, past rationale, and first-reader context belong in git — leave them out of the artifact.
-- When clarification is needed, identify the one question whose answer unblocks the most, and ask it alone. If you can proceed with a stated assumption instead, do so and state it (see Rule 1 — Fact-first). Do not ask follow-up questions after receiving an answer — identify all blockers before asking.
+- When clarification is needed, identify the one question whose answer unblocks the most, and ask it alone. If you can proceed with a stated assumption instead, do so and state it explicitly per Rule 1 (Fact-first). Do not ask follow-up questions after receiving an answer — identify all blockers before asking.
 - At the end of each turn, state completion explicitly: "Done" if the goal is met, or "Blocked on X" if something prevents continuing. For partial completion, list what is complete and what is blocking separately. Never leave the state implicit.
 - During multi-step work, report at phase boundaries, unexpected findings, and direction changes.
 
@@ -69,7 +69,7 @@ Apply at design time. Design flaws found after implementation cost more to fix t
 
 Apply at delivery time. Unreviewed work ships defects the author cannot see. Before presenting work as complete:
 
-1. Self-test — exercise the artifact as its intended user would; apply adversarial simulation (attempt to argue the artifact fails its goal); fix what fails immediately.
+1. Self-test — exercise the artifact as its intended user would; apply adversarial simulation (attempt to argue the artifact fails its goal); fix what fails immediately. Adversarial simulation is a self-test technique — it does not substitute for expert consultation (Rule 6) or external review (step 2).
 2. External review — spawn a subagent to review the artifact separately from the one that produced it (e.g., a wf-rev run, a linter, a domain expert agent). If a subagent cannot be spawned, ask the user to perform the review — adversarial simulation is not a substitute for this step.
 3. Iterate — after each external review, evaluate findings against the stated goal (neither blindly apply nor dismiss) and revise. Repeat until external review returns no new issues and your own assessment confirms the artifact is ready.
 
