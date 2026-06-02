@@ -62,12 +62,12 @@ Backtick-prefixed commands execute at invocation time, and their output is embed
 argument-hint: [pr-number] [priority] [assignee]
 ---
 
-Review PR #$1 with priority $2. Assign to $3.
+Review PR #$0 with priority $1. Assign to $2.
 ```
 
 - `$ARGUMENTS` — the full argument string.
-- `$1`, `$2`, `$3` — positional arguments.
-- `@$1` — tell Claude to read that path as a file.
+- `$ARGUMENTS[N]` / `$N` — positional arguments, **0-based** (`$ARGUMENTS[0]` / `$0` is the first). Verified against code.claude.com/docs/en/skills (2026).
+- `$name` — named argument declared in the `arguments:` frontmatter (mapped to positions in order). (`@$1` is no longer documented.)
 - `@${CLAUDE_PLUGIN_ROOT}/templates/report.md` — reference a file inside the plugin itself.
 
 ### Phase control pattern

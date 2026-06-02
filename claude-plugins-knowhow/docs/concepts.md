@@ -33,7 +33,11 @@ Only `plugin.json` with a `name` field is strictly required. Everything else is 
 
 ## Plugin Taxonomy
 
-The official plugins span three structural archetypes. Understanding which archetype you are building is the first decision when creating a new plugin.
+The official plugins span three structural archetypes (A/B/C below).
+
+> **Note (2026): legacy framing.** A/B/C date from when slash commands were a component type distinct from skills. Claude Code has since **merged commands into skills** (a user-invoked command is now a skill with `disable-model-invocation: true`). The durable organizing decision is therefore by **role** — driver/orchestration, knowledge, and side-effecting execution — with A/B/C as common role-combinations. Read the archetypes below through that lens.
+
+Understanding which roles your plugin needs is the first decision when creating a new one.
 
 ### Archetype A: Command + Agent (workflow-oriented)
 
@@ -169,4 +173,4 @@ When a plugin is prone to over-reaching, restate the scope:
 ## TODO
 
 - Add an architecture diagram showing how plugin-smith's modes route through `concepts.md`, `components.md`, `patterns.md`, and `checklists.md`.
-- Document the decision heuristic that maps user intent to archetype A/B/C.
+- Document the decision heuristic that maps user intent to component roles (driver / knowledge / execution); A/B/C are legacy shorthands for common role-combinations.

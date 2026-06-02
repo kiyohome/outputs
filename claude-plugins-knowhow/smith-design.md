@@ -1,231 +1,194 @@
 # smith — Design Specification
 
-> smith is a craftsperson tool that evaluates and improves Claude Code setups end-to-end: inspects files, drafts improvements, applies them after user approval, and verifies the result.
+> smith applies best practices to build a high-quality, reproducible Claude Code artifact. It is **not** a checker and **not** a converter. Given a rough throwaway draft of what the user wants, smith elicits the real intent, then designs and implements a proper artifact (by default a plugin) grounded in canonical patterns, verifying against a pre-authored evaluation suite throughout.
 
 ## Overview
 
-- **Identity**: craftsperson. smith applies changes itself — it is not a consultant.
-- **Loop**: Evaluate → Propose → Apply (single pipeline).
-- **Two-layer operating model**:
-  - **Feature** = user-visible capability, the entry point (e.g., "PR review flow", "progress tracking").
-  - **Component** = inspection unit: Prompt / Command / Agent / Skill / Hook / CLAUDE.md / Plugin.
-- **Target scope**: inside `.claude/` of the aiya monorepo — plugins AND project-level setup.
-- **Out of scope targets**: MCP servers, statusline, output-style.
-- **Dogfooded**: smith is run on the aiya monorepo's own `.claude/` to refine itself.
-- **Defaults**: dry-run; disk writes require explicit user approval.
+- **Purpose**: apply best practices (定石) to produce a Claude Code artifact that is **reproducible (A)** and **high quality (B)**.
+  - **A — Reproducibility**: the built artifact behaves the same way every run (same trigger, same files touched, byte-stable script output).
+  - **B — Quality**: the built artifact produces better results (right structure, clean responsibility split, sharp instructions).
+- **Default output**: a **plugin** combining a custom slash command + skill + subagent(s). smith may emit a smaller artifact (skill-only, or command+agent) when the intent is small — see [Minimum-viable output](#minimum-viable-output).
+- **Input**: a rough, **throwaway** draft made by skill-creator or by an AI. Its only role is to make the user's intent legible. smith strips it to intent and **discards its component structure** — see [Input model](#input-model).
+- **Identity**: a builder/craftsperson. smith designs and writes the artifact itself; it does not grade an existing one.
+- **Out of scope**: re-implementing Claude Code's built-in format/syntax validation (kebab-case names, required front-matter, line limits, `${CLAUDE_PLUGIN_ROOT}` usage). The harness already does this; smith does not.
 
-## Flow
+## Input model
 
-A single 10-step pipeline. Step order is fixed. Exceptions are listed at the end of this section.
+smith starts from a rough draft (typically a skill emitted by skill-creator) plus user dialogue. The draft is an **intent-elicitation seed, not a base to improve**.
 
-1. **Identify target** — invocation is `/smith [<scope>]` where `<scope>` is an optional positional hint (file path, directory path, or capability phrase). If given, use it; otherwise hear it (max 2 rounds; exit on failure).
-2. **Enumerate constituent files** — find the files composing the target and their call relationships (command→agent, hook→tool, skill reference, etc.).
-3. **Inspect** — run `[auto]` pre-pass (deterministic mechanical checks) + 3-lens parallel inspection. Each finding recorded as `OK` / `NG` / `OOS` plus a comment.
-4. **Draft improvements** — for each `NG` only, produce proposal + rationale + expected effect + patch content.
-5. **Rank** — order by expected effect alone (severity is internalized; effort is ignored because AI applies).
-6. **User selects adoptions** — all / subset / reject-all. Reject-all persists findings and exits.
-7. **Preview** — synthesize patches from adopted items, show diff, final confirmation.
-8. **Apply** — write in dependency order (foundation → dependents); re-verify pre-image immediately before each write; halt on failure (no auto-rollback — user reverts via git).
-9. **Re-inspect and reconcile** — re-run inspection on touched files, compare expected effect with actual result. If `unmet` or `regressed` remain, loop to step 4 (max 3 iterations).
-10. **Persist** — write findings, decisions, reconcile history to `.claude/.smith.local.md`.
+1. **Strip to intent.** smith reads the draft and restates, as a proposal, only: `{goal, user/trigger, inputs, outputs, ≤3 concrete usage scenarios}`.
+2. **Discard structure.** The draft's component shape (e.g. "one skill") is dropped. It must **not** anchor the structure — a skill-shaped draft must not bias smith toward skill-only output.
+3. **Hearing supplements.** Phases 1–3 fill the gaps the draft doesn't reveal, proposal-based with rationale.
+4. **Re-derive structure in 5-1** from the taxonomy, never inherited from the draft.
 
-### Exception flows
+> Rationale: a rough draft makes intent legible faster than a blank interview, but a draft is never structurally neutral — it smuggles in a structure. Keeping its intent and discarding its structure captures the benefit without the anchoring risk. (Aligns with `action.md` §A.5 — do not narrow/expand the goal.)
 
-- **Target unidentifiable** (hearing fails after 2 rounds) → report and exit. Never fabricate a target.
-- **All proposals rejected** → persist records and exit.
-- **Self-inspection** (target == smith itself — detected when any target file resolves under `agents-in-your-area/.claude/plugins/smith/`) → extra confirmation before Apply; iteration cap drops from 3 to 1 to prevent prompt-mutation mid-loop.
-- **Write error mid-apply** → halt, report partial state, point the user at `git status`.
-- **Loop cap hit** (3 iterations) → report residual findings and exit. Do not emit a completion claim while NG remain.
+## Flow — Phase > Step > Action
+
+Six phases. Hearing (1–4) is **proposal-based**: each proposal builds on prior phases and carries its rationale. Evaluations are authored at the end of Phase 4 and run continuously from there (evaluations-first).
+
+### Phase 1–4 — Requirements
+
+| Phase | Action | A/B |
+|---|---|---|
+| 1 Background | Restate the problem the artifact solves (start from the real gap, not the draft). | B-led |
+| 2 Goal | Define the goal **plus success criteria and verification method** (`action.md` §A.2). The criteria authored here become the eval rubric. | B-led |
+| 3 Constraints | Target model(s) (Haiku/Sonnet/Opus), tools, side-effects, scope/non-goals. The model set and `disable-model-invocation` bound the non-determinism A must later prove stable. | A-led |
+| 4 Propose UX + author evals | Propose usage, ≥3 concrete scenarios, and output examples. **Then author the evaluation suite** (`{query, files, expected_behavior}` ×≥3) and **capture the no-skill baseline** (Claude on the same scenarios without the artifact). | A+B |
+
+Phase 4 is the pivot: nothing in Phase 5 starts until the eval suite and baseline exist.
+
+### Phase 5 — Design then Implementation, applying best practices
+
+Every step addresses **both** A and B. Structure steps (5-1, 5-2) have the highest leverage on both axes; part-polish steps (5-3, 5-4) have lower but nonzero leverage on both. There are **no single-axis steps**.
+
+| Step | Action | A contribution | B contribution |
+|---|---|---|---|
+| **5-1 Turn goal into structure** (roles + parts + flow) | Re-derive the structure from the goal — assign **driver / knowledge / execution** roles and the component mix that realizes them (not the legacy Archetype A/B/C); decompose into parts; design the flow. Decide **what becomes a deterministic script vs. an LLM step**, and where verifiable intermediate outputs sit. | Highest A lever: pushing logic into byte-stable scripts and gating non-determinism is what makes runs repeatable. | Highest B lever: how parts divide/connect sets the ceiling on quality. |
+| **5-2 Confirm parts & interfaces** | Pin the seams: handoffs, approval gates, `plan→validate→execute` boundaries, per-part degree-of-freedom budget, description-as-trigger. Run the eval subset covering wiring. | Fixed seams ⇒ same handoff every run. | Responsibility separation + trigger design ⇒ quality. |
+| **5-3 Build per-part work instructions** | Write each part's prompt from the pinned design: numbered procedure + branches + output contract; instruction-vs-explanation separation; scripts that "solve, don't punt." | Removing room for guessing ⇒ stable behavior. | **B lives here too:** trigger wording, concrete I/O examples, consistent terminology, rationale-not-just-rules. |
+| **5-4 Optimize parts one by one** | Polish each isolated part. Run the eval subset for each touched part as a feedback loop (validator → fix → repeat). | Tighten freedom on fragile parts; move flaky steps into scripts. | Prune verbosity; capture gotchas/failure modes. |
+
+### Phase 6 — Verify & improve
+
+Runs the **pre-authored** Phase-4 suite (not freshly invented criteria). Two independent passes (`action.md` §C.4):
+
+- **A test (reproducibility):** run each fixed scenario **N≥3 times per target model**; A passes iff the **invariants are identical across all runs and models** — (a) same skill/command triggered, (b) same set of files touched, (c) byte-identical script outputs, (d) all `expected_behavior` rubric items pass. Variance in (a)–(c) is a defect → lower degrees of freedom or move the varying step into a script, then re-run.
+- **B test (quality):** run the artifact on the scenarios and score against the rubric; **B passes iff artifact ≥ no-skill baseline** on every scenario. Optional relative-B comparison between two built versions may delegate to skill-creator's blind A/B comparator.
+
+Phase 6 is the final gate. It does not author criteria and it does not fix-and-self-approve (the verifier reports; the orchestrator applies fixes).
+
+### Approval gates
+
+Hard gates (no proceed without user approval):
+
+1. **End of Phase 4** — confirm the pinned intent statement + UX + eval suite. This is the fixed point for Phases 5–6.
+2. **End of 5-1** — user picks among the 2–3 parallel architect designs.
+3. **Before any disk write** — preview the file tree + per-file diffs.
+4. **Phase 6 findings** — per finding: fix now / accept / defer. No silent skips (`action.md` §C.5).
+
+These gates are enforced **structurally** — each is a step the procedure cannot pass until its exit condition (e.g. user approval) is met; reproducibility comes from this ordering, not from emphasis. smith never relies on `CRITICAL`/`MUST` markers to make a rule hold — a rule that needs emphasis to be obeyed is not reproducible. See `docs/workflow-patterns.md` § Writing rule (Enforce, don't emphasize).
+
+## A/B model
+
+A and B are orthogonal **value axes**, but they are **not** split across the flow halves. Both are present in every step; structure (first half) has higher leverage on both. Per-wording A-vs-B classification is replaced by one question per Action: *does this remove a degree of freedom Claude would otherwise resolve nondeterministically?* (raises A) and *does it raise result quality vs. baseline?* (raises B). Many Actions raise both.
+
+## Best-practice pattern libraries (the 定石 smith holds)
+
+Three layers, each loaded only by the phase that needs it (progressive disclosure). IDs cross-reference `taxonomy.md`. The libraries are **sources of Actions, applied selectively** — see [Selective-Action governance](#selective-action-governance).
+
+The full, layer-mapped Action list lives in `docs/actions.md` (each item tagged A/B and assigned to P4 / 5-1 / 5-2 / 5-3 / 5-4 / P6); the three knowledge skills (`smith-structure-patterns`, `smith-prompt-patterns`, plus the requirement procedures in `smith-requirements`) are authored by porting these Actions into prose, phase-scoped per the table below. Layer 1 ↔ structure Actions; Layers 2–3 ↔ writing Actions + `docs/workflow-patterns.md`.
+
+### Layer 1 — Structure/role patterns (Phase 5-1/5-2)
+
+Structure selection (decide first): assign roles — driver/orchestration, knowledge, side-effecting execution — and the component mix that realizes them, before decomposition. (The legacy Archetype A/B/C trichotomy is a special case from when commands were distinct from skills; commands are now authored as skills.) Decomposition: three-layer separation, minimum-viable-plugin, skill-three-roles, progressive-disclosure layering. Multi-agent wiring: reporter/evaluator separation, parallel-perspective split, parallel-vs-sequential, selective dispatch, whole-view singleton agent, **subagent-vs-inline** (hard rule: subagents cannot spawn subagents — all fan-out originates at the top-level orchestrator), `skills`-preload vs `context: fork`, model-tier-by-judgment-density. Interfaces: allowed-tools least-privilege, explicit approval gates, phase-control markers, `.local.md` state + TodoWrite anchor, `${CLAUDE_PLUGIN_ROOT}` portability.
+
+### Layer 2 — Prompt-composition patterns (Phase 5-3)
+
+How a command/agent/skill prompt is structured — **plain markdown** (see `docs/workflow-patterns.md` § Writing rule): role lead for agent bodies; numbered procedure + `If/Otherwise` branch steps with explicit fall-through; a bold "Rules (apply to every step)" block; two-step output contract (declare structure, then format rules); long-context ordering (longform material at top, task at bottom); inject live data with `` !`command` `` / `@file`; reversibility-gated confirmation (act freely on reversible ops, confirm before destructive/shared/irreversible). XML only for agent-`description` invocation examples (`<example>/<commentary>`) and optionally delimiting pasted data — never to structure the body.
+
+### Layer 3 — Concrete-writing patterns (Phase 5-4)
+
+Word-level craft. **Enforce critical behavior with structure, not emphasis (PRM-CPM)** — never rely on `CRITICAL`/`MUST`/ALL-CAPS to make a rule hold (not reproducible); move must-hold rules to a gate step / script / hook / tool restriction. Plain, direct wording for the rest. Positive form over negative; reason-attached instructions; explicit scope to defeat literalism ("apply to every section, not just the first"); concrete over qualitative bars; third-person active skill descriptions; consistent terminology; default + escape over option lists; time-independent phrasing.
+
+### XML policy (revised — grounded in real plugins)
+
+Plugin procedures are written in **plain markdown** (headings, numbered steps, `If/Otherwise` branches, bold "Rules" blocks) — matching the official `plugin-dev` authoring skills and real plugins like `code-review` (which runs multi-agent fan-out, branching, and a validation loop entirely in markdown). XML is used in only two places, the only places real plugins use it: (1) **agent `description` invocation examples** (`<example>/<commentary>`), and (2) optionally, delimiting a block of **pasted runtime data**. XML is **forbidden** on skill `name`/`description`, and is **not** used to structure procedure bodies (steps / branches / rules / exceptions). The structure that delivers reproducibility (A) is explicit branches + role decomposition (script / subagent) + pinned hand-offs — not bracket syntax. See `docs/workflow-patterns.md` § Writing rule.
+
+### Model-era note
+
+The literalism / explicit-scope patterns target Opus 4.5/4.6/4.8. The Enforce-not-emphasize principle is **model-independent** — structural enforcement (gate step / script / hook / tool restriction) works on every model, so smith does not fall back to `MUST`/`CRITICAL` markers even for older targets; it relies on structure instead.
+
+## Selective-Action governance
+
+"Apply only what serves the goal" must be deterministic, or smith's own behavior becomes non-reproducible. Selection is a pure function of `(component type, eval results, severity tier)`:
+
+1. **Mandatory tier is non-selective** — always applied to every component of the matching type.
+2. **Applicability is mechanical** — by component type (lookup against the per-type pattern files), not judgment.
+3. **Recommended/Quality is eval-gated** — applied only if it targets a checklist item that a currently-failing eval scenario needs. Unneeded items are **deferred (logged), not silently dropped**.
+4. **Selection is logged** to `.smith.local.md` so the same inputs yield the same selection and a reviewer can audit why an item was skipped (`action.md` §C.5).
 
 ## Architecture
 
-Hybrid plugin (Archetype C) at `agents-in-your-area/.claude/plugins/smith/`.
+A plugin combining a driver skill + knowledge skills + execution subagents (formerly the "hybrid" archetype). All fan-out (Task dispatch) originates in the orchestrator; subagents never dispatch subagents.
 
-| Part | Model | Role | Flow steps |
+Each part below is emitted from its fill-in skeleton in `docs/templates.md` (`marketplace.json` / `plugin.json` / driver skill / knowledge skill / subagent / hook / `evals/*.eval.md`); the Actions baked into each part are in `docs/actions.md` (A/B-colored, mapped to the phase that applies them); how those Actions are written into a procedure body is `docs/workflow-patterns.md` § Writing rule. **To implement, read those three files plus this spec — nothing in `steering.md` is needed (steering drove the design, not the build).**
+
+| Part | Form | Model | Role | Phases |
+|---|---|---|---|---|
+| `smith` | Entry skill (`disable-model-invocation: true`) — the `/smith` slash command | inherit | Orchestrator: hearing, holds the pinned intent statement, owns approval gates, all fan-out, writes, persistence. | 1–6 |
+| `smith-requirements` | knowledge skill (`user-invocable: false`) | — | The 4 requirement phases, strip-to-intent rule, eval-authoring + baseline procedure. | 1–4 |
+| `smith-structure-patterns` | knowledge skill | — | Layer-1 structure/role patterns. | 5-1, 5-2 |
+| `smith-prompt-patterns` | knowledge skill | — | Layer-2 composition + Layer-3 writing patterns; XML policy. | 5-3, 5-4 |
+| `smith-architect` | subagent, 2–3 parallel | Opus | 5-1: propose competing structural designs; each commits to one blueprint. | 5-1 |
+| `smith-writer` | subagent, parallel per independent part | Sonnet | 5-3/5-4: write each part's prompt from the pinned design. | 5-3, 5-4 |
+| `smith-verifier` | subagent (or delegate to skill-creator eval) | Opus | 6: A test + B test; reports, does not fix. | 6 |
+
+### Rationale
+
+- **Three knowledge skills, not one monolith** — the pattern layers are phase-scoped, so each phase loads only its slice (progressive disclosure). Loading all patterns every phase would defeat it.
+- **architect = Opus** — 5-1 is the highest judgment density; a wrong decomposition propagates. **writer = Sonnet** — bounded, pattern-guided prose from a fixed blueprint. **verifier = Opus** — a late goal-misalignment is the costliest miss, and the verifier must resist rubber-stamping. **orchestrator = inherit** — dialogue/gates/writes are non-judgment work; respects the caller's default.
+- **No checker machinery** — the old inspector trio, convergence score, `smith-evaluate.sh`, and `smith-autocheck.sh` are deleted (review-pipeline residue, and the format checks are now harness built-ins). Phase 6 may keep a lightweight finding list for its approval gate only.
+
+### Minimum-viable output
+
+Default output is a full plugin, but smith down-scopes when the pinned intent is small (a single skill, or a driver skill + one subagent) per minimum-viable-plugin. smith proposes the smallest structure that satisfies the goal at the end of 5-1.
+
+## skill-creator integration
+
+| Stage | Owner | Produces | Consumes |
 |---|---|---|---|
-| `/smith` command | inherit | Orchestrator: dialogue, approval gates, dependency sorting, writes, persistence | 1, 2, 5 dispatch, 6, 7, 8, 10 |
-| `smith-inspector-conventions` agent | Opus | Applies `checklists.md` per component type. Parallel per file. | 3, 4, 9 |
-| `smith-inspector-patterns` agent | Opus | Matches anti-patterns from `patterns.md`. Parallel per file. | 3, 4, 9 |
-| `smith-inspector-architecture` agent | Opus | Whole-view: dependencies, roles, responsibilities, wiring. Single pass per Feature — not parallelized across files. | 3, 4, 9 |
-| `smith-knowhow` skill | — | Progressive disclosure: SKILL.md (taxonomy + common FP + index + load heuristic) + `references/` (per-component checklists + patterns excerpts) | supports 3, 4, 9 |
-| `scripts/smith-autocheck.sh` | — | `[auto]`-tagged mechanical checks, emits Finding schema | 3 |
-| `scripts/smith-evaluate.sh` | — | Merge findings by tag → convergence score → threshold filter → rank by expected effect; also reconcile predicted vs actual in step 9 | 5, 9 |
-| `scripts/smith-state.sh` | — | `.smith.local.md` front-matter I/O | 10 |
+| Elicit | skill-creator | throwaway draft (intent only) | user idea |
+| Baseline | **smith** Phase 4 | no-skill baseline run + frozen eval suite | draft reduced to intent |
+| Build | **smith** Phases 5–6 | the plugin + continuous eval | eval suite |
+| Relative-B compare (optional, on revisions) | skill-creator | blind A/B verdict between two built versions | two built versions |
 
-### Rationale for key architecture decisions
+Boundary: smith owns intent, structure, and **both** eval axes. skill-creator owns only draft generation and the optional relative-B blind comparison. smith owns the no-skill baseline (skill-creator's blind A/B measures B, not A — it cannot prove reproducibility).
 
-- **Inspector = Opus**: smith writes files that affect aiya's production setup. A false positive or a missed real issue costs real remediation time. Precedent: pr-review-toolkit uses Opus for its final code-reviewer agent, for the same reason (most-important judgment → highest-reasoning model).
-- **Inspector combines inspection + improvement drafting + patch synthesis**: same file, same checklist — splitting would double the file reads and fragment reasoning. Project rule: collapse overlapping modes.
-- **Scoring / ranking / reconcile implemented as a script, not an agent**: once findings carry tags and expected effect is numeric, every downstream step is deterministic. A script is faster, cheaper, reproducible, and removes a class of agent-bias risk. The evaluator agent was eliminated by this refactoring.
-- **Three parallel inspector lenses**: independent judgments produce a convergence signal. Findings caught by multiple lenses get higher confidence; single-lens findings are filtered out by the threshold.
-- **Architecture lens is singleton per Feature, not per-file parallel**: its job is to see the whole — dependencies, responsibilities, wiring. Splitting it by file would break its function. Per-file parallelism only helps where judgments are meaningfully independent.
-- **`/smith` model = inherit**: inspectors emit full `patch_content`, so `/smith` only does orchestration — dialogue, approval gates, dependency sorting, Write/Edit, persistence. Respecting the user's model default (`inherit`) follows the knowhow recommendation for non-judgment work. Note: assumes Sonnet-or-better caller; under Haiku, pre-image verification quality may degrade.
-- **No auto-rollback on write failure**: silent reversal would hide the failure and violate the "ban false promises" principle. git owns revert; smith halts and reports.
+## Assumptions from live official docs (2026-05-29)
 
-### `smith-knowhow` layout
+- **Commands merged into skills** — `commands/` is legacy; new plugins use `skills/`. A skill with `disable-model-invocation: true` is the modern user-invoked slash command. Skill front-matter now carries `model`, `effort`, `allowed-tools`, `context: fork`, `agent`, `paths`, `user-invocable`, `argument-hint`/`arguments`.
+- **Subagents cannot spawn subagents** — all fan-out originates at the top-level orchestrator.
+- Subagent `model` defaults to `inherit`; `name`/`color` no longer required; subagents gained a `skills` preload field.
 
-```
-smith-knowhow/
-├── SKILL.md                    # taxonomy + common false-positive list + index + load heuristic
-└── references/
-    ├── prompt.md
-    ├── command.md
-    ├── agent.md
-    ├── skill.md
-    ├── hook.md
-    ├── claude-md.md
-    ├── plugin.md
-    └── patterns.md             # anti-pattern excerpts used across components
-```
+Sources: code.claude.com/docs (plugins, skills, sub-agents); platform.claude.com/docs prompting best practices (XML scope, calibrated emphasis, literalism, long-context ordering, code-review coverage-over-conservatism); agent-skills best practices (evaluations-first, third-person descriptions, "solve don't punt", XML-forbidden in name/description).
 
-One file per component type, mirroring the sections of `docs/checklists.md`. `patterns.md` holds anti-pattern excerpts that apply across components. `references/` stays one level deep (per Skill checklist).
+## Deployment & development round-trip
 
-## Interfaces
+**Distribution repo:** `lovaizu/ccpm` (https://github.com/lovaizu/ccpm) — "Claude Code plugin marketplace for lovaizu projects". smith ships as a plugin **inside** ccpm. The design/knowhow in `claude-plugins-knowhow/` (repo `lovaizu/outputs`) is the **spec** the ccpm implementation follows; the plugin itself is built and distributed in ccpm, not in `outputs`.
 
-### Finding schema
-
-Every inspector agent and the `[auto]` pre-pass script emit findings in this structure:
-
-```json
-{
-  "target_file": "<absolute path or plugin-relative>",
-  "finding_type": "<see naming convention>",
-  "verdict": "OK" | "NG" | "OOS",
-  "comment": "<always; for OK/OOS this is the whole content>",
-  "self_confidence": 0,           // 0-100; inspector's own certainty
-  "rationale": null,              // required when verdict == NG
-  "expected_effect": null,        // required when verdict == NG; list of checklist_item_id the fix will cause to pass
-  "patch_content": null           // required when verdict == NG; see patch_content format
-}
-```
-
-### `finding_type` naming convention
-
-Merge relies on exact string equality, so discipline is required.
-
-- `checklist:<component-type>:<item-slug>` — e.g. `checklist:skill:description-too-long`
-- `pattern:<name-slug>` — e.g. `pattern:reporter-self-scoring`
-- `architecture:<name-slug>` — e.g. `architecture:wiring-mismatch`
-
-All slugs are kebab-case. The full enumerated list lives in `smith-knowhow/SKILL.md`; it grows as implementation and dogfooding surface new types.
-
-### `[auto]` pre-pass output
-
-`scripts/smith-autocheck.sh` emits findings in the same Finding schema, with:
-
-- `self_confidence = 100` (deterministic)
-- `finding_type` derived directly from the checklist item id (e.g., `checklist:skill:kebab-case-filename`)
-- `verdict` determined by the mechanical check (`NG` if violated, otherwise no emission)
-- `patch_content` populated when the fix is mechanical (e.g., renaming to kebab-case); otherwise `null` with a note in `comment`
-
-Scope covers items explicitly tagged `[auto]` in `checklists.md`: kebab-case file names, required front-matter fields, forbidden absolute paths, `${CLAUDE_PLUGIN_ROOT}` usage, line-count limits.
-
-### `OOS` verdict rule
-
-A finding is `Out-of-scope` only when a checklist item is logically inapplicable to the file type being inspected (e.g., "Skill description length" applied to a Command file). Ambiguous or partially-applicable cases resolve to `NG` or `OK` — never `OOS`.
-
-`OOS` findings are recorded (for audit) but excluded from ranking and from the threshold filter.
-
-### `patch_content` format
-
-Inspectors return Edit-tool-compatible pairs per file:
-
-```json
-"patch_content": [
-  {"old_string": "...", "new_string": "..."},
-  {"old_string": "...", "new_string": "..."}
-]
-```
-
-`/smith` applies each pair via the Edit tool. This matches the Edit tool's contract directly and avoids unified-diff fragility around whitespace and line numbering.
-
-For whole-file creation or replacement, `old_string` is the empty string (create) or the full current content (replace); `/smith` uses the Write tool in those cases.
-
-### Agent/script data transport
-
-- Each inspector agent returns its findings as a JSON array inside a single fenced ` ```json ` block as the final message of its invocation.
-- `/smith` concatenates inspector outputs (plus the `[auto]` pre-pass script's output) into one JSON array and pipes it to `scripts/smith-evaluate.sh` on stdin.
-- `scripts/smith-evaluate.sh` emits ranked findings as a JSON array on stdout.
-- All inter-process runtime data flows as JSON; no shared files are used for transient data.
-
-### Convergence score formula
-
-After merging by `finding_type` exact match:
+**Layout in ccpm** — one repo serves as marketplace + plugin + dev target:
 
 ```
-convergence_score = (num_lenses_caught * 30) + (max(self_confidence) * 0.3)
+ccpm/
+├── .claude-plugin/
+│   └── marketplace.json      # { "name":"ccpm", "owner":{...}, "plugins":[{ "name":"smith", "source":"./smith", "description":..., "version":... }] }
+├── smith/
+│   ├── .claude-plugin/plugin.json     # { "name":"smith", "version":..., "description":... }
+│   ├── skills/   smith (driver), smith-requirements, smith-structure-patterns, smith-prompt-patterns
+│   ├── agents/   smith-architect, smith-writer, smith-verifier
+│   ├── hooks/  scripts/  evals/
+│   └── README.md
+├── LICENSE
+└── README.md
 ```
 
-Findings with `convergence_score < 80` are dropped.
+`source: "./smith"` is a **relative path** resolved from the marketplace root (the directory containing `.claude-plugin/`); relative-path sources only resolve when the marketplace is added via git. (`metadata.pluginRoot` could shorten it if more plugins are added later.)
 
-| Lenses | max self_confidence | convergence_score | Result |
-|---|---|---|---|
-| 1 | 100 | 60 | drop |
-| 2 | 70 | 81 | pass |
-| 2 | 100 | 90 | pass |
-| 3 | 0 | 90 | pass |
-| 3 | 100 | 120 (clamp 100) | pass |
+**Round-trip — develop in place, no install, no two-repo sync:**
 
-Lens agreement is the primary signal; `self_confidence` modifies.
+1. **Develop:** `claude --plugin-dir <path>/ccpm/smith` — loads the plugin straight from its directory, no install/marketplace needed.
+2. **Iterate:** edit files, then `/reload-plugins` (reloads skills/agents/hooks/MCP/LSP without restarting). `--plugin-dir` takes precedence over an installed same-name plugin for the session.
+3. **Test:** invoke `/smith:<skill>` (plugin skills are namespaced `smith:`), confirm subagents in `/agents`, verify hooks fire.
+4. **Validate:** `claude plugin validate` (run in CI before publishing).
+5. **Distribute:** push ccpm to GitHub. Users add it with `/plugin marketplace add lovaizu/ccpm`, install with `/plugin install smith@ccpm`, and update with `/plugin marketplace update`.
 
-Note: `[auto]` findings have `self_confidence = 100` but by construction are emitted by only one "lens" (the script). They bypass the threshold — `[auto]` findings are always kept (their determinism justifies the bypass).
+Standalone `.claude/` development and a GitHub-Action sync between repos are **not** needed — ccpm is simultaneously the dev location and the marketplace.
 
-### Ranking formula
+## Open items / deferred
 
-Surviving findings are sorted by `len(expected_effect)` descending (more checklist items unlocked = higher priority). Ties break on `convergence_score` descending.
-
-### `.claude/.smith.local.md` schema
-
-```markdown
----
-current_target: "<path or capability phrase>"
-iteration: 0                         # 0-indexed
-max_iterations: 3                    # 1 for self-inspection
-adoptions: ["<finding_id>", ...]
-rejections: ["<finding_id>", ...]
-reconcile_history_ref: "#iteration-0"
----
-
-# Findings
-
-<findings tree, grouped by target_file>
-
-# Reconcile log
-
-## iteration-0
-
-<per-finding delta: met / partial / unmet / regressed>
-```
-
-Front-matter is parsed by `scripts/smith-state.sh` using the sed/awk pattern from the knowhow (`patterns.md §Reading front matter from shell`). File is gitignored by convention.
-
-State is held in-memory during a single `/smith` run and written to the file at step 10; the file is not re-read within a run. Reconcile state for iterations 1–2 uses in-memory history carried by `/smith`.
-
-### `allowed-tools`
-
-- `/smith` command: `Read, Glob, Grep, Write, Edit, Bash(git:*), Task`
-- `smith-inspector-*` agents: `Read, Glob, Grep` (no write — `patch_content` is data returned to `/smith`)
-- Scripts run via `/smith`'s `Bash` capability; no standalone tool grant is needed.
-
-## Dependency ordering
-
-Step 2 produces a list of files plus directed edges (command → agent it invokes, hook → tool it matches, skill → reference files it points to, etc.). `/smith` topologically sorts for step 8:
-
-- foundation files first (no incoming edges)
-- dependents in topological order
-- cycles broken alphabetically, with a warning logged to `reconcile_history_ref`
-
-## Deferred to implementation
-
-The following will be written during the coding phase, not pre-specified:
-
-- Exact prompt wording for `/smith`, the three inspector agents, and `smith-knowhow/SKILL.md`.
-- Initial contents of the finding-type taxonomy. Seed from the checklist item ids and known patterns; grow as real inspections surface new types.
-- Initial contents of the common false-positive list and per-lens false-positive lists.
-- Exact structure of `reconcile_history_ref` anchors and body sections inside `.smith.local.md`.
-
-## TODO
-
-- Test / verification strategy for smith itself (post-v1, once dogfooding starts).
-- Concrete dogfooding targets inside aiya monorepo (will emerge as aiya's `.claude/` develops).
-- Revisit whether `[auto]` findings should flow through the evaluator merge at all, or be surfaced on a separate track (deterministic vs judgment channels).
+- Exact prompt wording for the orchestrator skill, the three knowledge skills, and the three subagents (written during implementation).
+- Reproducibility N and whether `temperature=0` is available in the target harness (affects the A test bar).
+- Whether `smith-structure-patterns` / `smith-prompt-patterns` are hand-authored prose or generated from the taxonomy (lean: hand-authored, cross-linked to taxonomy IDs).
+- `.smith.local.md` schema for the pinned intent, eval suite, selection log, and reconcile history.
+- Model-era toggle behavior for older-model targets.

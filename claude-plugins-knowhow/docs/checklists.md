@@ -177,7 +177,7 @@ Newly derived from `components.md > Commands` and cross-referenced with the over
 - [ ] **Written as instructions to Claude, not as human documentation.** `[judgment]`
 - [ ] **`allowed-tools` restricts to the minimum necessary toolset.** `[auto]`
 - [ ] **Uses `` !`command` `` inline execution when dynamic context is needed.** `[judgment]`
-- [ ] **Uses `$ARGUMENTS` / `$1` / `$2` / `@$1` for argument handling.** `[auto]`
+- [ ] **Uses `$ARGUMENTS` / `$0` / `$1` (0-based positionals) / named `$name` for argument handling.** `[auto]`
 - [ ] **Phase-control patterns label critical phases** (`DO NOT SKIP`, `DO NOT START WITHOUT APPROVAL`). `[judgment]`
 - [ ] **User approval points are explicit.** `[judgment]`
 - [ ] **Single-message completion pattern is applied when appropriate.** `[judgment]`

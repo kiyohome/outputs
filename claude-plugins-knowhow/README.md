@@ -1,130 +1,99 @@
-# plugin-smith
+# smith
 
-> A meta-plugin for Claude Code that creates and improves other Claude Code plugins.
+> A meta-plugin for Claude Code that **applies best practices** to build a high-quality, reproducible Claude Code artifact — by default a plugin combining a custom slash command, a skill, and subagent(s).
 
-**Status**: design-documentation stage. The plugin itself is not yet implemented; this directory contains the specification that the implementation will follow.
+**Status**: design-documentation stage. The plugin is not yet implemented; this directory holds the specification the implementation will follow. The authoritative spec is [`smith-design.md`](./smith-design.md).
 
-## Overview
+## What smith is
 
-Claude Code plugins are powerful but their design know-how is scattered across the official `anthropics/claude-plugins-official` repository and various independent projects. Quality varies widely. Developers building new plugins have to reverse-engineer the patterns from multiple examples, and developers improving existing plugins have no systematic way to audit them against what "good" looks like.
+Claude Code plugin/skill/subagent design know-how is scattered across official repos and varies widely in quality. Authors reverse-engineer patterns by hand, and there is no systematic way to turn a rough idea into an artifact that is both **reproducible** and **high quality**.
 
-`plugin-smith` is a meta-plugin whose job is to **create new plugins and improve existing ones**. It is inspired by `skill-smith` (which targets individual skills) and extends the same mode-driven architecture up one level to target whole plugins.
+smith is a **builder**. Given a rough draft of what you want, it elicits the real intent, then designs and implements a proper artifact grounded in canonical patterns (定石), verifying against an evaluation suite throughout.
 
-### What it is built from
+Two value axes drive everything:
 
-- **Observed design patterns** from official plugins — the three-layer separation of procedure / knowledge / execution, confidence-scored quality control, progressive disclosure in skills, the separation of reporter and evaluator. See [`docs/concepts.md`](./docs/concepts.md) and [`docs/patterns.md`](./docs/patterns.md).
-- **Component-level design recipes** for commands, agents, skills, and hooks. See [`docs/components.md`](./docs/components.md).
-- **Case studies** of seven official plugins that serve as traceable sources for the abstractions above. See [`docs/case-studies.md`](./docs/case-studies.md).
-- **Quality checklists** covering Prompt, Skill, Hook, CLAUDE.md, Command, Agent, and Plugin-overall categories. See [`docs/checklists.md`](./docs/checklists.md).
+- **A — Reproducibility**: the built artifact behaves the same way every run (same trigger, same files touched, byte-stable script output).
+- **B — Quality**: the built artifact produces better results than the no-artifact baseline.
 
 ### What it is not
 
-- Not an installer or registry.
-- Not a runtime profiler (that is `skill-smith`'s Profile mode; for plugins the analogue is left for later).
-- Not a review tool in the sense of passing judgment on a plugin for external consumption — though `--report-only` mode produces a scorecard, the main orientation is *improvement*, not *evaluation*.
+- **Not a checker.** It does not grade an existing artifact or emit a scorecard. (Claude Code's harness already does format/syntax validation — smith does not duplicate it.)
+- **Not a converter.** It does not transform one artifact into another; it builds the right one.
+- **Not an installer or registry.**
 
-## Usage
+## Where smith sits
 
-`plugin-smith` exposes two modes. Both are **proposal-driven**: the plugin leads with a concrete recommendation drawn from its own knowledge base and asks for confirmation, rather than interviewing the user to elicit requirements.
+smith is the middle of a skill-creator–flanked pipeline:
 
-### Create
+| Stage | Owner | Does |
+|---|---|---|
+| Create draft | **skill-creator** (or an AI) | rough, throwaway draft that makes intent legible |
+| **Build** | **smith** | apply best practices → reproducible (A) + high quality (B) artifact |
+| Compare revisions | **skill-creator** (optional) | blind A/B comparison between two built versions |
 
-Purpose: generate a new plugin from a one-sentence intent.
+The draft is an intent-elicitation seed and is **discarded** — smith keeps the intent, drops the draft's structure, and re-derives the right structure from scratch.
 
-```
-/plugin-smith create "a plugin that reviews my SQL migrations"
-```
+## Flow
 
-Flow:
+smith runs six phases (`Phase > Step > Action`). Hearing is proposal-based: smith leads with a concrete recommendation and its rationale, rather than interviewing from a blank slate.
 
-1. Classify the intent as archetype A (command + agent), B (skill-only), or C (hybrid), per [`docs/concepts.md > Plugin Taxonomy`](./docs/concepts.md#plugin-taxonomy).
-2. Compose a concrete structure from [`docs/components.md`](./docs/components.md) — which commands, which agents, which skills, what front matter, what tool restrictions.
-3. Present **two or three candidate structures in parallel**, each with rationale and trade-offs. This mirrors the parallel-dispatch pattern from [`docs/components.md > Agents`](./docs/components.md#agents).
-4. Wait for user approval (`proceed` / `adjust` / `reject`). This is the only routine confirmation point.
-5. Scaffold the plugin on disk.
-6. Self-validate against [`docs/checklists.md`](./docs/checklists.md) and report any Mandatory failures.
+1. **Background** — the problem the artifact solves.
+2. **Goal** — goal + success criteria + how they'll be verified.
+3. **Constraints** — target models, tools, side-effects, non-goals.
+4. **Propose UX + author evaluations** — usage, ≥3 scenarios, output examples; then author the eval suite and capture the no-artifact baseline. *(Nothing in Phase 5 starts until evals exist.)*
+5. **Build by applying best practices** — the main event:
+   - 5-1 turn the goal into structure (roles + parts + flow)
+   - 5-2 confirm parts & interfaces
+   - 5-3 build per-part work instructions
+   - 5-4 optimize parts one by one
 
-Claude asks clarifying questions only when the intent is missing a decisive piece of information that would change the proposal itself. Otherwise it proceeds with sensible defaults drawn from the knowledge base.
+   Every step addresses **both** reproducibility and quality. Structure steps (5-1, 5-2) have the highest leverage on both; the evaluation suite runs continuously as a feedback loop.
+6. **Verify & improve** — the final gate: a reproducibility test (same behavior across repeated runs) and a quality test (beats the baseline).
 
-### Improve
+## Best practices smith carries
 
-Purpose: diagnose and improve an existing plugin, optionally targeted at a specific problem.
+Three layers of canonical patterns, each loaded only by the phase that needs it:
 
-```
-# Broad sweep:
-/plugin-smith improve ~/.claude/plugins/my-plugin
+1. **Structure/role patterns** (design) — role assignment (driver/knowledge/execution), three-layer separation, reporter/evaluator separation, parallel-vs-sequential dispatch, model placement.
+2. **Prompt-composition patterns** (implementation) — output contracts, role leads, long-context ordering, example envelopes, and a scoped **XML** policy (XML only for mixed-content prompts, never on skill `name`/`description` or simple procedures).
+3. **Concrete-writing patterns** (polish) — calibrated emphasis (prefer "Use this tool when…" over "CRITICAL: You MUST…" on current Opus models), positive form, explicit scope, third-person skill descriptions, consistent terminology.
 
-# Focused on a specific issue:
-/plugin-smith improve ~/.claude/plugins/my-plugin "hook crashes when editing .env files"
+These are **sources of Actions, applied selectively** — Mandatory items always apply; Recommended/Quality items apply only when a failing eval scenario needs them, and skipped items are logged, not silently dropped.
 
-# Scorecard only, no changes:
-/plugin-smith improve ~/.claude/plugins/my-plugin --report-only
-```
+## Shared principles
 
-Flow:
+- **Proposal-driven** — smith leads with concrete recommendations + rationale.
+- **Evaluations first** — criteria are authored at Phase 4 and run continuously, not invented at the end.
+- **Minimal, meaningful approval gates** — intent confirmation, design selection, before any write, and per-finding at verify.
+- **Dry-run by default** — nothing is written without explicit confirmation.
+- **Self-applicable** — smith can be run to build/improve itself.
 
-| Invocation | Behavior |
-|---|---|
-| Path only | Full scan. Runs every applicable checklist from `docs/checklists.md`. Presents findings sorted by severity (Critical / Important / Nice-to-have). |
-| Path + problem description | Focused scan. Starts from the named symptom, uses [`docs/patterns.md`](./docs/patterns.md) to match anti-patterns near the affected area, hypothesizes the root cause, then proposes a patch. |
-| `--report-only` | No mutations. Emits a scorecard with Mandatory pass/fail + Recommended counts. This is the "Evaluate" mode absorbed as a flag. |
+## Architecture (planned)
 
-In all cases Improve defaults to **dry run**: patches are proposed and shown, but disk writes wait for user approval (`apply all` / `apply selected` / `reject`). After approval, the plugin re-validates and reports a before/after diff.
-
-### Shared principles
-
-- **Proposal-driven.** The plugin holds the expertise; it leads with concrete recommendations instead of asking the user to specify details up front.
-- **Minimal approval points.** Approval is requested at the meaningful forks (structure proposal, patch application), not at every intermediate step.
-- **Dry-run by default.** Nothing is written without explicit confirmation.
-- **Self-applicable.** `plugin-smith` can be run against itself.
-
-## Architecture
-
-### Component layout (planned)
-
-`plugin-smith` follows archetype C (hybrid) from [`docs/concepts.md`](./docs/concepts.md):
+A plugin combining a driver skill + knowledge skills + execution subagents. All fan-out originates in the orchestrator; subagents never dispatch subagents.
 
 ```
-plugin-smith/
+smith/
 ├── .claude-plugin/plugin.json
-├── commands/
-│   └── plugin-smith.md        # Entry command dispatching to create / improve.
-├── agents/
-│   ├── plugin-proposer.md     # Dispatched in parallel for the Create mode candidate structures.
-│   ├── plugin-diagnoser.md    # Runs the scan in Improve mode.
-│   └── plugin-evaluator.md    # Scores findings. Kept separate from the diagnoser on purpose.
 ├── skills/
-│   ├── concepts/              # Wraps docs/concepts.md as an on-demand reference.
-│   ├── components/            # Wraps docs/components.md.
-│   ├── patterns/              # Wraps docs/patterns.md.
-│   └── checklists/            # Wraps docs/checklists.md.
-└── README.md
+│   ├── smith/                   # entry skill (disable-model-invocation) — the /smith command + orchestrator
+│   ├── smith-requirements/      # Phase 1–4 knowledge: hearing, strip-to-intent, eval authoring
+│   ├── smith-structure-patterns/# Phase 5-1/5-2 knowledge: structure/role patterns
+│   └── smith-prompt-patterns/   # Phase 5-3/5-4 knowledge: composition + writing patterns, XML policy
+└── agents/
+    ├── smith-architect.md       # Opus — 5-1 competing structural designs (parallel)
+    ├── smith-writer.md          # Sonnet — 5-3/5-4 per-part prompt writing
+    └── smith-verifier.md        # Opus — Phase 6 A test + B test (reports, does not fix)
 ```
 
-The `skills/` subdirectories are thin wrappers around the corresponding `docs/*.md` files in this repository. The design docs are the single source of truth; the skills simply expose them through the progressive-disclosure mechanism at runtime.
+The knowledge skills wrap the corresponding pattern libraries; the design docs in this directory are the single source of truth. See [`smith-design.md`](./smith-design.md) for the authoritative specification, and `docs/` for the underlying knowhow (concepts, components, patterns, case-studies, taxonomy, checklist-items).
 
-### Mode → doc dependency
+## Distribution & development
 
-| Mode | Primary docs consulted |
-|---|---|
-| Create | `concepts.md` (archetype classification) → `components.md` (composition) → `checklists.md` (self-validation) |
-| Improve (path only) | `components.md` + `patterns.md` (matching) → `checklists.md` (scoring) |
-| Improve (with problem description) | `patterns.md` (anti-pattern match near the symptom) → `components.md` (patch synthesis) |
-| Improve (`--report-only`) | `checklists.md` only |
+smith is built and distributed in **[`lovaizu/ccpm`](https://github.com/lovaizu/ccpm)** (the lovaizu plugin marketplace), as a plugin subdirectory `ccpm/smith/` with a `marketplace.json` at the ccpm root. The docs here are the spec; the plugin lives in ccpm.
 
-`case-studies.md` is not loaded at runtime. It exists so that any claim in the other docs can be traced back to its empirical source, which is useful for human maintainers but not for the plugin's execution path.
+- **Develop / run:** `claude --plugin-dir <path>/ccpm/smith`, then `/reload-plugins` after edits. Invoke `/smith:<skill>`; check `/agents`.
+- **Validate:** `claude plugin validate`.
+- **Install (users):** `/plugin marketplace add lovaizu/ccpm` → `/plugin install smith@ccpm`.
 
-### Design principles built into the plugin itself
-
-The plugin must exemplify the patterns it recommends. Specifically:
-
-- **Three-layer separation.** The entry command drives the procedure. Skills supply knowledge. Agents execute in isolation.
-- **Reporter / evaluator separation.** Improve uses a diagnoser agent to report findings and a separate evaluator agent to score them, avoiding the self-affirmation bias documented in `docs/patterns.md > Quality Control`.
-- **Confidence threshold of 80.** Consistent with `code-review` and `feature-dev`.
-- **`${CLAUDE_PLUGIN_ROOT}` everywhere.** No hard-coded paths.
-- **`allowed-tools` on the entry command.** Least privilege.
-- **User approval points only at meaningful forks.** Structure proposal in Create, patch application in Improve. Nothing else.
-
-### Open design questions
-
-See the TODO section of each `docs/*.md` file for document-specific open items. The cross-cutting ones are tracked in [`progress.md`](./progress.md) and include: the architecture diagram format, state management for interruption and resume, the algorithm for problem-description-focused diagnosis, the scorecard output format, and finalization of the plugin name (`plugin-smith` is a placeholder).
+See [`smith-design.md` § Deployment & development round-trip](./smith-design.md) for the full layout and round-trip.

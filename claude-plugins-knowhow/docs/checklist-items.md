@@ -251,10 +251,10 @@
 | **applies_to** | command |
 | **severity** | Recommended |
 | **auto** | `[auto]` |
-| **check** | When the command accepts user-supplied arguments, does the command body use the standard expansion variables (`$ARGUMENTS`, `$1`, `$2`, or `@$1` for file paths) wherever those arguments are referenced? |
+| **check** | When the command accepts user-supplied arguments, does the command body use the standard expansion variables (`$ARGUMENTS`, 0-based positionals `$0`/`$1`/`$ARGUMENTS[N]`, or named `$name` via `arguments:`) wherever those arguments are referenced? |
 | **fix** | Scan the command body for any reference to user-supplied values; replace ad-hoc handling with the standard variables; document expected argument format in the command description. |
 | **related** | — |
-| **example** | NG: "The user will supply the PR number. Use it to run `gh pr view`." OK: `gh pr view $1`. |
+| **example** | NG: "The user will supply the PR number. Use it to run `gh pr view`." OK: `gh pr view $0` (first positional, 0-based). |
 
 ---
 
