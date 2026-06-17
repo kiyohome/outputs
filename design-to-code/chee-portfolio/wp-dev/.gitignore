@@ -1,0 +1,7 @@
+# Ignore everything in wp-dev/ except tracked files
+*
+!.gitignore
+!docker-compose.yml
+!seed.sh
+!seed/
+!seed/**

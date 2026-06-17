@@ -1,0 +1,314 @@
+[
+  {
+    "id": "w1",
+    "post_title": "眉毛アートメイクLP",
+    "post_date": "2024-06-01 00:00:00",
+    "client_name": "TWC ART MAKE STUDIO様",
+    "category_label": "眉毛アートメイク",
+    "thumbnail": "w1-thumbnail.webp",
+    "mockup_image": "w1-mockup.webp",
+    "detail_images": ["w1-detail-1.webp", "w1-detail-2.webp", "w1-detail-3.webp", "w1-detail-4.webp"],
+    "fv_featured": "1",
+    "fv_order": "1",
+    "top_show": "1",
+    "categories": ["lp-design", "ad-operation", "ad-banner"],
+    "post_excerpt": "神戸 三宮でアートメイクを施術しているTWC ART MAKE STUDIOのLPデザインとStudio実装、広告バナー制作、Meta広告運用を行いました。",
+    "sections": [
+      {"title": "目的", "body": ["公式LINEの登録"]},
+      {"title": "担当範囲", "body": ["原稿リライト・デザイン・実装・広告バナー制作・広告運用・改善レポート作成"]},
+      {"title": "制作期間", "body": ["構成から実装まで約１ヶ月"]},
+      {"title": "制作のポイント", "body": [
+        "・競合他社のHPやSNS、Googleマップの口コミをリサーチ",
+        "・ターゲットから絞り込んだペルソナの詳細設計",
+        "・ファーストビュー：キャッチコピーと同時に「眉毛」に目が行くように配置。「５分時短」「駅徒歩８分」「Googleマップの口コミ」など具体的な数値をいれて安心材料を提示し、スクロールを誘う設計。化粧する時間は朝が多いので、光を取り入れて朝の雰囲気を演出。",
+        "・ボタンの上に表示したマイクロコピーに割引クーポンを伝えて予約のハードルを下げています。",
+        "・文字が多い部分はタイトルの文字色の変更、本文を改行したり読みやすく工夫",
+        "・「よくあるご質問」最下部の質問に、申込方法のQAを加え、ボタンへの誘導しやすい構成にしました。"
+      ]},
+      {"title": "制作ツール", "body": ["Figma, Photoshop, Studio（実装環境）"]},
+      {"title": "広告運用", "body": [
+        "Meta広告、広告バナー（静止画）を2パターン配信しました。",
+        "運用結果と改善案を作成しました。"
+      ]}
+    ]
+  },
+  {
+    "id": "w2",
+    "post_title": "転職エージェントLP",
+    "post_date": "2024-05-01 00:00:00",
+    "client_name": "ポジジョブ様",
+    "category_label": "転職エージェント",
+    "thumbnail": "w2-thumbnail.webp",
+    "mockup_image": "w2-mockup.webp",
+    "detail_images": [],
+    "fv_featured": "1",
+    "fv_order": "2",
+    "top_show": "2",
+    "categories": ["lp-design", "direction"],
+    "post_excerpt": "転職者の働く本質に寄り添うサービスを展開されているポジジョブ様のリニューアルを致しました。原稿から全てを差し替えて対応致しました。",
+    "sections": [
+      {"title": "目的", "body": ["無料相談の申込"]},
+      {"title": "担当範囲", "body": ["ディレクション・デザイン"]},
+      {"title": "制作期間", "body": ["デザイン２週間"]},
+      {"title": "制作のポイント", "body": [
+        "・運用されているInstagramの投稿をリサーチ。",
+        "・ターゲットオーディエンスに関連し、クライアントの表現したい世界観を確認",
+        "・既存のロゴとの統一感を持たせてデザインしつつも、ユーザーに信頼感を持ってもらえるようなデザインに。",
+        "・ブランドカラーの黄色を中心に配色を決定。",
+        "・求職者が知りたいこと・サービスの特長をわかりやすくまとめた構成にしました。"
+      ]},
+      {"title": "制作ツール", "body": ["Photoshop, Illustrator"]}
+    ]
+  },
+  {
+    "id": "w3",
+    "post_title": "転職エージェントLP",
+    "post_date": "2024-04-01 00:00:00",
+    "client_name": "エージェントチョイス様",
+    "category_label": "転職エージェント",
+    "thumbnail": "w3-thumbnail.webp",
+    "mockup_image": "w3-mockup.webp",
+    "detail_images": [],
+    "fv_featured": "1",
+    "fv_order": "3",
+    "top_show": "0",
+    "categories": ["lp-design"],
+    "post_excerpt": "20代・第二新卒・既卒・若手ハイクラス向けの転職エージェントマッチングサービスのLP制作を行いました。",
+    "sections": [
+      {"title": "目的", "body": ["無料相談の申込"]},
+      {"title": "担当範囲", "body": ["ディレクション・デザイン"]},
+      {"title": "制作期間", "body": ["デザイン２週間"]},
+      {"title": "制作のポイント", "body": [
+        "・ターゲットオーディエンスに関連し、クライアントの表現したい世界観を確認",
+        "・求職者が知りたいこと・サービスの特長をわかりやすくまとめた構成にしました。",
+        "・視認性を重視したレイアウト設計"
+      ]},
+      {"title": "制作ツール", "body": ["Photoshop, Illustrator"]}
+    ]
+  },
+  {
+    "id": "w4",
+    "post_title": "恋愛コンサルLP",
+    "post_date": "2024-03-01 00:00:00",
+    "client_name": "ルミニア様",
+    "category_label": "恋愛コンサル",
+    "thumbnail": "w4-thumbnail.webp",
+    "mockup_image": "w4-mockup.webp",
+    "detail_images": [],
+    "fv_featured": "1",
+    "fv_order": "4",
+    "top_show": "0",
+    "categories": ["lp-design"],
+    "post_excerpt": "恋愛・結婚に悩む女性向けのコンサルティングサービスのLP制作を行いました。",
+    "sections": [
+      {"title": "目的", "body": ["集客・お問合せの獲得"]},
+      {"title": "担当範囲", "body": ["デザイン・実装"]},
+      {"title": "制作期間", "body": ["約２〜３週間"]},
+      {"title": "制作のポイント", "body": [
+        "・ターゲットに合わせたデザインと構成",
+        "・視認性を重視したレイアウト設計"
+      ]},
+      {"title": "制作ツール", "body": ["Figma, Photoshop"]}
+    ]
+  },
+  {
+    "id": "w5",
+    "post_title": "小学校PTA HP",
+    "post_date": "2024-02-01 00:00:00",
+    "client_name": "百合丘小学校PTA様",
+    "category_label": "小学校PTA",
+    "thumbnail": "w5-thumbnail.webp",
+    "mockup_image": "",
+    "detail_images": [],
+    "fv_featured": "0",
+    "fv_order": "0",
+    "top_show": "0",
+    "categories": ["hp"],
+    "post_excerpt": "小学校PTA主催のイベント情報やお知らせを発信するホームページを制作しました。",
+    "sections": [
+      {"title": "目的", "body": ["イベント情報・お知らせの発信"]},
+      {"title": "担当範囲", "body": ["ディレクション・デザイン・実装"]},
+      {"title": "制作期間", "body": ["約１ヶ月"]},
+      {"title": "制作のポイント", "body": [
+        "・保護者が情報を見つけやすいナビゲーション設計",
+        "・更新のしやすさを重視したCMS構成"
+      ]},
+      {"title": "制作ツール", "body": ["Figma, WordPress"]}
+    ]
+  },
+  {
+    "id": "w6",
+    "post_title": "FP集客LP",
+    "post_date": "2024-01-15 00:00:00",
+    "client_name": "お金のプロFP様",
+    "category_label": "FP集客",
+    "thumbnail": "",
+    "mockup_image": "w6-mockup.webp",
+    "detail_images": [],
+    "fv_featured": "1",
+    "fv_order": "5",
+    "top_show": "0",
+    "categories": ["lp-design"],
+    "post_excerpt": "ファイナンシャルプランナーの集客用LP制作を行いました。",
+    "sections": [
+      {"title": "目的", "body": ["無料相談の申込"]},
+      {"title": "担当範囲", "body": ["デザイン・実装"]},
+      {"title": "制作期間", "body": ["約２〜３週間"]},
+      {"title": "制作のポイント", "body": [
+        "・ターゲットに合わせたデザインと構成",
+        "・視認性を重視したレイアウト設計"
+      ]},
+      {"title": "制作ツール", "body": ["Figma, Photoshop"]}
+    ]
+  },
+  {
+    "id": "w7",
+    "post_title": "広告LP",
+    "post_date": "2024-01-01 00:00:00",
+    "client_name": "AIDTECH様",
+    "category_label": "広告サービス",
+    "thumbnail": "",
+    "mockup_image": "w7-mockup.webp",
+    "detail_images": [],
+    "fv_featured": "1",
+    "fv_order": "6",
+    "top_show": "0",
+    "categories": ["lp-design"],
+    "post_excerpt": "競合他社サイトのユーザーにアプローチする新しい広告手法のLP制作を行いました。",
+    "sections": [
+      {"title": "目的", "body": ["集客・お問合せの獲得"]},
+      {"title": "担当範囲", "body": ["デザイン・実装"]},
+      {"title": "制作期間", "body": ["約２〜３週間"]},
+      {"title": "制作のポイント", "body": [
+        "・ターゲットに合わせたデザインと構成",
+        "・視認性を重視したレイアウト設計"
+      ]},
+      {"title": "制作ツール", "body": ["Figma, Photoshop"]}
+    ]
+  },
+  {
+    "id": "w8",
+    "post_title": "学習塾LP",
+    "post_date": "2023-12-15 00:00:00",
+    "client_name": "中学受験塾様",
+    "category_label": "学習塾",
+    "thumbnail": "",
+    "mockup_image": "w8-mockup.webp",
+    "detail_images": [],
+    "fv_featured": "1",
+    "fv_order": "7",
+    "top_show": "0",
+    "categories": ["lp-design"],
+    "post_excerpt": "算数に苦手意識のあるお子さん向けの中学受験対策塾のLP制作を行いました。",
+    "sections": [
+      {"title": "目的", "body": ["体験授業の申込"]},
+      {"title": "担当範囲", "body": ["デザイン・実装"]},
+      {"title": "制作期間", "body": ["約２〜３週間"]},
+      {"title": "制作のポイント", "body": [
+        "・保護者とお子さん双方に訴求するデザイン",
+        "・視認性を重視したレイアウト設計"
+      ]},
+      {"title": "制作ツール", "body": ["Figma, Photoshop"]}
+    ]
+  },
+  {
+    "id": "w9",
+    "post_title": "転職支援LP",
+    "post_date": "2023-12-01 00:00:00",
+    "client_name": "営業特化キャリア支援様",
+    "category_label": "転職支援",
+    "thumbnail": "",
+    "mockup_image": "w9-mockup.webp",
+    "detail_images": [],
+    "fv_featured": "1",
+    "fv_order": "8",
+    "top_show": "0",
+    "categories": ["lp-design"],
+    "post_excerpt": "第二新卒向け営業職特化のキャリア支援サービスのLP制作を行いました。",
+    "sections": [
+      {"title": "目的", "body": ["無料相談の申込"]},
+      {"title": "担当範囲", "body": ["デザイン・実装"]},
+      {"title": "制作期間", "body": ["約２〜３週間"]},
+      {"title": "制作のポイント", "body": [
+        "・ターゲットに合わせたデザインと構成",
+        "・視認性を重視したレイアウト設計"
+      ]},
+      {"title": "制作ツール", "body": ["Figma, Photoshop"]}
+    ]
+  },
+  {
+    "id": "w10",
+    "post_title": "スピリチュアルコンサルLP",
+    "post_date": "2023-11-01 00:00:00",
+    "client_name": "星の占い師ニーナ様",
+    "category_label": "スピリチュアルコンサル",
+    "thumbnail": "",
+    "mockup_image": "w10-mockup.webp",
+    "detail_images": [],
+    "fv_featured": "1",
+    "fv_order": "9",
+    "top_show": "0",
+    "categories": ["lp-design"],
+    "post_excerpt": "スピリチュアル起業の集客継続コンサルのLP制作を行いました。",
+    "sections": [
+      {"title": "目的", "body": ["集客・お問合せの獲得"]},
+      {"title": "担当範囲", "body": ["デザイン・実装"]},
+      {"title": "制作期間", "body": ["約２〜３週間"]},
+      {"title": "制作のポイント", "body": [
+        "・世界観を大切にしたデザイン設計",
+        "・ターゲットに響くコピーと構成"
+      ]},
+      {"title": "制作ツール", "body": ["Figma, Photoshop"]}
+    ]
+  },
+  {
+    "id": "w11",
+    "post_title": "広告バナーセット",
+    "post_date": "2023-10-01 00:00:00",
+    "client_name": "複数クライアント様",
+    "category_label": "広告バナー",
+    "thumbnail": "",
+    "mockup_image": "",
+    "detail_images": [],
+    "fv_featured": "0",
+    "fv_order": "0",
+    "top_show": "0",
+    "categories": ["ad-banner"],
+    "post_excerpt": "Meta広告・Google広告向けのバナーセットを複数クライアント向けに制作しました。",
+    "sections": [
+      {"title": "目的", "body": ["広告クリック率の向上"]},
+      {"title": "担当範囲", "body": ["広告バナー制作"]},
+      {"title": "制作期間", "body": ["各バナー約１週間"]},
+      {"title": "制作のポイント", "body": [
+        "・ターゲットに合わせたデザインと構成",
+        "・視認性を重視したレイアウト設計"
+      ]},
+      {"title": "制作ツール", "body": ["Photoshop, Illustrator"]}
+    ]
+  },
+  {
+    "id": "w12",
+    "post_title": "転職支援LP（別パターン）",
+    "post_date": "2023-11-15 00:00:00",
+    "client_name": "営業特化キャリア支援様",
+    "category_label": "転職支援",
+    "thumbnail": "",
+    "mockup_image": "w9-mockup-2.webp",
+    "detail_images": [],
+    "fv_featured": "0",
+    "fv_order": "0",
+    "top_show": "0",
+    "categories": ["lp-design"],
+    "post_excerpt": "第二新卒向け営業職特化のキャリア支援サービスのLP制作を行いました。",
+    "sections": [
+      {"title": "目的", "body": ["無料相談の申込"]},
+      {"title": "担当範囲", "body": ["デザイン・実装"]},
+      {"title": "制作期間", "body": ["約２〜３週間"]},
+      {"title": "制作のポイント", "body": [
+        "・ターゲットに合わせたデザインと構成",
+        "・視認性を重視したレイアウト設計"
+      ]},
+      {"title": "制作ツール", "body": ["Figma, Photoshop"]}
+    ]
+  }
+]

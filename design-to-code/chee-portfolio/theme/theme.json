@@ -1,0 +1,90 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 3,
+  "settings": {
+    "appearanceTools": true,
+    "layout": {
+      "contentSize": "760px",
+      "wideSize": "1100px",
+      "allowEditing": false
+    },
+    "color": {
+      "palette": [
+        { "slug": "bg-main",        "color": "#DCEFFB", "name": "Background Main" },
+        { "slug": "bg-sub",         "color": "#F6F6F6", "name": "Background Sub" },
+        { "slug": "white",          "color": "#FFFFFF", "name": "White" },
+        { "slug": "text-primary",   "color": "#111111", "name": "Text Primary" },
+        { "slug": "text-secondary", "color": "#333333", "name": "Text Secondary" },
+        { "slug": "accent",         "color": "#4EB0EA", "name": "Accent" },
+        { "slug": "highlight",      "color": "#FBFF92", "name": "Highlight" },
+        { "slug": "border",         "color": "#D7D7D7", "name": "Border" },
+        { "slug": "bg-single",      "color": "#DEE3EC", "name": "Background Single" }
+      ]
+    },
+    "typography": {
+      "fontFamilies": [
+        {
+          "slug": "noto-sans-jp",
+          "name": "Noto Sans JP",
+          "fontFamily": "'Noto Sans JP', sans-serif",
+          "fontFace": [
+            { "fontFamily": "Noto Sans JP", "fontStyle": "normal", "fontWeight": "100", "src": ["file:./assets/fonts/noto-sans-jp/NotoSansJP-Thin.woff2"] },
+            { "fontFamily": "Noto Sans JP", "fontStyle": "normal", "fontWeight": "400", "src": ["file:./assets/fonts/noto-sans-jp/NotoSansJP-Regular.woff2"] },
+            { "fontFamily": "Noto Sans JP", "fontStyle": "normal", "fontWeight": "500", "src": ["file:./assets/fonts/noto-sans-jp/NotoSansJP-Medium.woff2"] },
+            { "fontFamily": "Noto Sans JP", "fontStyle": "normal", "fontWeight": "700", "src": ["file:./assets/fonts/noto-sans-jp/NotoSansJP-Bold.woff2"] }
+          ]
+        },
+        {
+          "slug": "roboto-condensed",
+          "name": "Roboto Condensed",
+          "fontFamily": "'Roboto Condensed', sans-serif",
+          "fontFace": [
+            { "fontFamily": "Roboto Condensed", "fontStyle": "normal", "fontWeight": "300", "src": ["file:./assets/fonts/roboto-condensed/RobotoCondensed-Light.woff2"] },
+            { "fontFamily": "Roboto Condensed", "fontStyle": "normal", "fontWeight": "500", "src": ["file:./assets/fonts/roboto-condensed/RobotoCondensed-Medium.woff2"] }
+          ]
+        },
+        {
+          "slug": "jost",
+          "name": "Jost",
+          "fontFamily": "'Jost', sans-serif",
+          "fontFace": [
+            { "fontFamily": "Jost", "fontStyle": "normal", "fontWeight": "400", "src": ["file:./assets/fonts/jost/Jost-Regular.woff2"] },
+            { "fontFamily": "Jost", "fontStyle": "normal", "fontWeight": "500", "src": ["file:./assets/fonts/jost/Jost-Medium.woff2"] }
+          ]
+        },
+        {
+          "slug": "zen-kurenaido",
+          "name": "Zen Kurenaido",
+          "fontFamily": "'Zen Kurenaido', cursive",
+          "fontFace": [
+            { "fontFamily": "Zen Kurenaido", "fontStyle": "normal", "fontWeight": "400", "src": ["file:./assets/fonts/zen-kurenaido/ZenKurenaido-Regular.woff2"] }
+          ]
+        }
+      ],
+      "fontSizes": [
+        { "slug": "xs",   "size": "14px",  "name": "XS",   "fluid": false },
+        { "slug": "sm",   "size": "16px",  "name": "SM",   "fluid": { "min": "15px", "max": "16px" } },
+        { "slug": "md",   "size": "20px",  "name": "MD",   "fluid": { "min": "18px", "max": "20px" } },
+        { "slug": "lg",   "size": "28px",  "name": "LG",   "fluid": { "min": "24px", "max": "28px" } },
+        { "slug": "xl",   "size": "36px",  "name": "XL",   "fluid": { "min": "28px", "max": "36px" } },
+        { "slug": "2xl",  "size": "70px",  "name": "2XL",  "fluid": { "min": "40px", "max": "70px" } },
+        { "slug": "hero", "size": "128px", "name": "Hero", "fluid": { "min": "48px", "max": "128px" } }
+      ]
+    }
+  },
+  "templateParts": [
+    { "name": "header", "title": "Header", "area": "header" },
+    { "name": "footer", "title": "Footer", "area": "footer" }
+  ],
+  "styles": {
+    "typography": {
+      "fontFamily": "var(--wp--preset--font-family--noto-sans-jp)",
+      "fontSize": "var(--wp--preset--font-size--sm)",
+      "lineHeight": "1.8"
+    },
+    "color": {
+      "background": "var(--wp--preset--color--bg-sub)",
+      "text": "var(--wp--preset--color--text-primary)"
+    }
+  }
+}
